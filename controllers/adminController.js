@@ -1,4 +1,4 @@
-const product = require('../models/product');
+// const product = require('../models/product');
 const Product= require('../models/product')
 const User= require('../models/user')
 const upload =require('../middlewares/multer')

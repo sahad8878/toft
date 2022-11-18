@@ -1,5 +1,5 @@
 const express = require("express");
-const expressLayouts=require('express-ejs-layouts')
+// const expressLayouts=require('express-ejs-layouts')
 const path=require('path')
 const logger=require('morgan')
 const mongoose = require("mongoose");
@@ -7,13 +7,13 @@ const dotenv = require("dotenv");
 const bodyParser = require('body-parser')
 const session = require('express-session')
 const cookieParser= require('cookie-parser')
+dotenv.config();
 
 const mongoDbStore = require('connect-mongodb-session')(session)
 
 const userRouter = require("./routes/userRoutes");
 const adminRouter = require("./routes/adminRoutes");
 
-dotenv.config();
 const app = express();
 
 // var store = new mongoDbStore({
@@ -45,9 +45,9 @@ app.use('/css',express.static(__dirname+"/public/admin/css"))
 app.use('/js',express.static(__dirname+"/public/admin/js"))
 app.use('/img',express.static(__dirname+"/public/admin/img"))
 
-app.set('layout','./layouts/layout')
+// app.set('layout','./layouts/layout')
 // set Template engin
-app.use(expressLayouts)
+// app.use(expressLayouts)
 app.set("view engine", "ejs");
 
 app.use(bodyParser.urlencoded({ extended: false}))
