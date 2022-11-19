@@ -7,7 +7,7 @@ const upload =require('../middlewares/multer')
 //  login page
 const loginView= (req, res) => {
 if (req.session.adminLogedIn) {
-  console.log('session he');
+  console.log(req.session.adminLogedIn);
   res.redirect("/admin/dashboard");
 }else{
   res.render("admin/login",{adminLoggErr: req.session.adminLoggErr});
@@ -130,10 +130,34 @@ Product.findByIdAndRemove(proId).then(product=>{
 });
   
 }
-
+// log out
 const logoutButton = (req, res)=>{
   req.session.destroy();
   res.redirect('/admin');
+}
+
+// block user
+const blockUser=(req, res)=>{
+const userId=req.params.id
+// console.log(userId)
+User.findByIdAndUpdate(userId,{access:false},(err,data)=>{
+if(err){
+  console.log(err)
+}else{
+  res.redirect('/admin/clients')
+}
+})
+}
+const unBlockUser=(req, res)=>{
+  const userId=req.params.id
+  console.log(userId)
+  User.findByIdAndUpdate(userId,{access:true},(err,data)=>{
+  if(err){
+    console.log(err)
+  }else{
+    res.redirect('/admin/clients')
+  }
+  })
 }
 module.exports={
     loginView,
@@ -148,4 +172,6 @@ module.exports={
    editProduct,
    deleteProduct,
    logoutButton,
+   blockUser,
+      unBlockUser,
 }

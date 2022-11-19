@@ -82,11 +82,10 @@
                       </svg>
                     </button>
                   </a>
-                     <a 
-                     href='/admin/deleteProduct/<%= product[i]._id %>'
-                     onclick="return confirm('Are you sure want to delete')"
-                     >
-                  <button
+                
+                      
+                     <a  onclick="deleteItem( '<%= product[i]._id %>')" >
+                   <button
                     class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray"
                     aria-label="Delete" 
 
@@ -103,8 +102,9 @@
                         clip-rule="evenodd"
                       ></path>
                     </svg>
-                  </button>
+                  </button> 
                 </a>
+                
                 </div>
               </td>
             </tr>
@@ -218,13 +218,12 @@
 
 <%- include('partials/footer.ejs') %>
 
-<!-- <script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-function click(id) {
-  
-  console.log(id)
-
-  const swalWithBootstrapButtons = Swal.mixin({
+<script>
+  function deleteItem(id){
+   
+    const swalWithBootstrapButtons = Swal.mixin({
   customClass: {
     confirmButton: 'btn btn-success',
     cancelButton: 'btn btn-danger'
@@ -242,10 +241,10 @@ swalWithBootstrapButtons.fire({
   reverseButtons: true
 }).then((result) => {
   if (result.isConfirmed) {
-    location.href='/admin/deleteProduct'
+    location.href= `/admin/deleteProduct/${id}`
     swalWithBootstrapButtons.fire(
       'Deleted!',
-      'Your file has been deleted.',
+      'Your product has been deleted.',
       'success'
     )
   } else if (
@@ -254,13 +253,14 @@ swalWithBootstrapButtons.fire({
   ) {
     swalWithBootstrapButtons.fire(
       'Cancelled',
-      'Your imaginary file is safe :)',
+      'Your file is safe',
       'error'
     )
   }
 })
 
-
-} -->
-
+   
+  }
 </script>
+
+

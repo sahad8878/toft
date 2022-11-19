@@ -1,18 +1,24 @@
 const bcrypt = require("bcrypt");
 const Product = require("../models/product");
+const user = require("../models/user");
 const User = require("../models/user");
-const { sendSms, verirySms, verifySms } = require("../verification/otp");
+const { sendSms, verifySms } = require("../verification/otp");
 
 // home
 const homeView = (req, res) => {
-  Product.find()
+  let user = req.session.user;
+    Product.find()
     .then((product) => {
       // console.log(product)
-      res.render("user/home", { product });
+      
+      res.render("user/home", { product,
+      user:user, });
     })
     .catch((err) => {
       console.log(err);
     });
+  
+  
   // res.render("user/home",
   // {Product:Product,
   //   User:User,
@@ -20,52 +26,57 @@ const homeView = (req, res) => {
 };
 // Ṃen page
 const menView = (req, res) => {
-  res.render("user/men", {
-    Product: Product,
-    User: User,
-    isAuthenticated: req.loggedIn,
+  let user = req.session.user;
+  Product.find({category:"Men"})
+  .then((product) => {
+    console.log(product);
+    // console.log(product)
+    res.render("user/men", { product,user:user });
+  })
+  .catch((err) => {
+    console.log(err);
   });
+  // res.render("user/men", {
+  //   Product: Product,
+  //   User: User,
+  //   isAuthenticated: req.loggedIn,
+  // });
 };
 
 // women page
 const womenView = (req, res) => {
+  let user = req.session.user;
   res.render("user/women", {
     Product: Product,
-    User: User,
-    isAuthenticated: req.loggedIn,
+    user:user
   });
 };
 // aboute page
 const aboutView = (req, res) => {
+  let user = req.session.user;
   res.render("user/about", {
     Product: Product,
-    User: User,
-    isAuthenticated: req.loggedIn,
+    user:user,
   });
 };
 // contact page
 const contactView = (req, res) => {
-  res.render("user/contact", {
-    Product: Product,
-    User: User,
-    isAuthenticated: req.loggedIn,
-  });
+  let user = req.session.user;
+  res.render("user/contact",{user:user});
 };
 
 // cart page
 const cartView = (req, res) => {
+  let user = req.session.user;
   res.render("user/cart", {
     Product: Product,
-    User: User,
-    isAuthenticated: req.loggedIn,
+    user:user,
   });
 };
 
 // login
 const loginView = (req, res) => {
-  res.render("user/login", {
-    isAuthenticated: req.loggedIn,
-  });
+  res.render("user/login");
 };
 const loginUser = async (req, res) => {
   try {
@@ -81,7 +92,10 @@ const loginUser = async (req, res) => {
     }
     // req.loggedIn=false;
     req.session.loggedIn = true;
+    req.session.user=user
+    
     return res.redirect("/"), console.log("login succes");
+    // req.locals.user=user || null;
   } catch (error) {
     console.log(error.message);
   }
@@ -133,9 +147,10 @@ const postOtp = async (req, res) => {
     }
   });
 };
-// const logoutUser= (req, res) => {
-//   res.redirect("user/home");
-// };
+const logoutUser= (req, res) => {
+  req.session.destroy();
+  res.redirect("/");
+};
 
 const productDetails = (req, res) => {
   const proId = req.params.id;
@@ -163,6 +178,5 @@ module.exports = {
   productDetails,
   getOtp,
   postOtp,
-
-  // logoutUser
+   logoutUser
 };

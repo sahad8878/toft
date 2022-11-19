@@ -1,6 +1,8 @@
+const moment = require("moment");
 const mongoose = require("mongoose");
 const { schema } = require("./product");
- 
+
+
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -23,8 +25,12 @@ const UserSchema = new mongoose.Schema({
    default: "New York",
    },
   date: {
-    type: Date,
-    default: Date.now,
+    type: String,
+    default: moment(Date).format('MMMM Do YYYY, h:mm:ss a')
+  },
+  access: {
+    type: Boolean,
+   default:true
   },
   // cart: {
   //   items: [

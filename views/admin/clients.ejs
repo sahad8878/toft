@@ -59,13 +59,35 @@
                 <td class="px-4 py-3 text-sm"><%= user[i].email %></td>
 
                 <td class="px-4 py-3 text-sm"><%= user[i].date %></td>
+                <% if ( user[i].access===true) { %>
                 <td class="px-4 py-3 text-xs">
+                  
+                  <a href="/admin/block/<%= user[i]._id %> ">
+                  <button >
                   <span
                     class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
                   >
                   Block
                   </span>
+                </button>
+                </a>
                 </td>
+                <% } else{%>
+  
+                  <td class="px-4 py-3 text-xs">
+                  
+                    <a href="/admin/unBlock/<%= user[i]._id %> ">
+                    <button >
+                    <span
+                      class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
+                    >
+                    Unblock
+                    </span>
+                  </button>
+                  </a>
+                  </td>
+
+                <% } %> 
               </tr>
               <% } %>
  

@@ -13,7 +13,9 @@ clientView,
 viewEditProduct,
 editProduct,
 deleteProduct,
-logoutButton
+logoutButton,
+blockUser,
+unBlockUser
 }= require("../controllers/adminController")
 const router = express.Router();
 
@@ -33,6 +35,8 @@ router.get('/product',session,prodcutManagememnt)
 router.get('/orders',session,ordersView)
 router.get('/logout',logoutButton)
 
+router.get('/block/:id',session,blockUser)
+router.get('/unBlock/:id',session,unBlockUser)
 
 module.exports = router;
 

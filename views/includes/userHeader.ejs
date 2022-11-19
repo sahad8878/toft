@@ -75,7 +75,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css"
           <div class="col-sm-12 text-left menu-1">
             <ul>
               <li class="active"><a href="/">Home</a></li>
-              <li class="has-dropdown">
+              <!-- <li class="has-dropdown">
                 <a href="/men">Men</a>
                 <ul class="dropdown">
                   <li><a href="product-detail.html">Product Detail</a></li>
@@ -84,20 +84,33 @@ href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css"
                   <li><a href="order-complete.html">Order Complete</a></li>
                   <li><a href="add-to-wishlist.html">Wishlist</a></li>
                 </ul>
-              </li>
+              </li> -->
+              <li><a href="/men">Men</a></li>
               <li><a href="/women">Women</a></li>
               <li><a href="/about">About</a></li>
               <li><a href="/contact">Contact</a></li>
               <!-- <li class="cart ml-6  font-weight-bold text-right"><a href="/login"><i ></i> login</a></li> -->
-
+             <% if (!user) { %>
               <li class=" cart ml-6 font-weight-bold has-dropdown">
-                <a href="">Account</a>
+                Account
                 <ul class="dropdown">
                   <li><a href="/login">Log in</a></li>
+                 
+                </ul>
+              </li>
+                 <% } else { %>
+ 
+              <li class=" cart ml-6 font-weight-bold has-dropdown">
+               <%= user.name %> 
+                <ul class="dropdown">
+                  <li><a href="/profile">Profile</a></li>
                   <li><a href="/logoutUser">Log out</a></li>
                 </ul>
               </li>
+              <% } %> 
+              
               <li class="cart"><a href="/cart"><i class="icon-shopping-cart"></i> Cart [0]</a></li>
+              
             </ul>
             
           </div>

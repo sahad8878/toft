@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const { schema } = require("./user");
+const moment= require('moment')
+
 const Schema = mongoose.Schema;
 
 const productSchema = new Schema({
@@ -23,13 +25,14 @@ const productSchema = new Schema({
     type: String,
   },
   date: {
-    type: Date,
-    default: Date.now,
+    type: String,
+    default: moment(Date).format('MMMM Do YYYY, h:mm:ss a')
   },
   brand: {
     type: String,
     required: true,
   },
+
 
 //   userId:{
 //       type:Schema.Types.ObjectId,

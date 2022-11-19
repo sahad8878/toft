@@ -8,13 +8,13 @@ const bodyParser = require('body-parser')
 const session = require('express-session')
 const cookieParser= require('cookie-parser')
 dotenv.config();
+const app = express();
 
-const mongoDbStore = require('connect-mongodb-session')(session)
+// const mongoDbStore = require('connect-mongodb-session')(session)
 
 const userRouter = require("./routes/userRoutes");
 const adminRouter = require("./routes/adminRoutes");
 
-const app = express();
 
 // var store = new mongoDbStore({
 //   uri: process.env.DATABASE,
