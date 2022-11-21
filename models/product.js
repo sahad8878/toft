@@ -26,11 +26,15 @@ const productSchema = new Schema({
   },
   date: {
     type: String,
-    default: moment(Date).format('MMMM Do YYYY, h:mm:ss a')
+    default:Date.now
   },
   brand: {
     type: String,
     required: true,
+  },
+  stock: {
+    type: Number,
+    
   },
 
 

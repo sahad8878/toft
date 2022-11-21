@@ -77,7 +77,18 @@ mongoose
     })
   })
   .catch((err) => console.log(err));
-  
+
+
+// error page 404
+// app.use(function (req, res, next) {
+//     res.status(404)
+// if(req.accepts('html')){
+//   res.render('admin/error')
+// }
+//   })
+
+
+
 // port connections
 
 // app.listen(PORT, console.log(`"server done start for ${PORT}"`));

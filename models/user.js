@@ -26,7 +26,7 @@ const UserSchema = new mongoose.Schema({
    },
   date: {
     type: String,
-    default: moment(Date).format('MMMM Do YYYY, h:mm:ss a')
+    default: Date.now
   },
   access: {
     type: Boolean,

@@ -154,9 +154,10 @@ const logoutUser= (req, res) => {
 
 const productDetails = (req, res) => {
   const proId = req.params.id;
+  let user = req.session.user;
   console.log(proId);
   Product.findById(proId).then((product) => {
-    res.render("user/product_details", { product, proId });
+    res.render("user/product_details", { product, proId ,user:user});
   });
 };
 // otp section
