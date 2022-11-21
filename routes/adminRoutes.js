@@ -29,7 +29,7 @@ const router = express.Router();
 router.post('/',loginAdmin)
 router.post('/product',session,upload.array("imageUrl",3),addProductButton);
 router.post('/editProduct/:id',session,upload.array("imageUrl",3),editProduct)
-router.post('/category',session,postAddCategory)
+router.post('/category',session,session,upload.array("imageUrl",3),postAddCategory)
 
 
 //  get routers

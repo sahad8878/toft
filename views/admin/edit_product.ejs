@@ -54,7 +54,8 @@
             <span class="text-gray-700 dark:text-gray-400">
               Image
             </span>
-            <img src="/images/<%= product.imageUrl[0].filename %> " alt="" style="width: 100px;height: auto;">
+            <img src="/images/<%= product.imageUrl[0].filename %> " alt="" style="width: 100px;height: auto;" id="imageView">
+          
             <div
               class="relative text-gray-500 focus-within:text-purple-600"
             >
@@ -64,6 +65,7 @@
                 name="imageUrl"
                 type="file"
                multiple
+               onchange="viewImage(event)"
               />
              
               <button
@@ -98,3 +100,9 @@
 </main>
 
 <%- include('partials/footer.ejs') %>
+<script>
+
+  function viewImage(event) {
+    document.getElementById('imageView').src=URL.createObjectURL(event.terget.files[0])
+  }
+</script>

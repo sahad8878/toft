@@ -61,6 +61,7 @@ const prodcutManagememnt = async (req, res) => {
 };
 
 const addProductButton = async (req, res) => {
+
   Object.assign(req.body, { imageUrl: req.files });
 
   console.log(req.body);
@@ -182,13 +183,15 @@ const getCategory = async (req, res) => {
 
 // add get  category
 const getAddCategory = (req, res) => {
+
   res.render("admin/add_category");
 };
 
 // add post  category
 const postAddCategory = async(req, res) => {
 
-
+  Object.assign(req.body, { imageUrl: req.files });
+  console.log(req.body);
   const newCategory = await new Category(req.body);
     await newCategory.save()
     .then((result) => {

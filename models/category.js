@@ -9,12 +9,8 @@ const categorySchema = new Schema({
     type: String,
     required: true,
   },
-  discription: {
-    type: String,
-    required: true,
-  },
-  subCategory: {
-    type: String,
+  imageUrl: {
+    type: Array,
     required: true,
   },
 

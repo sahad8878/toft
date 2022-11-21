@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const Product = require("../models/product");
 const user = require("../models/user");
 const User = require("../models/user");
+const Cart= require('../models/cart')
 const { sendSms, verifySms } = require("../verification/otp");
 
 // home
@@ -65,14 +66,79 @@ const contactView = (req, res) => {
   res.render("user/contact",{user:user});
 };
 
-// cart page
-const cartView = (req, res) => {
-  let user = req.session.user;
-  res.render("user/cart", {
-    Product: Product,
-    user:user,
-  });
+//get cart page
+
+
+const cartView =async(req, res) => {
+  let ownerId  = req.session.user._id;
+    
+  // constuser = req.session.user
+
+//  console.log(ownerId);
+
+  const cartItems = await Cart.findOne({ owner: ownerId })
+     .populate('items.product')
+      .exec((err, allCart) => {
+          if (err) {
+              return console.log(err);
+          }
+          res.render('user/cart', { 
+            allCart,
+             user:req.session.user})
+      })
+
+  // res.render("user/cart", {
+  //   Product: Product,
+  //   user:user,
+  // }); 
 };
+
+// post cart
+
+const addToCart = async(req, res) => {
+  const productId = req.params.id
+  let ownerId  = req.session.user._id;
+  console.log(ownerId);
+  console.log(productId +'its product id');
+  const user = await Cart.findOne({ owner:ownerId})
+  const product = await Product.findOne({ _id: productId })
+  // console.log(product+"its product id");
+  const cartTotal = product.price
+  if (!user) {
+      const addToCart = await Cart({
+          owner:ownerId,
+          items: [{ product: productId, totalPrice: product.price }],
+          cartTotal: cartTotal
+      })
+      addToCart.save()
+          .then(() => {
+              res.redirect('/productDetails/' + productId)
+          })
+  } else {
+      const existProduct = await Cart.findOne({ owner: ownerId, 'items.product': productId })
+      if (existProduct != null) {
+          await Cart.findOneAndUpdate({ owner:ownerId, 'items.product': productId },
+              {
+                  $inc: {
+                      'items.$.quantity': 1,
+                      'items.$.totalPrice': product.price,
+                      cartTotal: cartTotal
+                  }
+              })
+              .then(() => {
+                  res.redirect('/productDetails/' + productId)
+              })
+      } else {
+          const addToCart = await Cart.findOneAndUpdate({ owner:ownerId},
+              { $push: { items: { product: productId, totalPrice: product.price } }, $inc: { cartTotal: cartTotal } })
+          addToCart.save()
+              .then(() => {
+                  res.redirect('/productDetails/' + productId)
+              })
+      }
+  }
+
+}
 
 // login
 const loginView = (req, res) => {
@@ -147,19 +213,25 @@ const postOtp = async (req, res) => {
     }
   });
 };
+
+// logout user
 const logoutUser= (req, res) => {
   req.session.destroy();
   res.redirect("/");
 };
 
+
+// products details page
 const productDetails = (req, res) => {
   const proId = req.params.id;
   let user = req.session.user;
-  console.log(proId);
+
   Product.findById(proId).then((product) => {
     res.render("user/product_details", { product, proId ,user:user});
   });
 };
+
+
 // otp section
 const getOtp = (req, res) => {
   res.render("user/otp");
@@ -179,5 +251,6 @@ module.exports = {
   productDetails,
   getOtp,
   postOtp,
-   logoutUser
+   logoutUser,
+   addToCart
 };

@@ -109,7 +109,12 @@
               </div>
               <div class="row">
                   <div class="col-sm-12 text-center">
-                            <p class="addtocart"><a href="/cart" class="btn btn-primary btn-addtocart"><i class="icon-shopping-cart"></i> Add to Cart</a></p>
+                      <form action="/cart/<%= product._id %>" method="post">
+                        <button class="addtocart  btn btn-primary btn-addtocart" >
+                            <i class="icon-shopping-cart"></i> Add to Cart
+                            <!-- <p class="addtocart"><a href="" class="btn btn-primary btn-addtocart"><i class="icon-shopping-cart"></i> Add to Cart</a></p> -->
+                        </button>
+                        </form>
                         </div>
                     </div>
                 </div>
