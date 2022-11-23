@@ -30,14 +30,14 @@
                     <div class="item">
                         <div class="product-entry border">
                             <a href="#" class="prod-img" >
-                                <img src="/images/<%= product.imageUrl[0].filename %> " class="img-fluid" alt="Free html5 bootstrap 4 template">
+                                <img src="/images/<%= product.imageUrl[1].filename %> " class="img-fluid" alt="Free html5 bootstrap 4 template">
                             </a>
                         </div>
                     </div>
                     <div class="item">
                         <div class="product-entry border">
                             <a href="#" class="prod-img">
-                                <img src="/images/<%= product.imageUrl[0].filename %> " class="img-fluid" alt="Free html5 bootstrap 4 template">
+                                <img src="/images/<%= product.imageUrl[2].filename %> " class="img-fluid" alt="Free html5 bootstrap 4 template">
                             </a>
                         </div>
                     </div>
@@ -53,6 +53,7 @@
             <div class="col-sm-4">
                 <div class="product-desc">
                     <h3><%= product.name  %></h3>
+                    <p><%= product.brand %> </p>
                     <p class="price">
                         <span>₹<%= product.price  %></span> 
                         <span class="rate">
@@ -110,12 +111,13 @@
               <div class="row">
                   <div class="col-sm-12 text-center">
                       <form action="/cart/<%= product._id %>" method="post">
-                        <button class="addtocart  btn btn-primary btn-addtocart" >
+                        <button id="btn" class="addtocart  btn btn-primary btn-addtocart" >
                             <i class="icon-shopping-cart"></i> Add to Cart
                             <!-- <p class="addtocart"><a href="" class="btn btn-primary btn-addtocart"><i class="icon-shopping-cart"></i> Add to Cart</a></p> -->
                         </button>
                         </form>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -294,6 +296,13 @@
         </div>
     </div>
 </div>
+<script>
+    const addToCart = document.querySelector('btn')
+    addToCart.onclick = ()=>{
+        axios.post('http://localhost:3000/cart/<%= product._id %>')
+       
+    }
+</script>
 <%- include('../includes/userFooter') %>  
 
 

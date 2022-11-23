@@ -3,6 +3,7 @@ const Product = require("../models/product");
 const user = require("../models/user");
 const User = require("../models/user");
 const Cart= require('../models/cart')
+const Address= require('../models/address')
 const { sendSms, verifySms } = require("../verification/otp");
 
 // home
@@ -26,17 +27,18 @@ const homeView = (req, res) => {
   //   isAuthenticated:req.loggedIn});
 };
 // Ṃen page
-const menView = (req, res) => {
-  let user = req.session.user;
-  Product.find({category:"Men"})
-  .then((product) => {
-    console.log(product);
-    // console.log(product)
-    res.render("user/men", { product,user:user });
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+const menView =async (req, res) => {
+
+ const  product=await Product.find({category:"Mens"})
+ .then((product) => {
+  //  console.log(product);
+   res.render("user/men", { product,user:req.session.user});
+ })
+ .catch((err) => {
+   console.log(err);
+ });
+ 
+
   // res.render("user/men", {
   //   Product: Product,
   //   User: User,
@@ -45,12 +47,16 @@ const menView = (req, res) => {
 };
 
 // women page
-const womenView = (req, res) => {
-  let user = req.session.user;
-  res.render("user/women", {
-    Product: Product,
-    user:user
+const womenView =async (req, res) => {
+  const  product=await Product.find({category:"Women"})
+  .then((product) => {
+   //  console.log(product);
+    res.render("user/women", { product,user:req.session.user});
+  })
+  .catch((err) => {
+    console.log(err);
   });
+
 };
 // aboute page
 const aboutView = (req, res) => {
@@ -71,18 +77,17 @@ const contactView = (req, res) => {
 
 const cartView =async(req, res) => {
   let ownerId  = req.session.user._id;
-    
-  // constuser = req.session.user
-
-//  console.log(ownerId);
+ 
 
   const cartItems = await Cart.findOne({ owner: ownerId })
-     .populate('items.product')
+ .populate('items.product')
       .exec((err, allCart) => {
           if (err) {
               return console.log(err);
           }
+          console.log(allCart);
           res.render('user/cart', { 
+          
             allCart,
              user:req.session.user})
       })
@@ -140,6 +145,44 @@ const addToCart = async(req, res) => {
 
 }
 
+// delete cart product
+
+const deleteCartProduct= async(req, res) => {
+  console.log('delete starting')
+  const userId = req.session.user
+  const productId = req.params.productId
+  const product = await Product.findOne({ _id: productId })
+  const cartTotal = product.price
+  const deleteProduct = await Cart.findOneAndUpdate({ owner: userId },
+      {
+          $pull:
+          {
+              items:
+                  { product: productId }
+          }, $inc:
+              { cartTotal: -cartTotal }
+      })
+  deleteProduct.save()
+      .then(() => {
+          res.redirect('/cart')
+      })
+};
+
+
+// cart product  quantity change
+const cartChangeQuantity=async(req,res)=>{
+  const { cartId, productId, count } = req.params
+  const product = await Product.findOne({ _id: productId })
+  if (count == 1) var productPrice = product.price;
+  else { var productPrice = -product.price }
+  const cart = await Cart.findOneAndUpdate({ _id: cartId, 'items.product': productId },
+      { $inc: { 'items.$.quantity': count, 'items.$.totalPrice': productPrice, cartTotal: productPrice } })
+      .then(() => {
+          res.redirect('/cart')
+      })
+
+
+}
 // login
 const loginView = (req, res) => {
   res.render("user/login");
@@ -237,6 +280,22 @@ const getOtp = (req, res) => {
   res.render("user/otp");
 };
 
+// checkout page
+const getCheckout=(req,res) => {
+  res.render("user/checkout",{ user:req.session.user});
+}
+// user profile page
+const getProfile =(req,res) => {
+res.render("user/profile",{user:req.session.user})
+
+}
+
+// add address button
+const getAddress =(req,res) => {
+  res.render("user/address",{user:req.session.user})
+  
+  }
+
 module.exports = {
   homeView,
   menView,
@@ -252,5 +311,10 @@ module.exports = {
   getOtp,
   postOtp,
    logoutUser,
-   addToCart
+   addToCart,
+   deleteCartProduct,
+   cartChangeQuantity,
+   getCheckout,
+   getProfile,
+   getAddress
 };
