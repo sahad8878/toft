@@ -16,8 +16,9 @@ const loginView = (req, res) => {
 };
 
 //  admin login
-const password = "111";
-const email = "admin@gmail.com";
+
+const email= process.env.ADMIN_EMAIL
+const password= process.env.ADMIN_PASSWORD
 
 const loginAdmin = (req, res) => {
   // console.log(req.body.email,"//",req.body.password);
@@ -53,14 +54,24 @@ const addProduct =async (req, res) => {
 const prodcutManagememnt = async (req, res) => {
   try {
     let product = await Product.find();
+    // console.log(product);
      let category= await Category.find()
     res.render("admin/product_management", { product,category });
   } catch (err) {
-    res.redirect("/error");
+    // res.redirect("/error");
+    console.log("product add error");
   }
 };
 
 const addProductButton = async (req, res) => {
+  
+  const{name,description,category,price,stock,brand} = req.body
+  const imageUrl=req.files
+  
+
+ console.log(imageUrl);
+
+ if(name&&description&&category&&price&&stock&&imageUrl&&brand){
 
   Object.assign(req.body, { imageUrl: req.files });
 
@@ -76,6 +87,11 @@ const addProductButton = async (req, res) => {
     .catch((err) => {
       console.log(err);
     });
+  }else{
+    res.redirect("/admin/getEditProduct");
+    console.log("fill coloms");
+
+  }
 };
 
 //  order page
@@ -105,12 +121,17 @@ const viewEditProduct = (req, res) => {
 // edit product
 const editProduct = (req, res) => {
   const proId = req.params.id;
-
-  const updateName = req.body.name;
-  const updatePrace = req.body.price;
-  const updateImageUrl = req.files;
-  const updateDescription = req.body.description;
-  const updateBrand = req.body.brand;
+  const imageUrl=req.files;
+  console.log(imageUrl);
+       const{name,price,description,category,brand,stock}= req.body
+       if (name&&price&&description&&imageUrl&&category&&brand&&stock) {
+        
+  const updateName = name;
+  const updatePrace =price;
+  const updateImageUrl =imageUrl
+  const updateDescription =description;
+  const updateBrand =brand;
+  const updateStock=stock
   // Object.assign(req.body,{imageUrl:req.file.filename})
 
   Product.findById(proId)
@@ -120,6 +141,7 @@ const editProduct = (req, res) => {
       product.imageUrl = updateImageUrl;
       product.description = updateDescription;
       product.brand = updateBrand;
+      product.stock = updateStock
       return product.save();
     })
     .then((result) => {
@@ -127,6 +149,11 @@ const editProduct = (req, res) => {
       res.redirect("/admin/product");
     })
     .catch((err) => console.log(err));
+  }else{
+
+    res.redirect("/admin/getEditProduct");
+  console.log("fill the edit coloms");
+  }
 };
 
 // delete product
@@ -190,8 +217,20 @@ const getAddCategory = (req, res) => {
 // add post  category
 const postAddCategory = async(req, res) => {
 
-  Object.assign(req.body, { imageUrl: req.files });
-  console.log(req.body);
+  
+  const category=req.body.category
+  const imageUrl=req.files
+  const reqCategory = req.body.category;
+
+  if(category&&imageUrl){
+
+
+console.log(reqCategory+" reqqqqqq");
+  let dbCategory = await Category.findOne({category:reqCategory});
+console.log(dbCategory+ "  dbgeeee");
+     if(!dbCategory){
+
+      Object.assign(req.body, { imageUrl: req.files });
   const newCategory = await new Category(req.body);
     await newCategory.save()
     .then((result) => {
@@ -200,7 +239,16 @@ const postAddCategory = async(req, res) => {
     })
     .catch((err) => {
       console.log(err);
-    });
+    });  
+   }else{
+    res.redirect("/admin/addCategory");
+    console.log("allready exist");
+
+   }
+  }else{
+
+    res.redirect("/admin/addCategory");
+  }
   
 };
 

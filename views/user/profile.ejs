@@ -12,45 +12,102 @@
         </p>
         <p><a class="btn btn-primary btn-lg" href="/" role="button">Continue Shopping &raquo;</a></p>
       </div>
-    </div>
-  </div>
-  <div class="container">
+       <div class="container">
   
 
-    <h2>Your Address</h2>
-    <div class="row row-cols-1 row-cols-md-3 mb-3 text-center mt-4">
- 
-      
-      <div class="col col-md-4">
-        <div class="card mb-4 rounded-3 shadow-sm">
-          <div class="card-body">
-            <h1 class="card-title pricing-card-title"></h1>
-            <ul class="list-unstyled mt-3 mb-4">
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-            </ul>
-            <button type="button" class="w-100 btn btn-lg btn-outline-primary">Edit</button>
+   
+      <div class="row row-cols-1 row-cols-md-3 mb-3  mt-4">
+   
+        
+        <div class="row">
+          <div class="col-md-6">
+            <div class="contact-wrap">
+              <h3>Your Details</h3>
+              <form action="#" class="contact-form">
+                <div class="row">
+                  <!-- <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="fname">First Name</label>
+                      <input type="text" id="fname" class="form-control" placeholder="Your firstname">
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="lname">Last Name</label>
+                      <input type="text" id="lname" class="form-control" placeholder="Your lastname">
+                    </div>
+                  </div> -->
+                  <div class="w-100"></div>
+                  <div class="col-sm-12">
+                    <div class="form-group">
+                      <label for="email">Name</label>
+                      <input value="" type="text" name="fname" id="fname" class="form-control" >
+                    </div>
+                  </div>
+                  <div class="w-100"></div>
+                  <div class="col-sm-12">
+                    <div class="form-group">
+                      <label for="subject">Email</label>
+                      <input value=""   name="email" id="email" class="form-control" >
+                    </div>
+                  </div>
+                  <div class="w-100"></div>
+                  <div class="col-sm-12">
+                    <div class="form-group">
+                      <label for="subject">Number</label>
+                      <input  value="" type="number" id="number" class="form-control" >
+                    </div>
+                  </div>
+                  <div class="w-100"></div>
+                  <div class="col-sm-12">
+                    <div class="form-group">
+                      <label for="message">Adress</label>
+                      <textarea name="address" id="address" cols="30" rows="10" class="form-control" >
+                       
+
+                      </textarea>
+                    </div>
+                  </div>
+                  <div class="w-100"></div>
+                  <div class="col-sm-12">
+                    <div class="form-group">
+                      <!-- <input type="submit" value="Send Message" class="btn btn-primary"> -->
+                      <a href="">
+                      <button class="addtocart  btn btn-primary btn-addtocart" >
+                        Edit
+                       </button>
+                      </a>
+                      
+                    </div>
+                  </div>
+                </div>
+              </form>	
+              <a href="/address">
+                <button class="addtocart  btn btn-primary btn-addtocart" >
+                Add Address
+                </button>
+               </a>	
+            </div>
           </div>
-        </div>
       </div>
-      
-      
-    </div>
- 
-    <div class="alert alert-warning d-flex align-items-center" role="alert">
-      <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Warning:"></svg>
-      <div>You have not added any address yet</div>
-    </div>
     
-    <a href="/address">
-      <button type="button" class="w-100 btn btn-lg btn-primary">Add Address</button>
-    </a>
+  
+        
+               
+        
+       
+        
+        
+      </div>
+   
+      
+
+
+
+
+    
   </div>
+ 
 </section>
 
 <%- include('../includes/userFooter.ejs') %>

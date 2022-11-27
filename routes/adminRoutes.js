@@ -34,7 +34,7 @@ router.post('/category',session,session,upload.array("imageUrl",3),postAddCatego
 
 //  get routers
 router.get('/',loginView)
-router.get('/editProduct/:id',session,viewEditProduct)
+router.get('/getEditProduct/:id',session,viewEditProduct)
 router.get('/deleteProduct/:id',session,deleteProduct)
 router.get('/dashboard',session,dashboardView)
 router.get('/clients',session,clientView)

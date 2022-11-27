@@ -29,6 +29,7 @@
               <th class="px-4 py-3">Item Name</th>
               <th class="px-4 py-3">Price</th>
               <th class="px-4 py-3">Categary</th>
+              <th class="px-4 py-3">Stock</th>
               <th class="px-4 py-3">date</th>
               <th class="px-4 py-3"></th>
             </tr>
@@ -61,11 +62,11 @@
               </td>
               <td class="px-4 py-3 text-sm">₹<%= product[i].price %></td>
               <td class="px-4 py-3 text-sm"><%= product[i].category %></td>
-
+              <td class="px-4 py-3 text-sm"><%= product[i].stock %></td>
               <td class="px-4 py-3 text-sm"><%= product[i].date %></td>
               <td class="px-4 py-3">
                 <div class="flex items-center space-x-4 text-sm">
-                  <a href="/admin/editProduct/<%= product[i]._id %>">
+                  <a href="/admin/getEditProduct/<%= product[i]._id %>">
                     <button
                       class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray"
                       aria-label="Edit"

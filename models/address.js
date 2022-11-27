@@ -5,25 +5,17 @@ const addressSchema = new mongoose.Schema ({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     },
-    address: [{
         
         fName:{
             type : String,
             required : true
         },
-        lName: {
-            type: String,
-            required : true
-        },
+       
         pincode:{
             type: Number,
             required : true
         },
         addressLine:{
-            type : String,
-            required : true
-        },
-        landMark:{
             type : String,
             required : true
         },
@@ -36,7 +28,7 @@ const addressSchema = new mongoose.Schema ({
             required : true
         },
         
-    }]
+
 })
 
 const address = mongoose.model("Address",addressSchema)
