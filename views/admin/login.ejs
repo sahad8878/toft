@@ -63,7 +63,11 @@
                    />
               </label>
 
-           
+            <% if(adminLoggErr.length>0){ %> 
+              <div class=" alert alert-danger mt-4" style="color: white;background-color: rgb(221, 118, 118);" role="alert">
+                <p class="text-danger"><%=adminLoggErr %> </p>
+              </div>
+                <% } %> 
 
             <!-- You should use a button here, as the anchor is only used for the example  -->
             <button type="submit" class="btn btn-primary btn-lg btn-block login-button" >
@@ -75,11 +79,7 @@
               </a>
             </button>
             </form>
-            <% if(adminLoggErr){ %>  
-              <div>
-        <p class="text-danger">Invalid email or password</p>
-      </div>
-        <% } %> 
+           
               <hr class="my-8" />
 
               <button

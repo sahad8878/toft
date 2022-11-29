@@ -34,12 +34,12 @@ router.post('/category',session,session,upload.array("imageUrl",3),postAddCatego
 
 //  get routers
 router.get('/',loginView)
-router.get('/getEditProduct/:id',session,viewEditProduct)
+router.get('/getEditProduct/:id',session,upload.array("imageUrl",3),viewEditProduct)
 router.get('/deleteProduct/:id',session,deleteProduct)
 router.get('/dashboard',session,dashboardView)
 router.get('/clients',session,clientView)
-router.get('/addProduct',session,addProduct)
-router.get('/product',session,prodcutManagememnt)
+router.get('/addProduct',session,upload.array("imageUrl",3),addProduct)
+router.get('/product',session,upload.array("imageUrl",3),prodcutManagememnt)
 router.get('/orders',session,ordersView)
 router.get('/logout',logoutButton)
 router.get('/block/:id',session,blockUser)

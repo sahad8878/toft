@@ -37,9 +37,9 @@ const productSchema = new Schema({
     required: true,
   },
   stock: {
-    type: Number,
-    
+    type: Number, 
   },
+  
 
 
 //   userId:{
@@ -47,6 +47,8 @@ const productSchema = new Schema({
 //       ref: "user",
 //       required:true
 //   }
+},{
+ timestamps:true  
 });
 
 module.exports  = mongoose.model("Products", productSchema);

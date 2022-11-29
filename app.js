@@ -7,6 +7,7 @@ const dotenv = require("dotenv");
 const bodyParser = require('body-parser')
 const session = require('express-session')
 const cookieParser= require('cookie-parser')
+var flash = require('connect-flash');
 dotenv.config();
 const app = express();
 
@@ -56,7 +57,7 @@ app.use(logger('dev'));
 app.use(session({secret:"key",resave:false,saveUninitialized:false,cookie:{maxAge:1200000}}));
 app.use(cookieParser())
 app.use(express.json())
-
+app.use(flash());
 
 app.use("/", userRouter);
 app.use("/admin", adminRouter);
@@ -80,12 +81,12 @@ mongoose
 
 
 // error page 404
-// app.use(function (req, res, next) {
-//     res.status(404)
-// if(req.accepts('html')){
-//   res.render('admin/error')
-// }
-//   })
+app.use(function (req, res, next) {
+    res.status(404)
+if(req.accepts('html')){
+  res.render('admin/error')
+}
+  })
 
 
 

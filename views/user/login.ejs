@@ -124,7 +124,21 @@ href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css"
                                                       </div>
                                                   </div>
                                               </div>
-                                              
+                                              <% if(emailErr.length>0){ %> 
+                                                <div class=" alert alert-danger" role="alert">
+                                                  <p class="text-danger"><%=emailErr %> </p>
+                                                </div>
+                                          
+                                                 <% } else if (passErr.length>0) { %>
+                                                  <div class=" alert alert-danger" role="alert">
+                                                    <p class="text-danger"><%=passErr %> </p>
+                                                  </div>
+
+                                                  <% } else if (fillErr.length>0) { %>
+                                                    <div class=" alert alert-danger" role="alert">
+                                                      <p class="text-danger"><%=fillErr %> </p>
+                                                    </div>
+                                                <% } %>
                                               <div class="form-group ">
                                                   <button type="submit" class=" btn-primary btn-lg btn-block login-button bg-info ">Login</button>
                                               </div>

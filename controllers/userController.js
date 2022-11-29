@@ -7,7 +7,10 @@ const Address = require("../models/address");
 const { sendSms, verifySms } = require("../verification/otp");
 
 // home
-const homeView = (req, res) => {
+const homeView = (req, res,next) => {
+  try {
+    
+
   let user = req.session.user;
   Product.find()
     .then((product) => {
@@ -23,9 +26,16 @@ const homeView = (req, res) => {
   // {Product:Product,
   //   User:User,
   //   isAuthenticated:req.loggedIn});
+} catch (error) {
+  res.render('admin/error')
+  
+}
 };
 // Ṃen page
 const menView = async (req, res) => {
+  try {
+    
+ 
   const product = await Product.find({ category: "Mens" })
     .then((product) => {
       //  console.log(product);
@@ -40,10 +50,16 @@ const menView = async (req, res) => {
   //   User: User,
   //   isAuthenticated: req.loggedIn,
   // });
+} catch (error) {
+  res.render('admin/error')
+}
 };
 
 // women page
 const womenView = async (req, res) => {
+  try {
+    
+ 
   const product = await Product.find({ category: "Women" })
     .then((product) => {
       //  console.log(product);
@@ -52,24 +68,36 @@ const womenView = async (req, res) => {
     .catch((err) => {
       console.log(err);
     });
+  } catch (error) {
+    res.render('admin/error')
+  }
 };
 // aboute page
 const aboutView = (req, res) => {
+  try{
   let user = req.session.user;
   res.render("user/about", {
     Product: Product,
     user: user,
   });
+} catch (error) {
+  res.render('admin/error')
+}
 };
 // contact page
 const contactView = (req, res) => {
+  try{
   let user = req.session.user;
   res.render("user/contact", { user: user });
+} catch (error) {
+  res.render('admin/error')
+}
 };
 
 //get cart page
 
 const cartView = async (req, res) => {
+  try{
   let ownerId = req.session.user._id;
 
   const cartItems = await Cart.findOne({ owner: ownerId })
@@ -89,11 +117,15 @@ const cartView = async (req, res) => {
   //   Product: Product,
   //   user:user,
   // });
+} catch (error) {
+  res.render('admin/error')
+}
 };
 
 // post cart
 
 const addToCart = async (req, res) => {
+  try{
   const productId = req.params.id;
   let ownerId = req.session.user._id;
   console.log(ownerId);
@@ -123,7 +155,7 @@ const addToCart = async (req, res) => {
           $inc: {
             "items.$.quantity": 1,
             "items.$.totalPrice": product.price,
-            cartTotal: cartTotal,
+            cartTotal: product.price,
           },
         }
       ).then(() => {
@@ -142,11 +174,15 @@ const addToCart = async (req, res) => {
       });
     }
   }
+} catch (error) {
+  res.render('admin/error')
+}
 };
 
 // delete cart product
 
 const deleteCartProduct = async (req, res) => {
+  try{
   console.log("delete starting");
   const userId = req.session.user;
   const productId = req.params.productId;
@@ -164,10 +200,14 @@ const deleteCartProduct = async (req, res) => {
   deleteProduct.save().then(() => {
     res.redirect("/cart");
   });
+} catch (error) {
+  res.render('admin/error')
+}
 };
 
 // cart product  quantity change
 const cartChangeQuantity = async (req, res) => {
+  try{
   const { cartId, productId, count } = req.params;
   const product = await Product.findOne({ _id: productId });
   if (count == 1) var productPrice = product.price;
@@ -186,64 +226,100 @@ const cartChangeQuantity = async (req, res) => {
   ).then(() => {
     res.redirect("/cart");
   });
+} catch (error) {
+  res.render('admin/error')
+}
 };
-// login
+// get login
 const loginView = (req, res) => {
-  res.render("user/login");
+  try{
+  res.render("user/login", {
+    emailErr: req.flash("emailErr"),
+    passErr: req.flash("passErr"),
+    fillErr: req.flash("fillErr"),
+  });
+} catch (error) {
+  res.render('admin/error')
+}
 };
+//post login user
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-    let user = await User.findOne({ email: email });
-    let compare = await bcrypt.compare(password, user.password);
-    if (!user) {
-      return res.redirect("/login");
-    }
-    console.log("compare", compare);
-    if (!compare) {
-      return res.redirect("/login");
-    }
-    // req.loggedIn=false;
-    req.session.loggedIn = true;
-    req.session.user = user;
+    if (email && password) {
+      let user = await User.findOne({ email: email });
+      if (user) {
+        let matched = await bcrypt.compare(password, user.password);
+        if (matched) {
+          req.session.loggedIn = true;
+          req.session.user = user;
+          res.redirect("/");
+          console.log("login succeded");
+        } else {
+          req.flash("passErr", "password not match");
+          res.redirect("/login");
+        }
+      } else {
+        req.flash("emailErr", "Email  not match");
+        res.redirect("/login");
+      }
+      // console.log("compare", compare);
+      // if (!compare) {
+      //   req.flash('passErr','password not match')
+      //   return res.redirect("/login");
+      // }
+      // // req.loggedIn=false;
+      // req.session.loggedIn = true;
+      // req.session.user = user;
 
-    return res.redirect("/"), console.log("login succes");
-    // req.locals.user=user || null;
+      // return res.redirect("/"), console.log("login succes");
+      // // req.locals.user=user || null;
+    } else {
+      req.flash("fillErr", "fill the colom");
+      res.redirect("/login");
+    }
   } catch (error) {
-    console.log(error.message);
+    res.render('admin/error')
   }
 };
 
 // register page
 const registerView = (req, res) => {
-  res.render("user/register");
+  try{
+  res.render("user/register", {
+    registerErr: req.flash("registerErr"),
+    existErr: req.flash("existErr"),
+  });
+} catch (error) {
+  res.render('admin/error')
+}
 };
 
 // register post
-const registerUser = async (req, res) => {
+const registerUser = async (req,res) => {
   try {
     const { name, number, email, password } = req.body;
-if(name&& number&& email&& password ){
-    User.findOne({ email: email }).then(async (user) => {
-      if (!user) {
-        req.session.user = req.body;
-        sendSms(number);
-        res.redirect("/otp");
-      } else {
-        return res.redirect("/login");
-      }
-    });
-  }else{
-    res.redirect("/register");
-    console.log("fill register page");
-   
-  }
+    if (name && number && email && password) {
+      User.findOne({ email: email }).then(async (user) => {
+        if (!user) {
+          req.session.user = req.body;
+          sendSms(number);
+          res.redirect("/otp");
+        } else {
+          req.flash("existErr", "Email allready exist");
+          return res.redirect("/register");
+        }
+      });
+    } else {
+      req.flash("registerErr", "Fill the coloms");
+      res.redirect("/register");
+    }
   } catch (error) {
-    console.log("error");
-    console.log(error.message);
+    res.render('admin/error')
   }
 };
 const postOtp = async (req, res) => {
+  try{
   const { name, number, email, password } = req.session.user;
   const otp = req.body.otp;
   const phone = number;
@@ -260,64 +336,149 @@ const postOtp = async (req, res) => {
       newUser.save();
       res.redirect("/login");
     } else {
+      req.flash('otpErr','otp not match')
+      res.redirect("/otp");
       console.log("otp failed");
     }
   });
+} catch (error) {
+  res.render('admin/error')
+}
 };
 
 // logout user
 const logoutUser = (req, res) => {
+  try{
   req.session.destroy();
   res.redirect("/");
+} catch (error) {
+  res.render('admin/error')
+}
 };
 
 // products details page
 const productDetails = (req, res) => {
+  try{
   const proId = req.params.id;
   let user = req.session.user;
 
   Product.findById(proId).then((product) => {
     res.render("user/product_details", { product, proId, user: user });
   });
+} catch (error) {
+  res.render('admin/error')
+}
 };
 
 // otp section
 const getOtp = (req, res) => {
-  res.render("user/otp");
+try{
+  res.render("user/otp",{otpErr:req.flash('otpErr')});
+} catch (error) {
+  res.render('admin/error')
+}
+};
+
+// resend otp
+const resendOtp = (req, res) => {
+try{
+  const { number } = req.session.user;
+  const phone = number;
+  console.log(phone);
+  sendSms(phone);
+  res.redirect("/otp");
+} catch (error) {
+  res.render('admin/error')
+}
 };
 
 // checkout page
-const getCheckout = (req, res) => {
-  res.render("user/checkout", { user: req.session.user });
+const getCheckout = async (req, res) => {
+  try{
+  let index = Number(req.body.index);
+  if (!index) {
+    index = 0;
+  }
+  const userId = req.session.user._id;
+  const addresses = await Address.findOne({ user: userId });
+  let address;
+  if (addresses) {
+    address = addresses.address;
+  } else {
+    address = [];
+  }
+  const cartItems = await Cart.findOne({ owner: userId });
+  if (cartItems) {
+    res.render("user/checkout", {
+      user: req.session.user,
+      address,
+      index,
+      cartItems,
+    });
+  } else {
+    res.redirect("/login");
+  }
+} catch (error) {
+  res.render('admin/error')
+}
 };
+//  catch {
+//   res.json("Something wrong, please try again");
+// }
+//   res.render("user/checkout", { user: req.session.user });
+// };
 // user profile page
 const getProfile = async (req, res) => {
-  // let adress = await Address.find();
-  // let userDb= await User.find()
-
-  res.render("user/profile", { user: req.session.user });
+  try{
+  let userDB = await User.find({});
+  const address = await Address.findOne({ owner: req.session.user })
+  .populate({ path: "user", select: "name email number" });
+  // .then((address)=>{
+  res.render("user/profile", { address, user: req.session.user });
+} catch (error) {
+  res.render('admin/error')
+}
 };
 
 // add address button
 const getAddress = (req, res) => {
-  res.render("user/address", { user: req.session.user });
+  try{
+  res.render("user/address", { user: req.session.user,addressErr:req.flash('addressErr') });
+} catch (error) {
+  res.render('admin/error')
+}
 };
 
 const postAdress = async (req, res) => {
-  ownerId = req.session.user._id;
-  console.log(req.body);
+  try{
   const { country, fName, state, addressLine, city, pincode } = req.body;
   if (country && fName && state && addressLine && city && pincode) {
+    // const newAddress = await Address({
+    //   owner: req.session.user._id,
+    //   country: country,
+    //   fName: fName,
+    //   state: state,
+    //   addressLine: addressLine,
+    //   city: city,
+    //   pincode: pincode,
+    // });
+    // newAddress.save().then(() => {
+    //   res.redirect("/profile");
+    // });
+    ownerId = req.session.user._id;
+    // console.log(req.body);
     const user = await User.findOne({ _id: ownerId });
-    console.log(user);
+    // console.log(user);
     const newAddress = await new Address({
       user: user,
-      country: country,
-      fName: fName,
-      state: state,
-      addressLine: addressLine,
-      city: city,
-      pincode: pincode,
+      address: {
+        country: country,
+        fName: fName,
+        state: state,
+        addressLine: addressLine,
+        city: city,
+        pincode: pincode,
+      },
     });
     newAddress
       .save()
@@ -329,8 +490,25 @@ const postAdress = async (req, res) => {
         console.log(err);
       });
   } else {
+    req.flash('addressErr','fill full coloms')
     res.redirect("/address");
   }
+} catch (error) {
+  res.render('admin/error')
+}
+};
+const deleteAddress = (req, res) => {
+  try{
+  const addressId = req.params.id;
+  console.log(addressId);
+  console.log(addressId);
+  Address.findByIdAndRemove(addressId).then((address) => {
+    console.log("address deleted");
+    res.redirect("/profile");
+  });
+} catch (error) {
+  res.render('admin/error')
+}
 };
 
 module.exports = {
@@ -355,4 +533,6 @@ module.exports = {
   getProfile,
   getAddress,
   postAdress,
+  deleteAddress,
+  resendOtp,
 };

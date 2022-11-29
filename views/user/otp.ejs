@@ -114,10 +114,19 @@ href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css"
                                                       </div>
                                                   </div>
                                               </div>
-                                              
+                                              <% if(otpErr.length>0){ %> 
+                                                <div class=" alert alert-danger" role="alert">
+                                                  <p class="text-danger"><%=otpErr %> </p>
+                                                </div>
+                                                <% } %> 
                                               <div class="form-group ">
                                                   <button type="submit" class=" btn-primary btn-lg btn-block login-button bg-info ">verify</button>
                                               </div>
+                                              <div class="form-group ">
+                                                <a  class=" btn-primary btn-lg btn-block login-button bg-info  text-center" href="/resendOtp">
+                                                Resend
+                                              </a>
+                                            </div>
                                               <div class="login-register">
                                                  <p>Have already an account  <a class="text-primary font-weight-bold" href="/login">Log in</a></p>
                                               </div>

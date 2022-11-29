@@ -3,10 +3,15 @@
   <div class="container px-6 mt-8 mx-auto grid">
     <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
       <!-- General elements -->
-      <h4 class="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300">Elements</h4>
+      <h4 class="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300">Add Product</h4>
       <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
        
        <form action="/admin/product" method="post"  enctype="multipart/form-data">
+        <% if(proAddErr.length>0){ %> 
+          <div class=" alert alert-danger col-md-12 text-center "style="color: white;background-color: rgb(221, 118, 118);" role="alert">
+            <p class="text-danger"><%=proAddErr %> </p>
+          </div>
+            <% } %> 
        <label class="block text-sm">
           <span class="text-gray-700 dark:text-gray-400">Item Name</span>
           <input
@@ -43,7 +48,7 @@
           <input
             class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
             name="price"
-
+type="number"
           />
         </label>
 
@@ -52,7 +57,7 @@
           <input
             class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
             name="stock"
-
+type="number"
           />
         </label>
         

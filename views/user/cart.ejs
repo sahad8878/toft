@@ -10,7 +10,7 @@
   </div>
 </div>
 
-<% if (allCart) { %> 
+<% if (allCart.items.length) { %> 
 <div class="colorlib-product">
   <div class="container">
     <div class="row row-pb-lg">
@@ -80,12 +80,16 @@
                   </span>
                 </a>
               <input type="text" id="qty" name="quantity" class="form-control input-number text-center" value="<%= cart.quantity %>" min="1" max="100">
+              <% if (cart.quantity>1) { %>
+               
+              
               <a   href="/cart-change-quantity/<%= allCart._id %>/<%= cart.product._id %>/-1">
                 <span class="material-symbols-outlined"
                 onclick="changeQuantity('<%= allCart._id %>','<%= cart.product._id %>','-1')">
                   remove
                   </span>
                 </a>
+                <% } %>
             </div>
           </div>
           <div class="one-eight text-center">

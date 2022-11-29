@@ -7,6 +7,15 @@
       <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
        
        <form action="/admin/category" method="post" enctype="multipart/form-data">
+        <% if(catAddErr.length>0){ %> 
+          <div class=" alert alert-danger col-md-12 text-center "style="color: white;background-color: rgb(221, 118, 118);" role="alert">
+            <p class="text-danger"><%=catAddErr %> </p>
+          </div>
+          <% } else if (catExistErr.length>0) { %>
+            <div class=" alert alert-danger col-md-12 text-center "style="color:black;background-color:white" role="alert">
+              <p class="text-danger"><%=catExistErr %> </p>
+            </div>
+            <% } %> 
        <label class="block text-sm">
           <span class="text-gray-700 dark:text-gray-400">Category Name</span>
           <input
