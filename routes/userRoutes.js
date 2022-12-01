@@ -21,10 +21,13 @@ addToCart,
 deleteCartProduct,
 cartChangeQuantity,
 getCheckout,
+postCheckout,
 getProfile,
 getAddress,
 postAdress,
-deleteAddress
+deleteAddress,
+getEditAddress,
+getOrderComplete
 } = require("../controllers/userController");
 const router = express.Router();
   // get routes
@@ -45,7 +48,9 @@ router.get('/cart-change-quantity/:cartId/:productId/:count',cartChangeQuantity)
 router.get('/checkout',userSession,getCheckout)
 router.get('/profile',userSession,getProfile)
 router.get('/address',userSession,getAddress)
-router.get('/deleteAddress/:id',deleteAddress)
+router.get('/order-complete',userSession,getOrderComplete)
+router.get('/deleteAddress/:id',userSession,deleteAddress)
+router.get('/editAddress/:id',userSession,getEditAddress)
 
 // post routes
 router.post("/loginUser", loginUser);
@@ -53,7 +58,7 @@ router.post("/registerUser",registerUser);
 router.post("/Otp",postOtp);
 router.post('/cart/:id',userSession,addToCart)
 router.post('/addAdress',userSession,postAdress)
-
+router.post('/checkout/:CartId',userSession,postCheckout)
 router.route('/cart/').get(userSession, cartView)
 
 module.exports = router;

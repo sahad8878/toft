@@ -34,10 +34,10 @@
 				</div>
 				<div class="row">
 					<div class="col-lg-8">
-						<form method="post" class="colorlib-form">
+						<form  method="post" id="checkout-form" class="colorlib-form" novalidate="novalidate">
 							<h2>Billing Details</h2>
-		              	<div class="row">
-			               <div class="col-md-12">
+		              	 <div class="row">
+			               <!-- <div class="col-md-12">
 			                  <div class="form-group">
 			                  	<label for="country">Select Country</label>
 			                     <div class="form-field">
@@ -52,43 +52,90 @@
 			                        </select>
 			                     </div>
 			                  </div>
-			               </div>
+			               </div> -->
 
-								<div class="col-md-6">
+								<div class="col-md-12">
 									<div class="form-group">
-										<label for="fname">First Name</label>
-										<input type="text" id="fname" class="form-control" placeholder="Your firstname">
+										<label for="fname"> Name</label>
+										<input type="text" id="fname" class="form-control" value="<%= user.name %> " disabled>
 									</div>
 								</div>
-								<div class="col-md-6">
+								<!-- <div class="col-md-6">
 									<div class="form-group">
 										<label for="lname">Last Name</label>
 										<input type="text" id="lname" class="form-control" placeholder="Your lastname">
 									</div>
-								</div>
+								</div> -->
 
-								<div class="col-md-12">
+								<!-- <div class="col-md-12">
 									<div class="form-group">
 										<label for="companyname">Company Name</label>
 			                    	<input type="text" id="companyname" class="form-control" placeholder="Company Name">
-			                  </div>
+			                  </div> -->
 			               </div>
+						   <label for="address">Choose Address</label>
+						   <div class="accordion" id="accordionExample">
+							
+								<% for( let i = 0; i < address.length; i++ ) { %>
+								
+								
+							<div class="card ">
+							  <div class="card-header " id="headingOne">
+								<% if (i==0) { %>
+									<label><input type="radio" id="<%= address[i]._id %>" value="<%= address[i]._id %>" name="address" checked>Select address</label>
+									<% } else { %>
+										<label><input type="radio" id="<%= address[i]._id %>" value="<%= address[i]._id %>" name="address">Select address</label>
+								<% } %>
 
-			               <div class="col-md-12">
+									
+								
+								<h2 class="mb-0">
+								  <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne<%= address[i]._id %>" aria-expanded="true" aria-controls="collapseOne">
+									<%= address[i].fName %>
+								  </button>
+								</h2>
+								
+							  </div>
+						  
+							  <div id="collapseOne<%= address[i]._id %>" class="collapse" name="addressLine" aria-labelledby="headingOne" data-parent="#accordionExample">
+								<div class="card-body">
+									Address: <%= address[i].addressLine %>,
+									<%= address[i].city %>,
+									<%= address[i].state %>,
+									<%= address[i].pincode %> ,
+									<%= address[i].country %>
+								</div>
+							  </div>
+							</div>
+							<% } %>
+						  </div>
+			               <!-- <div class="col-md-12">
 									<div class="form-group">
 										<label for="fname">Address</label>
-			                    	<input type="text" id="address" class="form-control" placeholder="Enter Your Address">
+			                    	<input type="text" id="address" class="form-control"
+									 value="
+									 Address: <%= address.addressLine %>,
+									 city:<%= address.city %>,
+									 State:<%= address.state %>,
+									 Country:<%= address.country %>
+									 ">
 			                  </div>
 			                  <div class="form-group">
 			                    	<input type="text" id="address2" class="form-control" placeholder="Second Address">
 			                  </div>
-			               </div>
-			            
+			               </div> -->
+						   <div class="mt-3 ">
+							<a class="addtocart  btn btn-primary btn-addtocart" href="/address">
+							  
+							  Add New Address
+							 
+							 </a>	
+							</div>
 			               <div class="col-md-12">
-									<div class="form-group">
+								<!-- 	<div class="form-group">
 										<label for="companyname">Town/City</label>
-			                    	<input type="text" id="towncity" class="form-control" placeholder="Town or City">
-			                  </div>
+			                    	  <input type="text" id="towncity" class="form-control" placeholder="Town or City">
+			                      </div>
 			               </div>
 			            
 								<div class="col-md-6">
@@ -96,28 +143,30 @@
 										<label for="stateprovince">State/Province</label>
 										<input type="text" id="fname" class="form-control" placeholder="State Province">
 									</div>
-								</div>
-								<div class="col-md-6">
+								</div> -->
+								<!-- <div class="col-md-6">
 									<div class="form-group">
 										<label for="lname">Zip/Postal Code</label>
-										<input type="text" id="zippostalcode" class="form-control" placeholder="Zip / Postal">
+										<input type="text" id="zippostalcode" class="form-control"
+										 value="<%= address.pincode %> ">
 									</div>
-								</div>
+								</div> -->
 							
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="email">E-mail Address</label>
-										<input type="text" id="email" class="form-control" placeholder="State Province">
+										<input type="text" id="email" name="email" class="form-control" value="<%= user.email %>" disabled>
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="Phone">Phone Number</label>
-										<input type="text" id="zippostalcode" class="form-control" placeholder="">
+										<input type="text" id="zippostalcode" name="number" class="form-control" value="<%= user.number %>" disabled>
 									</div>
 								</div>
 
 								<div class="col-md-12">
+								
 									<div class="form-group">
 										<div class="radio">
 										  <label><input type="radio" name="optradio"> Create an Account? </label>
@@ -126,25 +175,25 @@
 									</div>
 								</div>
 		                    </div>  
-		              </form>
-				  </div>
+		             
+				           </div>
 
 
-					<div class="col-lg-4">
-						<div class="row">
+					      <div class="col-lg-4">
+						  <div class="row">
 							<div class="col-md-12">
 								<div class="cart-detail">
 									<h2>Cart Total</h2>
 									<ul>
 										<li>
-											<span>Subtotal</span> <span>$100.00</span>
-											<ul>
+											<span>Subtotal</span> <span>$<%= cartItems.cartTotal%> </span>
+											<!-- <ul>
 												<li><span>1 x Product Name</span> <span>$99.00</span></li>
 												<li><span>1 x Product Name</span> <span>$78.00</span></li>
-											</ul>
+											</ul> -->
 										</li>
-										<li><span>Shipping</span> <span>$0.00</span></li>
-										<li><span>Order Total</span> <span>$180.00</span></li>
+										<li><span>Shipping</span> <span>FREE</span></li>
+										<li><span>Order Total</span> <span><input type="text" name="total" id="total"  class="form-control" value="$<%= cartItems.cartTotal%>" hidden >$<%= cartItems.cartTotal%></span></li>
 									</ul>
 								</div>
 						   </div>
@@ -157,24 +206,26 @@
 									<div class="form-group">
 										<div class="col-md-12">
 											<div class="radio">
-											   <label><input type="radio" name="optradio"> Direct Bank Tranfer</label>
+											   <label><input type="radio" id="Cash-On-Delivery" value="cash on delivery"  name="paymentMethod">Cash on Delivery</label>
 											</div>
 										</div>
 									</div>
 									<div class="form-group">
 										<div class="col-md-12">
 											<div class="radio">
-											   <label><input type="radio" name="optradio"> Check Payment</label>
+											   <label><input type="radio" id="Online-Payment"  value="online payment" name="paymentMethod"> Online Payment</label>
 											</div>
 										</div>
 									</div>
-									<div class="form-group">
+
+									<input type="text" name="cartId"  value="<%= cartItems._id %>" hidden>
+									<!-- <div class="form-group">
 										<div class="col-md-12">
 											<div class="radio">
 											   <label><input type="radio" name="optradio"> Paypal</label>
 											</div>
 										</div>
-									</div>
+									</div> -->
 									<div class="form-group">
 										<div class="col-md-12">
 											<div class="checkbox">
@@ -184,14 +235,113 @@
 									</div>
 								</div>
 							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-12 text-center">
-								<p><a href="#" class="btn btn-primary">Place an order</a></p>
+						 </div>
+						 <% if(checkAddressErr.length>0){ %> 
+							<div class=" alert alert-danger col-md-12 text-center" role="alert">
+							  <p class="text-danger"><%=checkAddressErr %> </p>
 							</div>
-						</div>
-					</div>
+							<% } else if (paymentMethodErr.length) { %>
+								<div class=" alert alert-danger col-md-12 text-center" role="alert">
+									<p class="text-danger"><%=paymentMethodErr %> </p>
+								  </div>
+							  <% } %> 
+						 <div class="row">
+							<div class="col-md-12 text-center">
+								<button type="submit" class="btn btn-primary">
+								Place an order
+							</button>
+							</div>
+					 	  </div>
+					      </div>
+				        </form>
 				</div>
 			</div>
 		</div>
         <%- include('../includes/userFooter.ejs') %>
+
+
+
+		<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
+		integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
+		crossorigin="anonymous"
+		referrerpolicy="no-referrer"
+	  ></script>
+	  <!-- sweet alert -->
+	  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+
+
+  let userOrderData
+  $("#checkout-form").submit((e) => {
+    e.preventDefault();
+    console.log("vannu >>>>>>>>>>>>>>>");
+	
+    $.ajax({
+      url: "/checkout/<%= cartItems._id %>",
+      method: "post",
+      data: $("#checkout-form").serialize(),
+      success: (response) => {
+        if (response.cashOnDelivery) {
+          Swal.fire({
+            title: "Order Placed Successfully",
+            icon: "success",
+            showDenyButton: true,
+            confirmButtonText: " Order Successfully",
+            denyButtonText: `Continue Shopping`,
+            toast: true,
+          }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+              location.href = "/order-complete";
+            } else if (result.isDenied) {
+              location.href = "/";
+            }
+          });
+        } else if (response.onlinePayment) {
+          console.log("test ok");
+          let razorpayoderData = response.razorpayoderData;
+          userOrderData = response.userOrderData;
+          console.log(userOrderData,"<<<<<<<<<<<<<<<<<<<<<<<");
+          console.log(razorpayoderData);
+          var options = {
+            key: "rzp_test_EsWfdOrXZua8KY", // Enter the Key ID generated from the Dashboard
+            amount: response.razorpayOrderData.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            currency: "INR",
+            name: "Karma Shoes",
+            description: "Test Transaction",
+            image: "https://example.com/your_logo",
+            order_id: response.razorpayOrderData.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+            handler: function (response) {
+              console.log(response, "????????????????????????????????????????");
+             // alert(response.razorpay_payment_id);
+              //alert(response.razorpay_order_id);
+              //alert(response.razorpay_signature);
+              verifyPayment(response, );
+            },
+            prefill: {
+              name: "Gaurav Kumar",
+              email: "gaurav.kumar@example.com",
+              contact: "9999999999",
+            },
+            notes: {
+              address: "Razorpay Corporate Office",
+            },
+            theme: {
+              color: "#3399cc",
+            },
+          };
+          var rzpl = new Razorpay(options);
+          rzpl.on("payment.failed", function (response) {
+            paymentFailed(response);
+          });
+          rzpl.open();
+        }
+      },
+    });
+  });
+
+
+		</script>

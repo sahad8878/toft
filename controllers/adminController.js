@@ -3,6 +3,7 @@ const Product = require("../models/product");
 const User = require("../models/user");
 const upload = require("../middlewares/multer");
 const Category = require("../models/category");
+const Order = require("../models/order");
 const moment = require("moment");
 //  login page
 const loginView = (req, res) => {
@@ -125,9 +126,12 @@ const addProductButton = async (req, res) => {
 };
 
 //  order page
-const ordersView = (req, res) => {
+const ordersView =async (req, res) => {
   try {
-    res.render("admin/orders");
+
+    let order = await Order.find().sort({ updatedAt: -1 }).populate('userId');
+console.log(order[0].userId);
+    res.render("admin/orders",{order:order,user:req.session.user});
   } catch (error) {
     res.render("admin/error");
   }
@@ -201,29 +205,7 @@ const editProduct = async (req, res) => {
         console.log("updated product");
         res.redirect("/admin/product");
       }
-      // const updateName = name;
-      // const updatePrace =price;
-      // const updateImageUrl= img
-      // const updateDescription =description;
-      // const updateBrand =brand;
-      // const updateStock=stock
-      // // Object.assign(req.body,{imageUrl:req.file.filename})
-
-      // await Product.findById(proId)
-      //   .then((product) => {
-      //     product.name = updateName;
-      //     product.price = updatePrace;
-      //     product.imageUrl = updateImageUrl;
-      //     product.description = updateDescription;
-      //     product.brand = updateBrand;
-      //     product.stock = updateStock
-      //     return product.save();
-      //   })
-      //   .then((result) => {
-      //     console.log("updated product");
-      //     res.redirect("/admin/product");
-      //   })
-      //   .catch((err) => console.log(err));
+  
     } else {
       req.flash("proEditErr", "fill the edit coloms");
       res.redirect(`/admin/getEditProduct/${proId}`);

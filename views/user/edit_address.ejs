@@ -1,0 +1,108 @@
+
+<%- include('../includes/userHeader.ejs') %>
+<div class="h-100 d-flex align-items-center justify-content-center">
+<div class="col-lg-8 ">
+    <form action="/addAdress" method="post" class="colorlib-form " >
+        <h2>Personel Details</h2>
+      <div class="row">
+       <div class="col-md-12">
+          <div class="form-group">
+         
+              <label >Select Country</label>
+              <input type="text"  name="country" id="country" class="form-control" placeholder="Your country">
+             <!-- <div class="form-field">
+                 <i class="icon icon-arrow-down3"></i>
+                <select name="country" id="people" class="form-control">
+                      <option value="#">Select country</option>
+                    <option value="#">India</option>
+                    <option value="#">China</option>
+                    <option value="#">Japan</option>
+                    <option value="#">Korea</option>
+                    <option value="#">Philippines</option>
+                </select>
+             </div> -->
+          </div>
+       </div>
+
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label >Name</label>
+                    <input type="text" name="fName" id="fname" class="form-control" placeholder="Your firstname">
+                </div>
+            </div>
+            <!-- <div class="col-md-6">
+                <div class="form-group">
+                    <label >Last Name</label>
+                    <input type="text"  name="lName" id="lname" class="form-control" placeholder="Your lastname">
+                </div>
+            </div> -->
+
+            <!-- <div class="col-md-12">
+                <div class="form-group">
+                    <label for="companyname">Company Name</label>
+                <input type="text" id="companyname" class="form-control" placeholder="Company Name">
+          </div>
+       </div> -->
+
+       <div class="col-md-12">
+                <div class="form-group">
+                    <label >Address</label>
+                <input type="text" name="addressLine" id="addressLine" class="form-control" placeholder="Enter Your Address">
+          </div>
+          <!-- <div class="form-group">
+                <input type="text" id="address2" class="form-control" placeholder="Second Address">
+          </div> -->
+       </div>
+    
+       <div class="col-md-12">
+                <div class="form-group">
+                    <label >City</label>
+                <input type="text" name="city" id="towncity" class="form-control" placeholder="Town or City">
+          </div>
+       </div>
+    
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label >State</label>
+                    <input type="text" name="state" id="fname" class="form-control" placeholder="State Province">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label >Pin Code</label>
+                    <input type="text" name="pincode" id="zippostalcode" class="form-control" placeholder="Zip / Postal">
+                </div>
+            </div>
+          
+            <!-- <div class="col-md-6">
+                <div class="form-group">
+                    <label for="email">E-mail Address</label>
+                    <input type="text" id="email" class="form-control" placeholder="State Province">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="Phone">Phone Number</label>
+                    <input type="text" id="zippostalcode" class="form-control" placeholder="">
+                </div>
+            </div> -->
+
+            <!-- <div class="col-md-12">
+                <div class="form-group">
+                    <div class="radio">
+                      <label><input type="radio" name="optradio"> Create an Account? </label>
+                      <label><input type="radio" name="optradio"> Ship to different address</label>
+                    </div>
+                </div>
+            </div> -->
+        </div>  
+        <div class=" h-100 d-flex align-items-center justify-content-center" >
+        <button class="addtocart  btn btn-primary btn-addtocart" type="submit">
+            Add Address
+            <!-- <p class="addtocart"><a href="" class="btn btn-primary btn-addtocart"><i class="icon-shopping-cart"></i> Add to Cart</a></p> -->
+        </button>
+    </div>
+  </form>
+</div>
+</div>
+<%- include('../includes/userFooter.ejs') %>

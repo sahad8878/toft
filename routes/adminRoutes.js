@@ -48,7 +48,7 @@ router.get('/error',errorPage)
 router.get('/category',session,getCategory)
 router.get('/addCategory',session,getAddCategory)
 
-router.get('/deleteCategory/:id',deleteCategory)
+router.get('/deleteCategory/:id',session,deleteCategory)
 
 
 module.exports = router;

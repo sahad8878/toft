@@ -10,7 +10,7 @@
   </div>
 </div>
 
-<% if (allCart.items.length) { %> 
+<% if (allCart.items.length >0) { %> 
 <div class="colorlib-product">
   <div class="container">
     <div class="row row-pb-lg">
@@ -56,7 +56,7 @@
           <div class="one-forth">
             <div class="product-img" >
               <img
-              src="/images/<%= cart.product.imageUrl[0].filename %>"
+              src="/images/<%= cart.product.imageUrl[0]%>"
               alt=""
               loading="lazy"
               style="width: 100px; height: auto"
@@ -79,7 +79,7 @@
                       add
                   </span>
                 </a>
-              <input type="text" id="qty" name="quantity" class="form-control input-number text-center" value="<%= cart.quantity %>" min="1" max="100">
+              <input type="text" id="qty" name="quantity" class="form-control input-number text-center" value="<%= cart.quantity %>" min="1" max="100" disabled>
               <% if (cart.quantity>1) { %>
                
               
