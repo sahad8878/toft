@@ -122,13 +122,14 @@ href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css"
                                               <div class="form-group ">
                                                   <button type="submit" class=" btn-primary btn-lg btn-block login-button bg-info ">verify</button>
                                               </div>
+                                              <div class="row text-primary font-weight-bold justify-content-center" id="countdown"></div>
                                               <div class="form-group ">
-                                                <a  class=" btn-primary btn-lg btn-block login-button bg-info  text-center" href="/resendOtp">
+                                                <a  class=" btn-primary btn-lg btn-block login-button bg-info  text-center" id="resend" style="display:none;" href="/resendOtp">
                                                 Resend
                                               </a>
                                             </div>
                                               <div class="login-register">
-                                                 <p>Have already an account  <a class="text-primary font-weight-bold" href="/login">Log in</a></p>
+                                                 <p>Have already an account  <a class="text-primary font-weight-bold" href="/login">Sign In</a></p>
                                               </div>
                                           </form>
                                       </div>
@@ -139,7 +140,21 @@ href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css"
           </div>
           
           
-          
+          <script>
+
+
+var timeleft =30;
+var downloadTimer = setInterval(function(){
+  if(timeleft <= 0){
+    clearInterval(downloadTimer);
+    document.getElementById("resend").style.display = "block";
+    document.getElementById("countdown").innerHTML =" resend your Otp "
+  } else {
+    document.getElementById("countdown").innerHTML = timeleft + " seconds remaining";
+  }
+  timeleft -= 1;
+}, 1000);
+          </script>
 
         
 

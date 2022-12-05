@@ -10,9 +10,10 @@
   </div>
 </div>
 
-<% if (allCart.items.length >0) { %> 
+<% if (allCart.items.length !=0) { %> 
 <div class="colorlib-product">
   <div class="container">
+    <form >
     <div class="row row-pb-lg">
       <div class="col-md-10 offset-md-1">
         <div class="process-wrap">
@@ -30,8 +31,8 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="row row-pb-lg">
+     </div>
+      <div class="row row-pb-lg">
       <div class="col-md-12">
         <div class="product-name d-flex">
           <div class="one-forth text-left px-4">
@@ -73,22 +74,28 @@
           </div>
           <div class="one-eight text-center">
             <div class="display-tc">
-              <a href="/cart-change-quantity/<%= allCart._id %>/<%= cart.product._id %>/1">
-                <span class="material-symbols-outlined"
-                onclick="changeQuantity('<%= allCart._id %>','<%= cart.product._id %>','1')">
-                      add
-                  </span>
-                </a>
-              <input type="text" id="qty" name="quantity" class="form-control input-number text-center" value="<%= cart.quantity %>" min="1" max="100" disabled>
+              <!-- <a href="/cart-change-quantity/<%= allCart._id %>/<%= cart.product._id %>/1"> -->
+                
+              <a style="cursor: pointer;" onclick="changeQuantity('<%= allCart._id %>','<%= cart.product._id %>','1')"> <span class="  material-symbols-outlined">add</span></a>
+                      
+                <!-- </a> -->
+              <input type="number" id="qty" name="quantity" class="form-control input-number text-center" value="<%= cart.quantity %>"  readonly>
               <% if (cart.quantity>1) { %>
                
               
-              <a   href="/cart-change-quantity/<%= allCart._id %>/<%= cart.product._id %>/-1">
-                <span class="material-symbols-outlined"
-                onclick="changeQuantity('<%= allCart._id %>','<%= cart.product._id %>','-1')">
+              <!-- <a   href="/cart-change-quantity/<%= allCart._id %>/<%= cart.product._id %>/-1"> -->
+                <a style="cursor: pointer;" onclick="changeQuantity('<%= allCart._id %>','<%= cart.product._id %>','-1')">
+                <span class=" material-symbols-outlined">
                   remove
+                </span>
+            </a>
+                <!-- </a> -->
+              <% } else { %>
+                <a  style="visibility:hidden ;" onclick="changeQuantity('<%= allCart._id %>','<%= cart.product._id %>','-1')">
+                  <span class=" material-symbols-outlined">
+                    remove
                   </span>
-                </a>
+              </a>
                 <% } %>
             </div>
           </div>
@@ -99,15 +106,16 @@
           </div>
           <div class="one-eight text-center">
             <div class="display-tc">
-              <a href="/cart-delete-product/<%= cart.product._id  %>" class="closed"></a>
+              <a href="#" onclick="deleteProduct('<%= cart.product._id  %>')" class="closed"></a>
+              <!-- <a href="/cart-delete-product/<%= cart.product._id  %>" class="closed"></a> -->
             </div>
           </div>
         </div>
         <% } %> 
       
       </div>
-    </div>
-    <div class="row row-pb-lg">
+     </div>
+     <div class="row row-pb-lg">
       <div class="col-md-12">
         <div class="total-wrap">
           <div class="row">
@@ -140,7 +148,7 @@
 
 
         <div class="col-sm-8">
-          <form action="#">
+          
             <div class="row form-group">
               <!-- <div class="col-sm-9">
                 <input
@@ -151,22 +159,22 @@
                 />
               </div> -->
               <div class="col-sm-3 mt-3">
-      <a href="/checkout" class="btn btn-primary" >
-      Proceed to Checkout
-    </a>
+               <a href="/checkout" class="btn btn-primary" >
+                   Proceed to Checkout
+                    </a>
     
               </div>
             </div>
-          </form>
+          </div>
+          
         </div>
-
       </div>
-    </div>
+    </form>
 
    
     <% } else { %>
       <div  class="mb-5 d-flex justify-content-center align-items-center flex-column">
-        <img src="../../public/main_images/emptyCart" alt="">
+        <img src="/main_images/emptyCart.png" alt=""  style="height:300px ;">
         <h5 class=" pb-3 text-center">Your cart is empty <br>Please add few products</h5>
         <a class="mb-5 btn btn-primary" href="/">Back To Home</a>
       </div>
@@ -174,13 +182,13 @@
       <% } %>
 
 
-    <div class="row">
+    <!-- <div class="row">
       <div class="col-sm-8 offset-sm-2 text-center colorlib-heading colorlib-heading-sm">
         <a href="/">
         <h2>Back to Home</h2>
       </a>
       </div>
-    </div>
+    </div> -->
     <!-- <div class="row">
       <div class="col-md-3 col-lg-3 mb-4 text-center">
         <div class="product-entry border">
@@ -255,20 +263,21 @@
     // }
 
 
-    function changeQuantity(cartId, proId, count) {
+    function changeQuantity(cartId,proId,count) {
            let qty = document.querySelector('#qty')
-            axios.get(`/cart-change-quantity/${cartId}/${productId}/${count}`)
+            axios.patch(`/cart?cartId=${cartId}&productId=${proId}&count=${count}`)
             .then(() =>{
-            qty.value =parseInt( qty.value) +parseInt(count); 
+            location.reload()
             
            
         })
       }
 
       function deleteProduct(proId){
-            axios.get(`/cart-delete-product/${proId}`)
+        console.log("delete vanuu-------------");
+            axios.delete(`/cart?productId=${proId}`)
             .then((e =>{
-                window.locaton.reload()
+                location.reload()
             }))
         }
   </script>

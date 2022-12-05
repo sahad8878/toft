@@ -39,6 +39,10 @@
 
   <!--  -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+
+  <!-- image zoom -->
+  <link rel="stylesheet" href="/user/css/jquery.jqZoom.css" />
+
 <!-- user link end -->
 
 
@@ -95,21 +99,52 @@ href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css"
               <li ><a href="/cart"><i class="icon-shopping-cart"></i> Cart [0]</a></li>
               <!-- <li class="cart ml-6  font-weight-bold text-right"><a href="/login"><i ></i> login</a></li> -->
              <% if (!user) { %>
-              <li class=" cart ml-6 font-weight-bold has-dropdown">
-                Account
-                <ul class="dropdown">
+              <li class=" cart ml-6 font-weight-bold ">
+                
+                <!--   -->
+                <div class="btn-group font-weight-bold ">
+                  <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Account
+                  </button>
+                  <div class="dropdown-menu">
+                    <a class="dropdown-item" href="/login">Sign In</a>
+                    <!-- <a class="dropdown-item" href="#">Another action</a>
+                    <a class="dropdown-item" href="#">Something else here</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">Separated link</a> -->
+                  </div>
+                </div>
+
+                 <!--  -->
+                <!-- <ul class="dropdown">
                   <li><a href="/login">Log in</a></li>
                  
-                </ul>
+                </ul> -->
               </li>
                  <% } else { %>
  
               <li class=" cart ml-6 font-weight-bold has-dropdown">
-               <%= user.name %> 
+
+                <!--  -->
+
+                <div class="btn-group">
+                  <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <%= user.name %> 
+                  </button>
+                  <div class="dropdown-menu">
+                    <a class="dropdown-item" href="/profile">profile</a>
+                    <a class="dropdown-item" href="/order">Order</a>
+                    <!-- <a class="dropdown-item" href="#">Something else here</a> -->
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/logoutUser">Sign Out</a>
+                  </div>
+                </div>
+                <!--  -->
+               <!-- <%= user.name %> 
                 <ul class="dropdown">
                   <li><a href="/profile">Profile</a></li>
                   <li><a href="/logoutUser">Log out</a></li>
-                </ul>
+                </ul> -->
               </li>
               <% } %> 
               

@@ -6,7 +6,17 @@ const Cart = require("../models/cart");
 const Address = require("../models/address");
 const Order = require("../models/order");
 const { sendSms, verifySms } = require("../verification/otp");
+const { findById } = require("../models/product");
+const Razorpay = require('razorpay');
+var {
+  validatePaymentVerification,
+} = require('../node_modules/razorpay/dist/utils/razorpay-utils');
 
+
+var instance = new Razorpay({
+  key_secret: 'DvG40o8cF8F6bHGUkMHyeMPE',
+  key_id: 'rzp_test_VZx01l8lO0abIf',
+});
 // home
 const homeView = (req, res, next) => {
   try {
@@ -20,8 +30,6 @@ const homeView = (req, res, next) => {
       .catch((err) => {
         console.log(err);
       });
-
-   
   } catch (error) {
     res.render("admin/error");
   }
@@ -31,18 +39,11 @@ const menView = async (req, res) => {
   try {
     const product = await Product.find({ category: "Mens" })
       .then((product) => {
-        //  console.log(product);
         res.render("user/men", { product, user: req.session.user });
       })
       .catch((err) => {
         console.log(err);
       });
-
-    // res.render("user/men", {
-    //   Product: Product,
-    //   User: User,
-    //   isAuthenticated: req.loggedIn,
-    // });
   } catch (error) {
     res.render("admin/error");
   }
@@ -53,7 +54,7 @@ const womenView = async (req, res) => {
   try {
     const product = await Product.find({ category: "Women" })
       .then((product) => {
-        //  console.log(product);
+       
         res.render("user/women", { product, user: req.session.user });
       })
       .catch((err) => {
@@ -96,14 +97,20 @@ const cartView = async (req, res) => {
       .exec((err, allCart) => {
         if (err) {
           return console.log(err);
+        } else {
+          if (allCart) {
+           
+            res.render("user/cart", {
+              allCart,
+              user: req.session.user,
+            });
+          } else {
+            res.render("user/cartEmpty", {
+              user: req.session.user,
+            });
+          }
         }
-        console.log(allCart);
-        res.render("user/cart", {
-          allCart,
-          user: req.session.user,
-        });
       });
-
   } catch (error) {
     res.render("admin/error");
   }
@@ -115,11 +122,8 @@ const addToCart = async (req, res) => {
   try {
     const productId = req.params.id;
     let ownerId = req.session.user._id;
-    console.log(ownerId);
-    console.log(productId + "its product id");
     const user = await Cart.findOne({ owner: req.session.user._id });
     const product = await Product.findOne({ _id: productId });
-    // console.log(product+"its product id");
     const cartTotal = product.price;
     if (!user) {
       const addToCart = await Cart({
@@ -142,7 +146,8 @@ const addToCart = async (req, res) => {
             $inc: {
               "items.$.quantity": 1,
               "items.$.totalPrice": product.price,
-              cartTotal: product.price,
+              cartTotal: cartTotal,
+              subTotal: cartTotal,
             },
           }
         ).then(() => {
@@ -153,7 +158,7 @@ const addToCart = async (req, res) => {
           { owner: req.session.user._id },
           {
             $push: { items: { product: productId, totalPrice: product.price } },
-            $inc: { cartTotal: cartTotal },
+            $inc: { cartTotal: cartTotal, subTotal: product.price },
           }
         );
         addToCart.save().then(() => {
@@ -172,7 +177,7 @@ const deleteCartProduct = async (req, res) => {
   try {
     console.log("delete starting");
     const userId = req.session.user;
-    const productId = req.params.productId;
+    const productId = req.query.productId;
     const product = await Product.findOne({ _id: productId });
     const cartTotal = product.price;
     const deleteProduct = await Cart.findOneAndUpdate(
@@ -185,7 +190,7 @@ const deleteCartProduct = async (req, res) => {
       }
     );
     deleteProduct.save().then(() => {
-      res.redirect("/cart");
+      res.json("success");
     });
   } catch (error) {
     res.render("admin/error");
@@ -195,10 +200,11 @@ const deleteCartProduct = async (req, res) => {
 // cart product  quantity change
 const cartChangeQuantity = async (req, res) => {
   try {
-    const { cartId, productId, count } = req.params;
+    const { cartId, productId, count } = req.query;
     const product = await Product.findOne({ _id: productId });
-    if (count == 1) var productPrice = product.price;
-    else {
+    if (count == 1) {
+      var productPrice = product.price;
+    } else {
       var productPrice = -product.price;
     }
     const cart = await Cart.findOneAndUpdate(
@@ -211,7 +217,7 @@ const cartChangeQuantity = async (req, res) => {
         },
       }
     ).then(() => {
-      res.redirect("/cart");
+      res.json();
     });
   } catch (error) {
     res.render("admin/error");
@@ -224,6 +230,7 @@ const loginView = (req, res) => {
       emailErr: req.flash("emailErr"),
       passErr: req.flash("passErr"),
       fillErr: req.flash("fillErr"),
+      blocked: req.flash("blocked"),
     });
   } catch (error) {
     res.render("admin/error");
@@ -235,13 +242,19 @@ const loginUser = async (req, res) => {
     const { email, password } = req.body;
     if (email && password) {
       let user = await User.findOne({ email: email });
+
       if (user) {
         let matched = await bcrypt.compare(password, user.password);
         if (matched) {
-          req.session.loggedIn = true;
-          req.session.user = user;
-          res.redirect("/");
-          console.log("login succeded");
+          if (user.access === true) {
+            req.session.loggedIn = true;
+            req.session.user = user;
+            res.redirect("/");
+            console.log("login succeded");
+          } else {
+            req.flash("blocked", "you are blocked");
+            res.redirect("/login");
+          }
         } else {
           req.flash("passErr", "password not match");
           res.redirect("/login");
@@ -250,7 +263,6 @@ const loginUser = async (req, res) => {
         req.flash("emailErr", "Email  not match");
         res.redirect("/login");
       }
-   
     } else {
       req.flash("fillErr", "fill the colom");
       res.redirect("/login");
@@ -300,7 +312,6 @@ const postOtp = async (req, res) => {
     const { name, number, email, password } = req.session.user;
     const otp = req.body.otp;
     const phone = number;
-    console.log(phone);
     await verifySms(phone, otp).then(async (verification_check) => {
       if (verification_check.status == "approved") {
         const hashPassword = await bcrypt.hash(password, 10);
@@ -315,7 +326,6 @@ const postOtp = async (req, res) => {
       } else {
         req.flash("otpErr", "otp not match");
         res.redirect("/otp");
-        console.log("otp failed");
       }
     });
   } catch (error) {
@@ -337,10 +347,13 @@ const logoutUser = (req, res) => {
 const productDetails = (req, res) => {
   try {
     const proId = req.params.id;
-    let user = req.session.user;
 
     Product.findById(proId).then((product) => {
-      res.render("user/product_details", { product, proId, user: user });
+      res.render("user/product_details", {
+        product,
+        proId,
+        user: req.session.user,
+      });
     });
   } catch (error) {
     res.render("admin/error");
@@ -394,7 +407,7 @@ const getCheckout = async (req, res) => {
         index,
         cartItems,
         checkAddressErr: req.flash("checkAddressErr"),
-        paymentMethodErr: req.flash("paymentMethodErr")
+        paymentMethodErr: req.flash("paymentMethodErr"),
       });
     } else {
       res.redirect("/cart");
@@ -408,63 +421,148 @@ const getCheckout = async (req, res) => {
 
 const postCheckout = async (req, res) => {
   try {
-    console.log(req.body);
+console.log(req.body.paymentMethod);
+    if (req.body.address) {
+      let user = req.session.user;
+      let userId = user._id;
+      let address = await Address.findOne({ user: userId });
+      
+      const deliveryAddress = address.address.find(
+        (el) => el._id.toString() === req.body.address
+      );
+     
+      let cart = await Cart.findById(req.body.cartId);
+        
+      if (req.body.paymentMethod === "cash on delivery") {
+       
 
-    
-    if(req.body.address){
-
-    let user = req.session.user;
-    let userId = user._id;
-    console.log(req.body.address);
-    let address = await Address.findOne({ user: userId });
-    console.log(address.address);
-    const deliveryAddress = address.address.find(
-      (el) => el._id.toString() === req.body.address
-    );
-    console.log(111, deliveryAddress);
-
-    //  console.log(address);
-    let cart = await Cart.findById(req.body.cartId);
-    console.log(cart);
-    if (req.body.paymentMethod === "cash on delivery") {
-      console.log(req.body.paymentMethod);
-
-      const paymentMethod = req.body.paymentMethod;
-      const newOrder = new Order({
-        date: new Date().toLocaleDateString(),
-        time: new Date().toLocaleTimeString(),
-        userId: userId,
-        products: cart.items,
-        total: cart.cartTotal,
-        address: deliveryAddress,
-        paymentMethod: paymentMethod,
-        paymentStatus: "Payment Pending",
-        orderStatus: "orderconfirmed",
-        track: "orderconfirmed",
-      });
-      newOrder.save().then((result) => {
-        req.session.orderId = result._id;
-
-        Cart.findOneAndRemove({ userId: result.userId }).then((result) => {
-          res.json({ cashOnDelivery: true });
+        const paymentMethod = req.body.paymentMethod;
+        const newOrder = new Order({
+          date: new Date().toLocaleDateString(),
+          time: new Date().toLocaleTimeString(),
+          userId: userId,
+          products: cart.items,
+          total: cart.cartTotal,
+          address: deliveryAddress,
+          paymentMethod: paymentMethod,
+          paymentStatus: "Payment Pending",
+          orderStatus: "orderconfirmed",
+          track: "orderconfirmed",
         });
-      });
-    }else{
-      console.log("choose payment method");
-      req.flash('paymentMethodErr','must choose Payment Method ')
-      res.redirect('/checkout');
+        newOrder.save().then((result) => {
+          req.session.orderId = result._id;
+
+          Cart.findOneAndRemove({ userId: result.userId }).then((result) => {
+            res.json({ cashOnDelivery: true });
+          });
+        });
+      }else if(req.body.paymentMethod === "Razorpay"){
+        console.log(address,"address scheemaaaaaaaaaa");
+        console.log(deliveryAddress,"delivery  addressssssssss");
+        console.log(cart,'carttttttttttttttttt');
+        // const date = new Date().toLocaleDateString();
+        // const time = new Date().toLocaleTimeString();
+        // const userId = cart.owner;
+        // const products = cart.items;
+        // const total = cart.cartTotal;
+        const paymentMethod = req.body.paymentMethod;
+        // let address = await Address.findOne({ user: userId });
+        // const deliveryAddress = address.address.find(
+        //   (el) => el._id.toString() === req.body.address
+        // );
+        // const track = 'Shipped';
+        // const paymentStatus = 'Payment Completed';
+        // const orderStatus = 'orderconfirmed';
+        const newOrder = new Order({
+          date :new Date().toLocaleDateString(),
+          time:new Date().toLocaleTimeString(),
+          userId:userId,
+          products:cart.items,
+          total:cart.cartTotal,
+          address:deliveryAddress,
+          paymentMethod:paymentMethod,
+          paymentStatus:'Payment Completed',
+          orderStatus:'orderconfirmed',
+          track:'Shipped',
+        });
+        newOrder.save().then((result) => {
+          let userOrderData = result;
+
+          id = result._id.toString();
+          instance.orders.create(
+            {
+              amount: result.total * 100,
+              currency: 'INR',
+              receipt: id,
+            },
+            (err, order) => {
+              console.log(err,"errrrrrrrrrrrrrrr");
+              console.log(order,"orderrrrrrrrrrrrrrrrrrr");
+              let response = {
+                Razorpay: true,
+                razorpayOrderData: order,
+                userOrderData: userOrderData,
+              };
+              res.json(response);
+            }
+          );
+          // Cart.findOneAndRemove({ userId: result.userId }).then(
+          //   (result) => {}
+          // );
+        });
+
+
+      } else {
+        console.log("choose payment method");
+        req.flash("paymentMethodErr", "must choose Payment Method ");
+        res.redirect("/checkout");
+      }
+    } else {
+      console.log("choose address");
+      req.flash("checkAddressErr", "must choose Delivery ddress ");
+      res.redirect("/checkout");
     }
-
-  }else{
-    console.log("choose address");
-req.flash('checkAddressErr','must choose Delivery ddress ')
-res.redirect('/checkout');
-
-  }
   } catch (error) {
     res.render("admin/error");
   }
 };
+
+// verify payment 
+const verifyPayment=async(req,res)=>{
+  let razorpayOrderDataId = req.body['payment[razorpay_order_id]'];
+
+  let paymentId = req.body['payment[razorpay_payment_id]'];
+
+  let paymentSignature = req.body['payment[razorpay_signature]'];
+
+  let userOrderDataId = req.body['userOrderData[_id]'];
+
+  validate = validatePaymentVerification(
+    { order_id: razorpayOrderDataId, payment_id: paymentId },
+    paymentSignature,
+    'DvG40o8cF8F6bHGUkMHyeMPE'
+  );
+
+  if (validate) {
+    let order = await Order.findById(userOrderDataId);
+    orderStatus = 'Order Placed';
+    paymentStatus = 'Payment Completed';
+    order.save().then((result) => {
+      res.json({ status: true });
+    });
+    Cart.findOneAndRemove({ userId:req.session.user._id}).then(
+            (result) => {}
+          );
+  }
+}
+
+
+
+
+// payment   failed
+const paymentFailed=  (req, res) => {
+  res.json({ status: true });
+}
 
 // order complete
 
@@ -484,11 +582,6 @@ const getProfile = async (req, res) => {
       address = [];
     }
     res.render("user/profile", { address, user: req.session.user });
-
-    // let userDB = await User.find({});
-    // const address = await Address.findOne({ owner: req.session.user })
-    // .populate({ path: "user", select: "name email number" });
-    // // .then((address)=>{
   } catch (error) {
     res.render("admin/error");
   }
@@ -513,7 +606,7 @@ const postAdress = async (req, res) => {
       var userId = req.session.user._id;
       const existAddress = await Address.findOne({ user: userId });
       if (existAddress) {
-        console.log(existAddress + "dfsdsdf");
+       
         await Address.findOneAndUpdate(
           { user: userId },
           {
@@ -532,7 +625,7 @@ const postAdress = async (req, res) => {
         addAddress.save().then(() => {
           res.redirect("/profile");
         });
-        console.log(addAdress);
+        
       }
     } else {
       req.flash("addressErr", "fill full coloms");
@@ -545,23 +638,71 @@ const postAdress = async (req, res) => {
 const deleteAddress = async (req, res) => {
   try {
     const userId = req.session.user._id;
-    const id = req.params.id;
+    const id = req.query.address;
     await Address.updateOne(
       { user: userId },
       { $pull: { address: { _id: id } } }
     );
-    res.redirect("/profile");
+    res.json("success");
   } catch (error) {
     res.render("admin/error");
   }
 };
 
-const getEditAddress = (req, res) => {
+const getEditAddress = async (req, res) => {
   try {
-    res.render("user/edit_address", { user: req.session.user });
+
+  let addressDB = await Address.findOne({ user: req.session.user });
+
+  const address = addressDB.address.find(
+    (el) => el._id.toString() === req.params.id
+  );
+ 
+  res.render("user/edit_address", {
+     user: req.session.user,
+      address,
+      editAddressErr:req.flash("editAddressErr") });
   } catch (error) {
     res.render("admin/error");
   }
+};
+
+const postEditAddress = async (req, res) => {
+try{
+  const { country, fName, state, addressLine, city, pincode } = req.body;
+  if (country && fName && state && addressLine && city && pincode) {
+
+  const addressId = req.params.id;
+  const address = await Address.findOne({ user: req.session.user });
+
+  const updateAddress=await Address.updateMany(
+    {
+      
+      "address._id": addressId,
+    },
+    {
+      $set: {
+        "address.$.fName":fName,
+        "address.$.pinCode":pincode,
+        "address.$.addressLine": addressLine,
+        "address.$.city": city,
+        "address.$.state": state,
+        "address.$.country":country,
+      },
+      new:true
+    },
+    {upsert:true}
+  ) 
+  res.redirect("/profile");
+  }else{
+
+    req.flash("editAddressErr", "fill full coloms");
+    res.redirect("/editAddress/" +  req.params.id);
+
+  }
+} catch (error) {
+  res.render("admin/error");
+}
 };
 
 module.exports = {
@@ -590,5 +731,8 @@ module.exports = {
   deleteAddress,
   resendOtp,
   getEditAddress,
+  postEditAddress,
   getOrderComplete,
+  verifyPayment,
+  paymentFailed
 };

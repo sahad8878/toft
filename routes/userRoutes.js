@@ -1,6 +1,6 @@
 const express = require("express");
 const upload =require('../middlewares/multer')
-const {userSession ,noSession}= require('../middlewares/userSession')
+const {userSession ,noSession, checkBlock}= require('../middlewares/userSession')
 const {
   homeView,
   menView,
@@ -27,7 +27,10 @@ getAddress,
 postAdress,
 deleteAddress,
 getEditAddress,
-getOrderComplete
+postEditAddress,
+getOrderComplete,
+verifyPayment,
+paymentFailed
 } = require("../controllers/userController");
 const router = express.Router();
   // get routes
@@ -36,29 +39,39 @@ router.get('/men',menView)
 router.get('/women',womenView)
 router.get('/about',aboutView)
 router.get('/contact',contactView)
-router.get("/register",noSession, registerView);
+router.get("/register", registerView);
 router.get("/login",noSession, loginView);
 router.get('/logoutUser',logoutUser );
 router.get('/productDetails/:id',upload.array("imageUrl",3), productDetails);
 router.get("/Otp",getOtp);
 router.get('/resendOtp',resendOtp);
-// router.get('/cart',userSession,cartView)
-router.get('/cart-delete-product/:productId',deleteCartProduct)
-router.get('/cart-change-quantity/:cartId/:productId/:count',cartChangeQuantity)
-router.get('/checkout',userSession,getCheckout)
-router.get('/profile',userSession,getProfile)
-router.get('/address',userSession,getAddress)
-router.get('/order-complete',userSession,getOrderComplete)
-router.get('/deleteAddress/:id',userSession,deleteAddress)
-router.get('/editAddress/:id',userSession,getEditAddress)
+router.get('/checkout',userSession,checkBlock,getCheckout)
+router.get('/profile',userSession,checkBlock,getProfile)
+router.get('/address',userSession,checkBlock,getAddress)
+router.get('/order-complete',userSession,checkBlock,getOrderComplete)
+router.get('/editAddress/:id',userSession,checkBlock,getEditAddress)
+
+
 
 // post routes
 router.post("/loginUser", loginUser);
 router.post("/registerUser",registerUser);
 router.post("/Otp",postOtp);
-router.post('/cart/:id',userSession,addToCart)
-router.post('/addAdress',userSession,postAdress)
-router.post('/checkout/:CartId',userSession,postCheckout)
-router.route('/cart/').get(userSession, cartView)
+router.post('/cart/:id',userSession,checkBlock,addToCart)
+router.post('/addAdress',userSession,checkBlock,postAdress)
+router.post('/checkout/:CartId',userSession,checkBlock,postCheckout)
+router.post('/editAddress/:id',postEditAddress)
+router.post('/verifyPayment',verifyPayment)
+router.post('/paymentFailed',paymentFailed)
+
+router.delete('/profile/',userSession,checkBlock,deleteAddress)
+
+router
+    .route('/cart/')
+    .get(userSession,checkBlock,cartView )
+    .patch( cartChangeQuantity )
+    .delete( deleteCartProduct)
+
+
 
 module.exports = router;

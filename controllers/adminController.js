@@ -2,9 +2,12 @@
 const Product = require("../models/product");
 const User = require("../models/user");
 const upload = require("../middlewares/multer");
+const bannerImages = require("../middlewares/bannerMulter");
 const Category = require("../models/category");
 const Order = require("../models/order");
 const moment = require("moment");
+const Banner = require("../models/banner");
+
 //  login page
 const loginView = (req, res) => {
   try {
@@ -49,8 +52,6 @@ const dashboardView = (req, res) => {
   }
 };
 
-
-
 //  product view
 
 const prodcutManagememnt = async (req, res) => {
@@ -75,7 +76,6 @@ const addProduct = async (req, res) => {
     res.render("admin/error");
   }
 };
-
 
 // post add product page
 const addProductButton = async (req, res) => {
@@ -126,12 +126,11 @@ const addProductButton = async (req, res) => {
 };
 
 //  order page
-const ordersView =async (req, res) => {
+const ordersView = async (req, res) => {
   try {
-
-    let order = await Order.find().sort({ updatedAt: -1 }).populate('userId');
-console.log(order[0].userId);
-    res.render("admin/orders",{order:order,user:req.session.user});
+    let order = await Order.find().sort({ updatedAt: -1 }).populate("userId");
+    // console.log(order[0].userId);
+    res.render("admin/orders", { order: order, user: req.session.user });
   } catch (error) {
     res.render("admin/error");
   }
@@ -205,7 +204,6 @@ const editProduct = async (req, res) => {
         console.log("updated product");
         res.redirect("/admin/product");
       }
-  
     } else {
       req.flash("proEditErr", "fill the edit coloms");
       res.redirect(`/admin/getEditProduct/${proId}`);
@@ -271,7 +269,7 @@ const unBlockUser = (req, res) => {
 const getCategory = async (req, res) => {
   try {
     let category = await Category.find().sort({ updatedAt: -1 });
-
+console.log(category);
     res.render("admin/category", { category });
   } catch (error) {
     res.render("admin/error");
@@ -296,7 +294,7 @@ const postAddCategory = async (req, res) => {
     const category = req.body.category;
     const imageUrl = req.files;
     const reqCategory = req.body.category;
-
+  
     if (category && imageUrl) {
       console.log(reqCategory + " reqqqqqq");
       let dbCategory = await Category.findOne({ category: reqCategory });
@@ -341,6 +339,51 @@ const deleteCategory = (req, res) => {
   }
 };
 
+// get banner page
+const getBanner =async (req, res) => {
+
+  let banner = await Banner.find({ delete: { $ne: true } }).sort({ updatedAt: -1 });
+  res.render("admin/bannerManagment",{banner});
+}
+// get add banner
+const getAddBanner = (req, res) => {
+  res.render("admin/add_banner",{bannerAddErr: req.flash("bannerAddErr")});
+}
+
+// post add  banner
+const postAddBanner = async(req, res) => {
+// console.log(req.body);
+const imageUrl = req.files;
+// console.log(imageUrl);
+const { description, title, route } = req.body;
+if( description&&title&&route&&imageUrl){
+
+  Object.assign(req.body, { imageUrl:req.files });
+const newBanner =await new Banner(req.body);
+await newBanner.save().then((result) => {
+
+  res.redirect('/admin/banner');
+});
+}else{
+  console.log("fill the banner coloms");
+  req.flash("bannerAddErr", "Fill full coloms");
+  res.redirect('/admin/addBanner')
+}
+}
+const deleteBanner=async(req,res)=>{
+
+  const id = req.query.id;
+  console.log(id,"idddddddddddddddddd delete");
+  const deleteBanner = await Banner.findOneAndUpdate(
+    { _id: id },
+    { $set: { delete: true } }
+  );
+  console.log(deleteBanner);
+  deleteBanner.save().then(() => {
+    res.json('success')
+  });
+}
+
 // error page
 const errorPage = (req, res) => {
   res.render("admin/error");
@@ -365,6 +408,10 @@ module.exports = {
   getCategory,
   getAddCategory,
   postAddCategory,
+   deleteCategory,
+   getBanner,
+   getAddBanner,
+   postAddBanner,
+   deleteBanner
 
-  deleteCategory,
 };

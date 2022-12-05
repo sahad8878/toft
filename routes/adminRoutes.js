@@ -1,5 +1,6 @@
 const express = require("express"); 
 const upload =require('../middlewares/multer')
+const bannerImages=require('../middlewares/bannerMulter')
 const {session }= require('../middlewares/adminSession')
 const {
 loginView,
@@ -21,6 +22,10 @@ getAddCategory,
 postAddCategory,
 deleteCategory,
 errorPage,
+getBanner,
+getAddBanner,
+postAddBanner,
+deleteBanner
 }= require("../controllers/adminController")
 const router = express.Router();
 
@@ -29,8 +34,8 @@ const router = express.Router();
 router.post('/',loginAdmin)
 router.post('/product',session,upload.array("imageUrl",3),addProductButton);
 router.post('/editProduct/:id',session,upload.array("imageUrl",3),editProduct)
-router.post('/category',session,session,upload.array("imageUrl",3),postAddCategory)
-
+router.post('/category',session,upload.array("imageUrl",3),postAddCategory)
+// router.post('/banner',session,bannerImages.array("imageUrl",3),postAddBanner)
 
 //  get routers
 router.get('/',loginView)
@@ -47,10 +52,15 @@ router.get('/unBlock/:id',session,unBlockUser)
 router.get('/error',errorPage)
 router.get('/category',session,getCategory)
 router.get('/addCategory',session,getAddCategory)
-
 router.get('/deleteCategory/:id',session,deleteCategory)
+// router.get('/banner',session,bannerImages.array("imageUrl",3),getBanner)
+router.get('/addBanner',session,bannerImages.array("imageUrl",3),getAddBanner)
 
-
+router.
+route('/banner/')
+.get(session,bannerImages.array("imageUrl",3),getBanner)
+.post(session,bannerImages.array("imageUrl",3),postAddBanner)
+.delete(deleteBanner)
 module.exports = router;
 
 

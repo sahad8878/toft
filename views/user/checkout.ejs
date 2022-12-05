@@ -213,7 +213,7 @@
 									<div class="form-group">
 										<div class="col-md-12">
 											<div class="radio">
-											   <label><input type="radio" id="Online-Payment"  value="online payment" name="paymentMethod"> Online Payment</label>
+											   <label><input type="radio" id="Razorpay"  value="Razorpay" name="paymentMethod"> Razorpay</label>
 											</div>
 										</div>
 									</div>
@@ -300,25 +300,25 @@
               location.href = "/";
             }
           });
-        } else if (response.onlinePayment) {
+        } else if (response.Razorpay) {
           console.log("test ok");
           let razorpayoderData = response.razorpayoderData;
           userOrderData = response.userOrderData;
           console.log(userOrderData,"<<<<<<<<<<<<<<<<<<<<<<<");
           console.log(razorpayoderData);
           var options = {
-            key: "rzp_test_EsWfdOrXZua8KY", // Enter the Key ID generated from the Dashboard
+            key: "rzp_test_VZx01l8lO0abIf", // Enter the Key ID generated from the Dashboard
             amount: response.razorpayOrderData.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
             currency: "INR",
-            name: "Karma Shoes",
+            name: "Toft",
             description: "Test Transaction",
             image: "https://example.com/your_logo",
             order_id: response.razorpayOrderData.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
             handler: function (response) {
               console.log(response, "????????????????????????????????????????");
-             // alert(response.razorpay_payment_id);
-              //alert(response.razorpay_order_id);
-              //alert(response.razorpay_signature);
+            //   alert(response.razorpay_payment_id);
+            //   alert(response.razorpay_order_id);
+            //   alert(response.razorpay_signature);
               verifyPayment(response, );
             },
             prefill: {
@@ -343,5 +343,62 @@
     });
   });
 
+    function verifyPayment(payment,razorpayOrderData) {
+    console.log(razorpayOrderData,'orderrrrrrrrrrrrrrrrrrr dataaaaaaaaa');
+   
+    $.ajax({
+      url: "/verifyPayment",
+      data: {
+        payment,
+        razorpayOrderData,
+        userOrderData,
+      },
+      method: "post",
+     
+      success: (response) => {
+        if (response.status) {
+          Swal.fire({
+            title: "Order Placed Successfully",
+            icon: "success",
+            showDenyButton: true,
+            confirmButtonText: "View Order",
+            denyButtonText: `Continue Shopping`,
+            toast: true,
+          }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+              location.href = "/order-complete";
+            } else if (result.isDenied) {
+              location.href = "/";
+            }
+          });
+        }
+      },
+    });
+  }
+  function paymentFailed(response) {
+    $.ajax({
+      url: "/paymentFailed",
+      data: response,
+      method: "post",
+      success: (response) => {
+        if (response.status) {
+          Swal.fire({
+            title: "Payment Failed !",
+            icon: "error",
+            showDenyButton: false,
+            toast: true,
+          }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+              location.href = "/";
+            } else if (result.isDenied) {
+              location.href = "/";
+            }
+          });
+        }
+      },
+    });
+  }
 
 		</script>

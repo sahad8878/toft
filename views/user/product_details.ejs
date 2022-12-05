@@ -3,6 +3,8 @@
 
  <%- include('../includes/userHeader') %>  
 
+ 
+
 
 <div class="breadcrumbs">
     <div class="container">
@@ -23,7 +25,7 @@
                     <div class="item" >
                         <div class="product-entry border">
                             <a href="#" class="prod-img">
-                                <img src="/images/<%= product.imageUrl[0] %> " class="img-fluid" alt="Free html5 bootstrap 4 template">
+                                <img src="/images/<%= product.imageUrl[0] %> " class="img-fluid  zoom-box" alt="Free html5 bootstrap 4 template">
                             </a>
                         </div>
                     </div>
@@ -109,16 +111,29 @@
                  </span>
               </div>
               <div class="row">
-                  <div class="col-sm-12 text-center">
-                      <form action="/cart/<%= product._id %>" method="post">
-                        <button id="btn" class="addtocart  btn btn-primary btn-addtocart" >
-                            <i class="icon-shopping-cart"></i> Add to Cart
-                            <!-- <p class="addtocart"><a href="" class="btn btn-primary btn-addtocart"><i class="icon-shopping-cart"></i> Add to Cart</a></p> -->
-                        </button>
-                        </form>
-                        </div>
+               <% if (user) { %>
+                
+                <div class="col-sm-12 text-center">
+                    <!-- <form action="/cart/<%= product._id %>" method="post"> -->
+                      <button id="btn" class="addtocart  btn btn-primary btn-addtocart" >
+                          <i class="icon-shopping-cart"></i> Add to Cart
+                          <!-- <p class="addtocart"><a href="" class="btn btn-primary btn-addtocart"><i class="icon-shopping-cart"></i> Add to Cart</a></p> -->
+                      </button>
+                      <!-- </form> -->
+                      </div>
 
-                    </div>
+                  </div>
+                   <% } else { %>
+                 
+                    <div class="col-sm-12 text-center">
+                        <!-- <form action="/cart/<%= product._id %>" method="post"> -->
+                          <a href="/login"  class="addtocart  btn btn-primary btn-addtocart" >
+                              <i class="icon-shopping-cart"></i> Add to Cart
+                              <!-- <p class="addtocart"><a href="" class="btn btn-primary btn-addtocart"><i class="icon-shopping-cart"></i> Add to Cart</a></p> -->
+                            </a>
+                          <!-- </form> -->
+                          </div>
+               <% } %>
                 </div>
             </div>
         </div>
@@ -296,10 +311,20 @@
         </div>
     </div>
 </div>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    const addToCart = document.querySelector('btn')
+    const addToCart = document.querySelector('#btn')
     addToCart.onclick = ()=>{
-        axios.post('http://localhost:3000/cart/<%= product._id %>')
+   
+        axios.post('http://localhost:3000/cart/<%= product._id %>').then(()=>{
+            Swal.fire({
+  position: 'top-end',
+  icon: 'success',
+  title: 'Your product has been added to the cart',
+  showConfirmButton: false,
+  timer: 1500
+})
+        })
        
     }
 </script>
