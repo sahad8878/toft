@@ -5,8 +5,9 @@ const User = require("../models/user");
 const Cart = require("../models/cart");
 const Address = require("../models/address");
 const Order = require("../models/order");
+const Banner = require("../models/banner");
 const { sendSms, verifySms } = require("../verification/otp");
-const { findById } = require("../models/product");
+const { findById, populate } = require("../models/product");
 const Razorpay = require('razorpay');
 var {
   validatePaymentVerification,
@@ -18,18 +19,13 @@ var instance = new Razorpay({
   key_id: 'rzp_test_VZx01l8lO0abIf',
 });
 // home
-const homeView = (req, res, next) => {
+const homeView =async (req, res) => {
   try {
-    let user = req.session.user;
-    Product.find()
-      .then((product) => {
-        // console.log(product)
 
-        res.render("user/home", { product, user: user });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    let product=await Product.find()
+    let banner = await Banner.find({ delete: { $ne: true } })
+        res.render("user/home", { product, user: req.session.user,banner });
+  
   } catch (error) {
     res.render("admin/error");
   }
@@ -79,7 +75,9 @@ const aboutView = (req, res) => {
 // contact page
 const contactView = (req, res) => {
   try {
+  
     let user = req.session.user;
+
     res.render("user/contact", { user: user });
   } catch (error) {
     res.render("admin/error");
@@ -398,7 +396,7 @@ const getCheckout = async (req, res) => {
       address = [];
     }
 
-    const cartItems = await Cart.findOne({ owner: userId });
+    const cartItems = await Cart.findOne({ owner: userId }).populate("items.product")
 
     if (cartItems) {
       res.render("user/checkout", {
@@ -430,9 +428,10 @@ console.log(req.body.paymentMethod);
       const deliveryAddress = address.address.find(
         (el) => el._id.toString() === req.body.address
       );
-     
-      let cart = await Cart.findById(req.body.cartId);
-        
+     console.log(deliveryAddress);
+      // let cart = await Cart.findById(req.body.cartId).populate("items.product");
+      const cart = await Cart.findOne({ owner: userId }).populate("items.product")
+        console.log(cart.items.product);
       if (req.body.paymentMethod === "cash on delivery") {
        
 
@@ -457,22 +456,9 @@ console.log(req.body.paymentMethod);
           });
         });
       }else if(req.body.paymentMethod === "Razorpay"){
-        console.log(address,"address scheemaaaaaaaaaa");
-        console.log(deliveryAddress,"delivery  addressssssssss");
-        console.log(cart,'carttttttttttttttttt');
-        // const date = new Date().toLocaleDateString();
-        // const time = new Date().toLocaleTimeString();
-        // const userId = cart.owner;
-        // const products = cart.items;
-        // const total = cart.cartTotal;
+       
         const paymentMethod = req.body.paymentMethod;
-        // let address = await Address.findOne({ user: userId });
-        // const deliveryAddress = address.address.find(
-        //   (el) => el._id.toString() === req.body.address
-        // );
-        // const track = 'Shipped';
-        // const paymentStatus = 'Payment Completed';
-        // const orderStatus = 'orderconfirmed';
+    
         const newOrder = new Order({
           date :new Date().toLocaleDateString(),
           time:new Date().toLocaleTimeString(),
@@ -529,6 +515,7 @@ console.log(req.body.paymentMethod);
 
 // verify payment 
 const verifyPayment=async(req,res)=>{
+  try{
   let razorpayOrderDataId = req.body['payment[razorpay_order_id]'];
 
   let paymentId = req.body['payment[razorpay_payment_id]'];
@@ -554,6 +541,9 @@ const verifyPayment=async(req,res)=>{
             (result) => {}
           );
   }
+} catch (error) {
+  res.render("admin/error");
+}
 }
 
 
@@ -561,14 +551,45 @@ const verifyPayment=async(req,res)=>{
 
 // payment   failed
 const paymentFailed=  (req, res) => {
+  try{
   res.json({ status: true });
+} catch (error) {
+  res.render("admin/error");
+}
 }
 
 // order complete
 
-const getOrderComplete = (req, res) => {
+const getOrderComplete =async (req, res) => {
+ try{
   res.render("user/order_confirm", { user: req.session.user });
+} catch (error) {
+  res.render("admin/error");
+}
+
 };
+
+// my order page 
+
+const getMyOrder=async(req,res)=>{
+  try{
+  let orders = await Order.find({userId:req.session.user}).sort({ updatedAt: -1 })
+  // console.log(orders,"my orders");
+  res.render('user/myOrder',{user:req.session.user,orders})
+} catch (error) {
+  res.render("admin/error");
+}
+}
+
+const getOrderDetails = async(req,res)=>{
+try{
+  console.log(req.query.id);
+  let orderDetails = await Order.findOne({_id:req.query.id}).populate("products.product");
+  res.render('user/orderDetails',{user:req.session.user,orderDetails})
+} catch (error) {
+  res.render("admin/error");
+}
+}
 
 // user profile page
 const getProfile = async (req, res) => {
@@ -719,6 +740,7 @@ module.exports = {
   productDetails,
   getOtp,
   postOtp,
+  resendOtp,
   logoutUser,
   addToCart,
   deleteCartProduct,
@@ -729,10 +751,11 @@ module.exports = {
   getAddress,
   postAdress,
   deleteAddress,
-  resendOtp,
   getEditAddress,
   postEditAddress,
-  getOrderComplete,
   verifyPayment,
-  paymentFailed
+  paymentFailed,
+  getOrderComplete,
+  getMyOrder,
+  getOrderDetails
 };

@@ -24,6 +24,7 @@
                 <th class="px-4 py-3">Amount</th>
                 <th class="px-4 py-3">Status</th>
                 <th class="px-4 py-3">Date</th>
+                <th class="px-4 py-3">Details</th>
               </tr>
             </thead>
             <tbody
@@ -77,6 +78,19 @@
                 <td class="px-4 py-3 text-sm">
                   <%= order[i].date %>
                 </td>
+                <td class="px-4 py-3 text-xs">
+                  
+                  <a href="/admin/orderDetails/<%= order[i]._id %>">
+                  <button >
+                  <span
+                    class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
+                  >
+                  view
+                  </span>
+                </button>
+                </a>
+                </td>
+
               </tr>
               <% } %>
               <!--  -->

@@ -25,7 +25,8 @@ errorPage,
 getBanner,
 getAddBanner,
 postAddBanner,
-deleteBanner
+deleteBanner,
+getOrderDetails
 }= require("../controllers/adminController")
 const router = express.Router();
 
@@ -55,6 +56,7 @@ router.get('/addCategory',session,getAddCategory)
 router.get('/deleteCategory/:id',session,deleteCategory)
 // router.get('/banner',session,bannerImages.array("imageUrl",3),getBanner)
 router.get('/addBanner',session,bannerImages.array("imageUrl",3),getAddBanner)
+router.get('/orderDetails/:id',getOrderDetails)
 
 router.
 route('/banner/')

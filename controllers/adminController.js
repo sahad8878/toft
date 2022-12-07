@@ -135,6 +135,22 @@ const ordersView = async (req, res) => {
     res.render("admin/error");
   }
 };
+
+// get order details
+
+const getOrderDetails= async(req,res)=>{
+  try{
+ 
+ let order = await Order.findOne({_id:req.params.id}).populate("products.product");
+console.log(order.products)
+ 
+   res.render('admin/orderDetails',{order})
+  } catch (error) {
+    res.render("admin/error");
+  }
+ }
+ 
+
 //  client  page
 const clientView = (req, res) => {
   try {
@@ -172,12 +188,9 @@ const viewEditProduct = (req, res) => {
 const editProduct = async (req, res) => {
   try {
     var proId = req.params.id;
-    console.log(req.files);
-    // console.log(imageUrl);
     const { name, price, description, category, brand, stock } = req.body;
     if (name && price && description && category && brand && stock) {
-      //     const imageUrl=req.files;
-      // console.log(imageUrl+"urlllllll");
+
       if (req.files.length === 0) {
         await Product.findByIdAndUpdate(proId, req.body, {
           upsert: true,
@@ -239,6 +252,7 @@ const logoutButton = (req, res) => {
 
 // block user
 const blockUser = (req, res) => {
+  try{
   const userId = req.params.id;
   // console.log(userId)
   User.findByIdAndUpdate(userId, { access: false }, (err, data) => {
@@ -249,10 +263,14 @@ const blockUser = (req, res) => {
       res.redirect("/admin/clients");
     }
   });
+} catch (error) {
+  res.render("admin/error");
+}
 };
 
 // unBlock  User
 const unBlockUser = (req, res) => {
+  try{
   const userId = req.params.id;
   console.log(userId);
   User.findByIdAndUpdate(userId, { access: true }, (err, data) => {
@@ -263,6 +281,9 @@ const unBlockUser = (req, res) => {
       res.redirect("/admin/clients");
     }
   });
+} catch (error) {
+  res.render("admin/error");
+}
 };
 
 // Category page
@@ -294,12 +315,15 @@ const postAddCategory = async (req, res) => {
     const category = req.body.category;
     const imageUrl = req.files;
     const reqCategory = req.body.category;
-  
+    let regExp=new RegExp(category,'i')
     if (category && imageUrl) {
       console.log(reqCategory + " reqqqqqq");
-      let dbCategory = await Category.findOne({ category: reqCategory });
-      console.log(dbCategory + "  dbgeeee");
+      let dbCategory = await Category.findOne({ category: {$regex:regExp}});
+      
+      console.log(dbCategory);
       if (!dbCategory) {
+          
+    
         Object.assign(req.body, { imageUrl: req.files });
         const newCategory = await new Category(req.body);
         await newCategory
@@ -311,6 +335,7 @@ const postAddCategory = async (req, res) => {
           .catch((err) => {
             console.log(err);
           });
+        
       } else {
         req.flash("catExistErr", "Category already exists");
         res.redirect("/admin/addCategory");
@@ -341,22 +366,28 @@ const deleteCategory = (req, res) => {
 
 // get banner page
 const getBanner =async (req, res) => {
-
+try{
   let banner = await Banner.find({ delete: { $ne: true } }).sort({ updatedAt: -1 });
   res.render("admin/bannerManagment",{banner});
+} catch (error) {
+  res.render("admin/error");
+}
 }
 // get add banner
 const getAddBanner = (req, res) => {
+  try{
   res.render("admin/add_banner",{bannerAddErr: req.flash("bannerAddErr")});
+} catch (error) {
+  res.render("admin/error");
+}
 }
 
 // post add  banner
 const postAddBanner = async(req, res) => {
-// console.log(req.body);
+  try{
 const imageUrl = req.files;
-// console.log(imageUrl);
-const { description, title, route } = req.body;
-if( description&&title&&route&&imageUrl){
+const { description,head1,head2,head3,route } = req.body;
+if( description&&head1&&head2&&head3&&route&&imageUrl){
 
   Object.assign(req.body, { imageUrl:req.files });
 const newBanner =await new Banner(req.body);
@@ -369,11 +400,15 @@ await newBanner.save().then((result) => {
   req.flash("bannerAddErr", "Fill full coloms");
   res.redirect('/admin/addBanner')
 }
+} catch (error) {
+  res.render("admin/error");
 }
-const deleteBanner=async(req,res)=>{
+}
 
+// delete banner
+const deleteBanner=async(req,res)=>{
+try{
   const id = req.query.id;
-  console.log(id,"idddddddddddddddddd delete");
   const deleteBanner = await Banner.findOneAndUpdate(
     { _id: id },
     { $set: { delete: true } }
@@ -382,7 +417,11 @@ const deleteBanner=async(req,res)=>{
   deleteBanner.save().then(() => {
     res.json('success')
   });
+} catch (error) {
+  res.render("admin/error");
 }
+}
+
 
 // error page
 const errorPage = (req, res) => {
@@ -412,6 +451,7 @@ module.exports = {
    getBanner,
    getAddBanner,
    postAddBanner,
-   deleteBanner
+   deleteBanner,
+   getOrderDetails
 
 };

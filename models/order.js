@@ -16,18 +16,31 @@ const oderSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  products: {
+  products:[{
+    product:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Products",
+    },
+    quantity:{
+        type: Number,
+        default: 1
+    },
+    totalPrice: {
+        type: Number,
+        default:0
+    },
     
-  },
+}],
   total: {
     type: Number,
     required: true,
   },
   address: {
     fName: String,
-    addressLan: String,
+    addressLine: String,
     city: String,
     country: String,
+    state:String,
     pincode: Number,
   },
   paymentMethod: {

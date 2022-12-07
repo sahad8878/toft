@@ -5,25 +5,29 @@
 		<aside id="colorlib-hero">
 			<div class="flexslider">
 				<ul class="slides">
-			   	<li style="background-image: url(images/img_bg_1.jpg);">
+					<% for( let i = 0; i < banner.length; i++ ) { %>
+					
+					
+			   	<li style="background-image: url('/banner_images/<%= banner[i].imageUrl[0].filename  %>');">
 			   		<div class="overlay"></div>
 			   		<div class="container-fluid">
 			   			<div class="row">
 				   			<div class="col-sm-6 offset-sm-3 text-center slider-text">
 				   				<div class="slider-text-inner">
 				   					<div class="desc">
-					   					<h1 class="head-1">Men's</h1>
-					   					<h2 class="head-2">Shoes</h2>
-					   					<h2 class="head-3">Collection</h2>
-					   					<p class="category"><span>New trending shoes</span></p>
-					   					<p><a href="#best-sellers" class="btn btn-primary">Shop Collection</a></p>
+					   					<h1 class="head-1"><%= banner[i].head1 %> </h1>
+					   					<h2 class="head-2"><%= banner[i].head2 %></h2>
+					   					<h2 class="head-3"><%= banner[i].head3 %></h2>
+					   					<p class="category"><span><%= banner[i].description %></span></p>
+					   					<p><a href="<%= banner[i].route %>" class="btn btn-primary">Shop Collection</a></p>
 				   					</div>
 				   				</div>
 				   			</div>
 				   		</div>
 			   		</div>
 			   	</li>
-			   	<li style="background-image: url(images/img_bg_2.jpg);">
+				   <% } %>
+			   	<!-- <li style="background-image: url(images/img_bg_2.jpg);">
 			   		<div class="overlay"></div>
 			   		<div class="container-fluid">
 			   			<div class="row">
@@ -58,7 +62,7 @@
 				   			</div>
 				   		</div>
 			   		</div>
-			   	</li>
+			   	</li> -->
 			  	</ul>
 		  	</div>
 		</aside>
@@ -107,7 +111,7 @@
 					<div class="col-lg-3 mb-4 text-center">
 						<div class="product-entry border">
 							<a href="/productDetails/<%= product[i]._id%>" class="prod-img" >
-								<img src="/images/<%= product[i].imageUrl[0] %>" class="img-fluid" alt="Free html5 bootstrap 4 template">
+								<img src="/images/<%= product[i].imageUrl[0] %>"  style="height:270px ;"  class="img-fluid" alt="Free html5 bootstrap 4 template">
 							</a>
 							<div class="desc">
 								<h2><a href="#"><%= product[i].name%> </a></h2>

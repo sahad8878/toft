@@ -1,5 +1,5 @@
 
-
+<link rel="stylesheet" href="/user/css/image-zoom.css" />
 
  <%- include('../includes/userHeader') %>  
 
@@ -25,21 +25,28 @@
                     <div class="item" >
                         <div class="product-entry border">
                             <a href="#" class="prod-img">
-                                <img src="/images/<%= product.imageUrl[0] %> " class="img-fluid  zoom-box" alt="Free html5 bootstrap 4 template">
+                                
+                                <img id="imageZoom" src="/images/<%= product.imageUrl[0] %> " class="img-fluid  " alt="Free html5 bootstrap 4 template">
+                                
+                           
                             </a>
                         </div>
                     </div>
                     <div class="item">
                         <div class="product-entry border">
                             <a href="#" class="prod-img" >
+                                
                                 <img src="/images/<%= product.imageUrl[1]%> " class="img-fluid" alt="Free html5 bootstrap 4 template">
+                            
                             </a>
                         </div>
                     </div>
                     <div class="item">
                         <div class="product-entry border">
                             <a href="#" class="prod-img">
-                                <img src="/images/<%= product.imageUrl[2]%> " class="img-fluid" alt="Free html5 bootstrap 4 template">
+                                
+                                <img src="/images/<%= product.imageUrl[2]%> " class="img-fluid " alt="Free html5 bootstrap 4 template">
+                          
                             </a>
                         </div>
                     </div>
@@ -327,6 +334,28 @@
         })
        
     }
+</script>
+
+<!-- <script src="/path/to/cdn/jquery.min.js"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="/user/js/image-zoom.js"></script>
+<script src="/user/js/image-zoom.min.js"></script>
+
+<!-- <link rel="stylesheet" href="/user/css/jquery.jqZoom.css" /> -->
+  <!-- <script src="/user/js/jquery.jqZoom.js"></script> -->
+<script>
+// $(function(){
+//   $("img").jqZoom({
+//     selectorWidth: 30,
+//     selectorHeight: 30,
+//     viewerWidth: 400,
+//     viewerHeight: 300,
+//   });
+// })
+$(function(){
+  $('#imageZoom').imageZoom();
+});
+    
 </script>
 <%- include('../includes/userFooter') %>  
 

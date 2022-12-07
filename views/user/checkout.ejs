@@ -186,14 +186,18 @@
 									<h2>Cart Total</h2>
 									<ul>
 										<li>
-											<span>Subtotal</span> <span>$<%= cartItems.cartTotal%> </span>
-											<!-- <ul>
-												<li><span>1 x Product Name</span> <span>$99.00</span></li>
-												<li><span>1 x Product Name</span> <span>$78.00</span></li>
-											</ul> -->
+											<!-- <span>Subtotal</span> <span>₹<%= cartItems.cartTotal%></span> -->
+											<ul>
+												<% for ( cart of cartItems.items) { %>
+												<li><span> <%= cart.quantity %> x <%= cart.product.name %> </span> <span>₹<%= cart.totalPrice %></span></li>
+											
+												<% } %>
+											</ul>
 										</li>
+										<li><span>Sub Total</span> <span><input type="text" name="total" id="total"  class="form-control" value="₹<%= cartItems.cartTotal%>" hidden >₹<%= cartItems.cartTotal%></span></li>
+
 										<li><span>Shipping</span> <span>FREE</span></li>
-										<li><span>Order Total</span> <span><input type="text" name="total" id="total"  class="form-control" value="$<%= cartItems.cartTotal%>" hidden >$<%= cartItems.cartTotal%></span></li>
+										<li><span>Order Total</span> <span><input type="text" name="total" id="total"  class="form-control" value="₹<%= cartItems.cartTotal%>" hidden >₹<%= cartItems.cartTotal%></span></li>
 									</ul>
 								</div>
 						   </div>
@@ -288,17 +292,18 @@
           Swal.fire({
             title: "Order Placed Successfully",
             icon: "success",
-            showDenyButton: true,
+            showDenyButton: false,
             confirmButtonText: " Order Successfully",
-            denyButtonText: `Continue Shopping`,
+            // denyButtonText: `Continue Shopping`,
             toast: true,
           }).then((result) => {
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
               location.href = "/order-complete";
-            } else if (result.isDenied) {
-              location.href = "/";
             }
+			//  else if (result.isDenied) {
+            //   location.href = "/";
+            // }
           });
         } else if (response.Razorpay) {
           console.log("test ok");
@@ -360,7 +365,7 @@
           Swal.fire({
             title: "Order Placed Successfully",
             icon: "success",
-            showDenyButton: true,
+            showDenyButton: false,
             confirmButtonText: "View Order",
             denyButtonText: `Continue Shopping`,
             toast: true,

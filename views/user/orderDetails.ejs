@@ -1,0 +1,194 @@
+
+<%- include('../includes/userHeader.ejs') %>
+
+<!-- Start Banner Area -->
+<!-- <section class="banner-area organic-breadcrumb">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1>Order summary</h1>
+                <nav class="d-flex align-items-center">
+                    <a href="/">Home<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="#">Order summary</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section> -->
+<!-- End Banner Area -->
+
+<!--================Order Details Area =================-->
+
+<!--================Profile Account =================-->
+<section class="login_part padding_top mt-5">
+    <div class="container">
+      <div class="jumbotron">
+        <div class="container">
+         
+
+            <div class="row order_d_inner">
+                <div class="col-lg-4">
+                    <div class="details_item">
+                        <h4>Order Info</h4>
+                        <ul class="list">
+                            <li><a href="#"><span class="font-weight-bold">Order Id</span> :<%= orderDetails._id %>  </a></li>
+                            <li><a href="#"><span class="font-weight-bold">Date</span> :</a><%= orderDetails.date %> </li>
+                            <li><a href="#"><span class="font-weight-bold">Total</span> : Rs</a><%= orderDetails.total %></li>
+                            <li><a href="#"><span class="font-weight-bold">Payment method</span> :<%= orderDetails.paymentMethod %> </a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="details_item">
+                        <h4>Billing Address</h4>
+                        <ul class="list">
+                            <li><a href="#"><span class="font-weight-bold">Name</span> :<%=orderDetails.address.fName  %>  </a></li>
+                            <li><a href="#"><span class="font-weight-bold">Home</span> :<%=orderDetails.address.addressLine  %></a></li>
+                            <li><a href="#"><span class="font-weight-bold">City</span> :<%=orderDetails.address.city  %></a></li>
+                            <li><a href="#"><span class="font-weight-bold">State</span> :<%=orderDetails.address.state  %></a></li>
+                            <li><a href="#"><span class="font-weight-bold">Country</span> :<%=orderDetails.address.country  %></a></li>
+                            <li><a href="#"><span class="font-weight-bold">Postcode </span> :<%=orderDetails.address.pincode  %></a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="details_item">
+                        <h4>Shipping Address</h4>
+                        <ul class="list">
+                            <li><a href="#"><span class="font-weight-bold">Address Name</span> : <%=orderDetails.address.fName  %> </a></li>
+                            <li><a href="#"><span class="font-weight-bold">Home</span> : <%=orderDetails.address.addressLine  %> </a></li>
+                            <li><a href="#"><span class="font-weight-bold">City</span> : <%=orderDetails.address.city  %> </a></li>
+                            <li><a href="#"><span class="font-weight-bold">State</span> :<%=orderDetails.address.state  %></a></li>
+                            <li><a href="#"><span class="font-weight-bold">Country</span> :<%=orderDetails.address.country  %> </a></li>
+                            <li><a href="#"><span class="font-weight-bold">Postcode </span> :<%=orderDetails.address.pincode  %> </a></li>
+                        
+                        </ul>
+                    </div>
+                </div>
+            </div>
+           
+
+
+            
+      </div>
+    </div>
+   
+  </section>
+  
+  
+
+  <section class="login_part padding_top">
+    <div class="container">
+      <div class="jumbotron">
+        <div class="container">
+         
+
+
+            <div class="order_details_table">
+                <h2>Product Details</h2>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Product</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            <% for( let i = 0; i < orderDetails.products.length; i++ ) { %>  
+                                
+                            <tr>
+                                <td>
+                                    <p><%=orderDetails.products[i].product.name  %></p>
+                                </td>
+                                <td>
+                                    <h5><%= orderDetails.products[i].quantity%></h5>
+                                </td>
+                                <td>
+                                    <p>Rs:<%= orderDetails.products[i].totalPrice%></p>
+                                </td>
+                            </tr>
+                         
+                            <tr>
+                                <% }%>
+                                <td>
+                                    <!-- <h4>SubTotal</h4> -->
+                                </td>
+                                <td>
+                                    <h5></h5>
+                                </td>
+                                <td>
+                                    <!-- <p>Rs</p> -->
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            
+      </div>
+    </div>
+   
+  </section>
+  
+
+
+<section class="order_details section_gap">
+    <div class="container">
+        
+            
+        
+            
+           
+      
+        <div class="container text-center mt-5">
+            
+            <a class="btn btn-outline-primary" href="/">Go back to Shopping</a>
+
+
+      
+       
+        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            Return Order
+          </button>
+         <!-- Button trigger modal -->
+  
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Return Order #</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <p>Why are you retturning this order ?</p>
+        <div class="modal-body">
+            <select style="background-color: yellow ; text-size-adjust: 12px; "data-oid=""  name="track" id="track">     
+                <option value="Delivery is later than expected">Delivery is later than expected</option>
+            
+                <option value="Purchased by mistake ">Purchased by mistake </option>
+                <option value="Item no longer needed" >Item no longer needed </option>
+              <option value="Other reasons"  >Other reasons</option>
+            
+            </select>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" >Return</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+            
+        </div>
+    </div>
+</section>
+<!--================End Order Details Area =================-->
+
+
+
+<%- include('../includes/userFooter.ejs') %>

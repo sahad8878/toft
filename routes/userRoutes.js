@@ -28,9 +28,12 @@ postAdress,
 deleteAddress,
 getEditAddress,
 postEditAddress,
-getOrderComplete,
 verifyPayment,
-paymentFailed
+paymentFailed,
+getOrderComplete,
+getMyOrder,
+getOrderDetails
+
 } = require("../controllers/userController");
 const router = express.Router();
   // get routes
@@ -50,8 +53,8 @@ router.get('/profile',userSession,checkBlock,getProfile)
 router.get('/address',userSession,checkBlock,getAddress)
 router.get('/order-complete',userSession,checkBlock,getOrderComplete)
 router.get('/editAddress/:id',userSession,checkBlock,getEditAddress)
-
-
+router.get('/myOrder',userSession,checkBlock,getMyOrder)
+router.get('/orderDetails',userSession,checkBlock,getOrderDetails)
 
 // post routes
 router.post("/loginUser", loginUser);
