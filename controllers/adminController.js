@@ -312,11 +312,11 @@ const getAddCategory = (req, res) => {
 // add post  category
 const postAddCategory = async (req, res) => {
   try {
-    const category = req.body.category;
+   
     const imageUrl = req.files;
     const reqCategory = req.body.category;
-    let regExp=new RegExp(category,'i')
-    if (category && imageUrl) {
+    if (reqCategory && imageUrl) {
+      let regExp=new RegExp(reqCategory,'i')
       console.log(reqCategory + " reqqqqqq");
       let dbCategory = await Category.findOne({ category: {$regex:regExp}});
       

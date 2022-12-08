@@ -32,18 +32,7 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
    default:true
   },
-  // cart: {
-  //   items: [
-  //     {productId:{
-  //       type: Schema.Types.ObjectId, ref:'product', required: true,
-  //     },
-  //     quantity: {
-  //       type: Number,
-  //       required: true,
-  //     }
-  //   }
-  //   ]
-  // }
+ 
 },{
   timestamps:true  
  });

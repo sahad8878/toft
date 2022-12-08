@@ -64,7 +64,7 @@
         </label>
 
         
-        
+        <!-- image 1 -->
           <label class="block mt-4 text-sm">
             <span class="text-gray-700 dark:text-gray-400">
               Image 1
@@ -83,21 +83,21 @@
                onchange="viewImage(event)"
               />
              
-              <button
+              <!-- <button
                 class="absolute inset-y-0 right-0 px-4 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-r-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
               >
                 Click
-              </button>
+              </button> -->
             </div>
             
           </label>
          
-
+           <!-- image 2 -->
           <label class="block mt-4 text-sm">
             <span class="text-gray-700 dark:text-gray-400">
               Image 2
             </span>
-            <img src="/images/<%= product.imageUrl[1]%> " alt="" style="width: 100px;height: auto;" id="imageView">
+            <img src="/images/<%= product.imageUrl[1]%> " alt="" style="width: 100px;height: auto;" id="imageView1">
           
             <div
               class="relative text-gray-500 focus-within:text-purple-600"
@@ -108,22 +108,23 @@
                 name="imageUrl"
                 type="file"
                multiple
-               onchange="viewImage(event)"
+               onchange="viewImage1(event)"
               />
              
-              <button
+              <!-- <button
                 class="absolute inset-y-0 right-0 px-4 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-r-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
               >
                 Click
-              </button>
+              </button> -->
             </div>
             
           </label>
+          <!-- image 3 -->
           <label class="block mt-4 text-sm">
             <span class="text-gray-700 dark:text-gray-400">
               Image 3
             </span>
-            <img src="/images/<%= product.imageUrl[2] %> " alt="" style="width: 100px;height: auto;" id="imageView">
+            <img src="/images/<%= product.imageUrl[2] %> " alt="" style="width: 100px;height: auto;" id="imageView2">
           
             <div
               class="relative text-gray-500 focus-within:text-purple-600"
@@ -134,18 +135,18 @@
                 name="imageUrl"
                 type="file"
                multiple
-               onchange="viewImage(event)"
+               onchange="viewImage2(event)"
               />
              
-              <button
+              <!-- <button
                 class="absolute inset-y-0 right-0 px-4 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-r-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
               >
                 Click
-              </button>
+              </button> -->
             </div>
             
           </label>
-
+<!-- image end -->
           
           <label class="block mt-4 text-sm">
             <span class="text-gray-700 dark:text-gray-400">Discription</span>
@@ -173,6 +174,12 @@
 <script>
 
   function viewImage(event) {
-    document.getElementById('imageView').src=URL.createObjectURL(event.terget.files[0])
+    document.getElementById('imageView').src=URL.createObjectURL(event.target.files[0])
+  }
+  function viewImage1(event) {
+    document.getElementById('imageView1').src=URL.createObjectURL(event.target.files[0])
+  }
+  function viewImage2(event) {
+    document.getElementById('imageView2').src=URL.createObjectURL(event.target.files[0])
   }
 </script>

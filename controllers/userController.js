@@ -428,13 +428,15 @@ console.log(req.body.paymentMethod);
       const deliveryAddress = address.address.find(
         (el) => el._id.toString() === req.body.address
       );
-     console.log(deliveryAddress);
-      // let cart = await Cart.findById(req.body.cartId).populate("items.product");
-      const cart = await Cart.findOne({ owner: userId }).populate("items.product")
-        console.log(cart.items.product);
+    //  console.log(deliveryAddress);
+      let cart = await Cart.findById(req.body.cartId)
+      // const cart = await Cart.findOne({ owner: userId }).populate("items.product")
+      //   console.log(cart.items.product);
+      //  console.log(cart.items);
+       let proId=cart.items.product
       if (req.body.paymentMethod === "cash on delivery") {
        
-
+       
         const paymentMethod = req.body.paymentMethod;
         const newOrder = new Order({
           date: new Date().toLocaleDateString(),
@@ -448,13 +450,23 @@ console.log(req.body.paymentMethod);
           orderStatus: "orderconfirmed",
           track: "orderconfirmed",
         });
-        newOrder.save().then((result) => {
+        newOrder.save().then(async(result) => {
           req.session.orderId = result._id;
 
+          let order = await Order.findOne({ _id: result._id });
+            console.log(order,"stock orderrrrrrrrrrrrrrrrrr");
+            const findProductId = order.products
+       console.log(findProductId,"uddddddddddddddddddd");
+
+       findProductId.forEach(async(el) => {
+       let removeQuantity = await Product.findOneAndUpdate({_id:el.product},{$inc:{stock:-el.quantity}})
+       });
+
           Cart.findOneAndRemove({ userId: result.userId }).then((result) => {
-            res.json({ cashOnDelivery: true });
+            res.json({ cashOnDelivery: true,message:'cod true' });
           });
         });
+
       }else if(req.body.paymentMethod === "Razorpay"){
        
         const paymentMethod = req.body.paymentMethod;
@@ -488,7 +500,9 @@ console.log(req.body.paymentMethod);
                 Razorpay: true,
                 razorpayOrderData: order,
                 userOrderData: userOrderData,
+                message:'reached message'
               };
+
               res.json(response);
             }
           );
@@ -500,6 +514,7 @@ console.log(req.body.paymentMethod);
 
       } else {
         console.log("choose payment method");
+        
         req.flash("paymentMethodErr", "must choose Payment Method ");
         res.redirect("/checkout");
       }
@@ -537,6 +552,13 @@ const verifyPayment=async(req,res)=>{
     order.save().then((result) => {
       res.json({ status: true });
     });
+    // let order = await Order.findOne({ _id: result._id });
+    console.log(order,"stock orderrrrrrrrrrrrrrrrrr");
+                const findProductId = order.products
+          //  console.log(findProductId,"uddddddddddddddddddd");
+           findProductId.forEach(async(el) => {
+           let removeQuantity = await Product.findOneAndUpdate({_id:el.product},{$inc:{stock:-el.quantity}})
+           });
     Cart.findOneAndRemove({ userId:req.session.user._id}).then(
             (result) => {}
           );

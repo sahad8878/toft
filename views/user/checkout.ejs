@@ -288,6 +288,10 @@
       method: "post",
       data: $("#checkout-form").serialize(),
       success: (response) => {
+		if(response.message){
+			alert(response.message);
+            return;
+		}
         if (response.cashOnDelivery) {
           Swal.fire({
             title: "Order Placed Successfully",
