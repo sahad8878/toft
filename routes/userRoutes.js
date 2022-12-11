@@ -32,7 +32,9 @@ verifyPayment,
 paymentFailed,
 getOrderComplete,
 getMyOrder,
-getOrderDetails
+getOrderDetails,
+cancelOrder,
+returnOrder
 
 } = require("../controllers/userController");
 const router = express.Router();
@@ -55,7 +57,7 @@ router.get('/order-complete',userSession,checkBlock,getOrderComplete)
 router.get('/editAddress/:id',userSession,checkBlock,getEditAddress)
 router.get('/myOrder',userSession,checkBlock,getMyOrder)
 router.get('/orderDetails',userSession,checkBlock,getOrderDetails)
-
+router .get("/cancelOrder",cancelOrder)
 // post routes
 router.post("/loginUser", loginUser);
 router.post("/registerUser",registerUser);
@@ -66,6 +68,7 @@ router.post('/checkout/:CartId',userSession,checkBlock,postCheckout)
 router.post('/editAddress/:id',postEditAddress)
 router.post('/verifyPayment',verifyPayment)
 router.post('/paymentFailed',paymentFailed)
+router.post('/returnOrder',returnOrder)
 
 router.delete('/profile/',userSession,checkBlock,deleteAddress)
 

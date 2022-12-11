@@ -40,13 +40,6 @@ const productSchema = new Schema({
     type: Number, 
   },
   
-
-
-//   userId:{
-//       type:Schema.Types.ObjectId,
-//       ref: "user",
-//       required:true
-//   }
 },{
  timestamps:true  
 });

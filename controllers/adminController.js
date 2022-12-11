@@ -130,7 +130,8 @@ const ordersView = async (req, res) => {
   try {
     let order = await Order.find().sort({ updatedAt: -1 }).populate("userId");
     // console.log(order[0].userId);
-    res.render("admin/orders", { order: order, user: req.session.user });
+    Object.values(order);
+    res.render("admin/orders", { order, user: req.session.user });
   } catch (error) {
     res.render("admin/error");
   }
@@ -150,6 +151,49 @@ console.log(order.products)
   }
  }
  
+//  change order status
+
+const changeTrack= async (req, res) => {
+  oid = req.body.orderId;
+  value = req.body.value;
+
+  console.log(oid, value, 'lllll');
+
+  if (value == 'Delivered') {
+    await Order.updateOne(
+      {
+        _id: oid,
+      },
+      {
+        $set: {
+          track: value,
+          orderStatus: value,
+          paymentStatus: 'Payment Completed',
+        },
+      }
+    ).then((response) => {
+      // console.log(response);
+      res.json({ status: true });
+
+    });
+  } else {
+    await Order.updateOne(
+      {
+        _id: oid,
+      },
+      {
+        $set: {
+          track: value,
+          orderStatus: value,
+        },
+      }
+    ).then((response) => {
+      // console.log(result);
+      res.json({ status: true });
+    });
+  }
+
+}
 
 //  client  page
 const clientView = (req, res) => {
@@ -317,7 +361,7 @@ const postAddCategory = async (req, res) => {
     const reqCategory = req.body.category;
     if (reqCategory && imageUrl) {
       let regExp=new RegExp(reqCategory,'i')
-      console.log(reqCategory + " reqqqqqq");
+      console.log(reqCategory , " reqqqqqq");
       let dbCategory = await Category.findOne({ category: {$regex:regExp}});
       
       console.log(dbCategory);
@@ -452,6 +496,7 @@ module.exports = {
    getAddBanner,
    postAddBanner,
    deleteBanner,
-   getOrderDetails
+   getOrderDetails,
+   changeTrack
 
 };

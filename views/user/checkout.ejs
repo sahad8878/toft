@@ -177,10 +177,28 @@
 		                    </div>  
 		             
 				           </div>
-
-
+                    
 					      <div class="col-lg-4">
 						  <div class="row">
+ <!--  -->
+                            
+ <div class="col-md-12">
+	<!-- <form action="#"> -->
+	  <div class="row form-group">
+		<div class="col-sm-9">
+		  <input type="text" name="quantity" class="form-control input-number" placeholder="Your Coupon Number...">
+		</div>
+		<div class="col-sm-3 mt-3">
+		  <input type="submit" value="Apply Coupon" class="btn btn-primary">
+		</div>
+	  </div>
+	<!-- </form> -->
+  </div>
+ 
+
+   <!--  -->
+
+
 							<div class="col-md-12">
 								<div class="cart-detail">
 									<h2>Cart Total</h2>
@@ -288,9 +306,48 @@
       method: "post",
       data: $("#checkout-form").serialize(),
       success: (response) => {
-		if(response.message){
-			alert(response.message);
-            return;
+		if(response.choosePay){
+			// alert(response.message);
+			const Toast = Swal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener('mouseenter', Swal.stopTimer)
+    toast.addEventListener('mouseleave', Swal.resumeTimer)
+  }
+})
+
+Toast.fire({
+  icon: 'error',
+  title: 'please choose your your payment'
+})
+
+           
+		}else if (response.chooseAddress){
+
+			const Toast = Swal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener('mouseenter', Swal.stopTimer)
+    toast.addEventListener('mouseleave', Swal.resumeTimer)
+  }
+})
+
+Toast.fire({
+  icon: 'error',
+  title: 'must add your delivery address'
+})
+
+
+			// alert(response.message1);
+            // return;
 		}
         if (response.cashOnDelivery) {
           Swal.fire({

@@ -6,26 +6,31 @@ const Cart = require("../models/cart");
 const Address = require("../models/address");
 const Order = require("../models/order");
 const Banner = require("../models/banner");
+const Category=require("../models/category")
 const { sendSms, verifySms } = require("../verification/otp");
 const { findById, populate } = require("../models/product");
-const Razorpay = require('razorpay');
+const Razorpay = require("razorpay");
 var {
   validatePaymentVerification,
-} = require('../node_modules/razorpay/dist/utils/razorpay-utils');
-
+} = require("../node_modules/razorpay/dist/utils/razorpay-utils");
+const { default: mongoose } = require("mongoose");
 
 var instance = new Razorpay({
-  key_secret: 'DvG40o8cF8F6bHGUkMHyeMPE',
-  key_id: 'rzp_test_VZx01l8lO0abIf',
+  key_secret: "DvG40o8cF8F6bHGUkMHyeMPE",
+  key_id: "rzp_test_VZx01l8lO0abIf",
 });
 // home
-const homeView =async (req, res) => {
+const homeView = async (req, res) => {
   try {
+    let product = await Product.find();
+    let banner = await Banner.find({ delete: { $ne: true } });
 
-    let product=await Product.find()
-    let banner = await Banner.find({ delete: { $ne: true } })
-        res.render("user/home", { product, user: req.session.user,banner });
-  
+    // let cart =await Cart.find({owner:req.session.user._id})
+    // console.log(cart);
+
+    // let count=cart.items.length
+    // console.log(count);
+    res.render("user/home", { product, user: req.session.user, banner });
   } catch (error) {
     res.render("admin/error");
   }
@@ -34,12 +39,10 @@ const homeView =async (req, res) => {
 const menView = async (req, res) => {
   try {
     const product = await Product.find({ category: "Mens" })
-      .then((product) => {
-        res.render("user/men", { product, user: req.session.user });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      const category=await Category.find({ category:"Mens"})
+     
+        res.render("user/men", { product,category, user: req.session.user });
+      
   } catch (error) {
     res.render("admin/error");
   }
@@ -49,13 +52,10 @@ const menView = async (req, res) => {
 const womenView = async (req, res) => {
   try {
     const product = await Product.find({ category: "Women" })
-      .then((product) => {
-       
-        res.render("user/women", { product, user: req.session.user });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    const category=await Category.find({ category:"Women"})
+      
+        res.render("user/women", { product,category, user: req.session.user });
+    
   } catch (error) {
     res.render("admin/error");
   }
@@ -75,7 +75,6 @@ const aboutView = (req, res) => {
 // contact page
 const contactView = (req, res) => {
   try {
-  
     let user = req.session.user;
 
     res.render("user/contact", { user: user });
@@ -97,7 +96,6 @@ const cartView = async (req, res) => {
           return console.log(err);
         } else {
           if (allCart) {
-           
             res.render("user/cart", {
               allCart,
               user: req.session.user,
@@ -122,46 +120,90 @@ const addToCart = async (req, res) => {
     let ownerId = req.session.user._id;
     const user = await Cart.findOne({ owner: req.session.user._id });
     const product = await Product.findOne({ _id: productId });
-    const cartTotal = product.price;
-    if (!user) {
-      const addToCart = await Cart({
-        owner: req.session.user._id,
-        items: [{ product: productId, totalPrice: product.price }],
-        cartTotal: cartTotal,
-      });
-      addToCart.save().then(() => {
-        res.redirect("/productDetails/" + productId);
-      });
+    console.log(product.stock);
+    if (product.stock < 1) {
+      console.log("no stockkkkkkkkkkkkk");
+      res.json({ noAvailability: true });
     } else {
-      const existProduct = await Cart.findOne({
-        owner: req.session.user._id,
-        "items.product": productId,
-      });
-      if (existProduct != null) {
-        await Cart.findOneAndUpdate(
-          { owner: req.session.user._id, "items.product": productId },
-          {
-            $inc: {
-              "items.$.quantity": 1,
-              "items.$.totalPrice": product.price,
-              cartTotal: cartTotal,
-              subTotal: cartTotal,
-            },
-          }
-        ).then(() => {
-          res.redirect("/productDetails/" + productId);
+      console.log("stockkkkkkkkkkkkk he");
+
+      const cartTotal = product.price;
+      if (!user) {
+        const addToCart = await Cart({
+          owner: req.session.user._id,
+          items: [{ product: productId, totalPrice: product.price }],
+          cartTotal: cartTotal,
         });
-      } else {
-        const addToCart = await Cart.findOneAndUpdate(
-          { owner: req.session.user._id },
-          {
-            $push: { items: { product: productId, totalPrice: product.price } },
-            $inc: { cartTotal: cartTotal, subTotal: product.price },
-          }
-        );
         addToCart.save().then(() => {
           res.redirect("/productDetails/" + productId);
         });
+      } else {
+
+        
+
+          console.log("add cheytho");
+        const existProduct = await Cart.findOne({
+          owner: req.session.user._id,
+          "items.product": productId,
+        });
+        if (existProduct != null) {   
+          
+          const proQuantity = await Cart.aggregate([
+            { $match: { owner: mongoose.Types.ObjectId(req.session.user._id) } },
+            {
+              $project: {
+                items: {
+                  $filter: {
+                    input: "$items",
+                    cond: {
+                      $eq: ["$$this.product", mongoose.Types.ObjectId(productId)],
+                    },
+                  },
+                },
+              },
+            },
+          ]);
+          console.log(proQuantity);
+          const quantity=proQuantity[0].items[0].quantity
+          console.log(quantity);
+      
+          console.log(product.stock);
+
+          if (product.stock <= quantity) {
+               
+            console.log(" all ready stock kayin ");
+            res.json({ stockReached: true });
+        }else  {  
+          await Cart.findOneAndUpdate(
+            { owner: req.session.user._id, "items.product": productId },
+            {
+              $inc: {
+                "items.$.quantity": 1,
+                "items.$.totalPrice": product.price,
+                cartTotal: cartTotal,
+                subTotal: cartTotal,
+              },
+            }
+          ).then(() => {
+            res.redirect("/productDetails/" + productId);
+          });
+        }
+
+        } else {
+          const addToCart = await Cart.findOneAndUpdate(
+            { owner: req.session.user._id },
+            {
+              $push: {
+                items: { product: productId, totalPrice: product.price },
+              },
+              $inc: { cartTotal: cartTotal, subTotal: product.price },
+            }
+          );
+          addToCart.save().then(() => {
+            res.redirect("/productDetails/" + productId);
+          });
+        }
+      
       }
     }
   } catch (error) {
@@ -177,6 +219,7 @@ const deleteCartProduct = async (req, res) => {
     const userId = req.session.user;
     const productId = req.query.productId;
     const product = await Product.findOne({ _id: productId });
+
     const cartTotal = product.price;
     const deleteProduct = await Cart.findOneAndUpdate(
       { owner: userId },
@@ -205,6 +248,32 @@ const cartChangeQuantity = async (req, res) => {
     } else {
       var productPrice = -product.price;
     }
+    console.log("heeeeeeee");
+    const proQuantity = await Cart.aggregate([
+      { $match: { owner: mongoose.Types.ObjectId(req.session.user._id) } },
+      {
+        $project: {
+          items: {
+            $filter: {
+              input: "$items",
+              cond: {
+                $eq: ["$$this.product", mongoose.Types.ObjectId(productId)],
+              },
+            },
+          },
+        },
+      },
+    ]);
+    console.log(proQuantity);
+    const quantity=proQuantity[0].items[0].quantity
+    console.log(quantity);
+
+    console.log(product.stock);
+    if(product.stock<= quantity&&count==1){
+      console.log("stock reached");
+      res.json({stockReached:true});
+    }else{
+console.log("not reached");
     const cart = await Cart.findOneAndUpdate(
       { _id: cartId, "items.product": productId },
       {
@@ -217,6 +286,7 @@ const cartChangeQuantity = async (req, res) => {
     ).then(() => {
       res.json();
     });
+  }
   } catch (error) {
     res.render("admin/error");
   }
@@ -396,7 +466,9 @@ const getCheckout = async (req, res) => {
       address = [];
     }
 
-    const cartItems = await Cart.findOne({ owner: userId }).populate("items.product")
+    const cartItems = await Cart.findOne({ owner: userId }).populate(
+      "items.product"
+    );
 
     if (cartItems) {
       res.render("user/checkout", {
@@ -419,24 +491,22 @@ const getCheckout = async (req, res) => {
 
 const postCheckout = async (req, res) => {
   try {
-console.log(req.body.paymentMethod);
+    console.log(req.body.paymentMethod);
     if (req.body.address) {
       let user = req.session.user;
       let userId = user._id;
       let address = await Address.findOne({ user: userId });
-      
+
       const deliveryAddress = address.address.find(
         (el) => el._id.toString() === req.body.address
       );
-    //  console.log(deliveryAddress);
-      let cart = await Cart.findById(req.body.cartId)
+      //  console.log(deliveryAddress);
+      let cart = await Cart.findById(req.body.cartId);
       // const cart = await Cart.findOne({ owner: userId }).populate("items.product")
       //   console.log(cart.items.product);
       //  console.log(cart.items);
-       let proId=cart.items.product
+      let proId = cart.items.product;
       if (req.body.paymentMethod === "cash on delivery") {
-       
-       
         const paymentMethod = req.body.paymentMethod;
         const newOrder = new Order({
           date: new Date().toLocaleDateString(),
@@ -450,38 +520,39 @@ console.log(req.body.paymentMethod);
           orderStatus: "orderconfirmed",
           track: "orderconfirmed",
         });
-        newOrder.save().then(async(result) => {
+        newOrder.save().then(async (result) => {
           req.session.orderId = result._id;
 
           let order = await Order.findOne({ _id: result._id });
-            console.log(order,"stock orderrrrrrrrrrrrrrrrrr");
-            const findProductId = order.products
-       console.log(findProductId,"uddddddddddddddddddd");
+          console.log(order, "stock orderrrrrrrrrrrrrrrrrr");
+          const findProductId = order.products;
+          console.log(findProductId, "uddddddddddddddddddd");
 
-       findProductId.forEach(async(el) => {
-       let removeQuantity = await Product.findOneAndUpdate({_id:el.product},{$inc:{stock:-el.quantity}})
-       });
+          findProductId.forEach(async (el) => {
+            let removeQuantity = await Product.findOneAndUpdate(
+              { _id: el.product },
+              { $inc: { stock: -el.quantity } }
+            );
+          });
 
           Cart.findOneAndRemove({ userId: result.userId }).then((result) => {
-            res.json({ cashOnDelivery: true,message:'cod true' });
+            res.json({ cashOnDelivery: true });
           });
         });
-
-      }else if(req.body.paymentMethod === "Razorpay"){
-       
+      } else if (req.body.paymentMethod === "Razorpay") {
         const paymentMethod = req.body.paymentMethod;
-    
+
         const newOrder = new Order({
-          date :new Date().toLocaleDateString(),
-          time:new Date().toLocaleTimeString(),
-          userId:userId,
-          products:cart.items,
-          total:cart.cartTotal,
-          address:deliveryAddress,
-          paymentMethod:paymentMethod,
-          paymentStatus:'Payment Completed',
-          orderStatus:'orderconfirmed',
-          track:'Shipped',
+          date: new Date().toLocaleDateString(),
+          time: new Date().toLocaleTimeString(),
+          userId: userId,
+          products: cart.items,
+          total: cart.cartTotal,
+          address: deliveryAddress,
+          paymentMethod: paymentMethod,
+          paymentStatus: "Payment Completed",
+          orderStatus: "orderconfirmed",
+          track: "Shipped",
         });
         newOrder.save().then((result) => {
           let userOrderData = result;
@@ -490,17 +561,16 @@ console.log(req.body.paymentMethod);
           instance.orders.create(
             {
               amount: result.total * 100,
-              currency: 'INR',
+              currency: "INR",
               receipt: id,
             },
             (err, order) => {
-              console.log(err,"errrrrrrrrrrrrrrr");
-              console.log(order,"orderrrrrrrrrrrrrrrrrrr");
+              console.log(err, "errrrrrrrrrrrrrrr");
+              console.log(order, "orderrrrrrrrrrrrrrrrrrr");
               let response = {
                 Razorpay: true,
                 razorpayOrderData: order,
                 userOrderData: userOrderData,
-                message:'reached message'
               };
 
               res.json(response);
@@ -510,107 +580,135 @@ console.log(req.body.paymentMethod);
           //   (result) => {}
           // );
         });
-
-
       } else {
         console.log("choose payment method");
-        
-        req.flash("paymentMethodErr", "must choose Payment Method ");
-        res.redirect("/checkout");
+        res.json({ choosePay: true });
       }
     } else {
       console.log("choose address");
-      req.flash("checkAddressErr", "must choose Delivery ddress ");
-      res.redirect("/checkout");
+      res.json({ chooseAddress: true });
     }
   } catch (error) {
     res.render("admin/error");
   }
 };
 
-// verify payment 
-const verifyPayment=async(req,res)=>{
-  try{
-  let razorpayOrderDataId = req.body['payment[razorpay_order_id]'];
+// verify payment
+const verifyPayment = async (req, res) => {
+  try {
+    let razorpayOrderDataId = req.body["payment[razorpay_order_id]"];
 
-  let paymentId = req.body['payment[razorpay_payment_id]'];
+    let paymentId = req.body["payment[razorpay_payment_id]"];
 
-  let paymentSignature = req.body['payment[razorpay_signature]'];
+    let paymentSignature = req.body["payment[razorpay_signature]"];
 
-  let userOrderDataId = req.body['userOrderData[_id]'];
+    let userOrderDataId = req.body["userOrderData[_id]"];
 
-  validate = validatePaymentVerification(
-    { order_id: razorpayOrderDataId, payment_id: paymentId },
-    paymentSignature,
-    'DvG40o8cF8F6bHGUkMHyeMPE'
-  );
+    validate = validatePaymentVerification(
+      { order_id: razorpayOrderDataId, payment_id: paymentId },
+      paymentSignature,
+      "DvG40o8cF8F6bHGUkMHyeMPE"
+    );
 
-  if (validate) {
-    let order = await Order.findById(userOrderDataId);
-    orderStatus = 'Order Placed';
-    paymentStatus = 'Payment Completed';
-    order.save().then((result) => {
-      res.json({ status: true });
-    });
-    // let order = await Order.findOne({ _id: result._id });
-    console.log(order,"stock orderrrrrrrrrrrrrrrrrr");
-                const findProductId = order.products
-          //  console.log(findProductId,"uddddddddddddddddddd");
-           findProductId.forEach(async(el) => {
-           let removeQuantity = await Product.findOneAndUpdate({_id:el.product},{$inc:{stock:-el.quantity}})
-           });
-    Cart.findOneAndRemove({ userId:req.session.user._id}).then(
-            (result) => {}
-          );
+    if (validate) {
+      let order = await Order.findById(userOrderDataId);
+      orderStatus = "Order Placed";
+      paymentStatus = "Payment Completed";
+      order.save().then((result) => {
+        res.json({ status: true });
+      });
+      // let order = await Order.findOne({ _id: result._id });
+      console.log(order, "stock orderrrrrrrrrrrrrrrrrr");
+      const findProductId = order.products;
+      //  console.log(findProductId,"uddddddddddddddddddd");
+      findProductId.forEach(async (el) => {
+        let removeQuantity = await Product.findOneAndUpdate(
+          { _id: el.product },
+          { $inc: { stock: -el.quantity } }
+        );
+      });
+      Cart.findOneAndRemove({ userId: req.session.user._id }).then(
+        (result) => {}
+      );
+    }
+  } catch (error) {
+    res.render("admin/error");
   }
-} catch (error) {
-  res.render("admin/error");
-}
-}
-
-
-
+};
 
 // payment   failed
-const paymentFailed=  (req, res) => {
-  try{
-  res.json({ status: true });
-} catch (error) {
-  res.render("admin/error");
-}
-}
+const paymentFailed = (req, res) => {
+  try {
+    res.json({ status: true });
+  } catch (error) {
+    res.render("admin/error");
+  }
+};
 
 // order complete
 
-const getOrderComplete =async (req, res) => {
- try{
-  res.render("user/order_confirm", { user: req.session.user });
-} catch (error) {
-  res.render("admin/error");
-}
-
+const getOrderComplete = async (req, res) => {
+  try {
+    res.render("user/order_confirm", { user: req.session.user });
+  } catch (error) {
+    res.render("admin/error");
+  }
 };
 
-// my order page 
+// my order page
 
-const getMyOrder=async(req,res)=>{
-  try{
-  let orders = await Order.find({userId:req.session.user}).sort({ updatedAt: -1 })
-  // console.log(orders,"my orders");
-  res.render('user/myOrder',{user:req.session.user,orders})
-} catch (error) {
-  res.render("admin/error");
-}
+const getMyOrder = async (req, res) => {
+  try {
+    let orders = await Order.find({ userId: req.session.user }).sort({
+      updatedAt: -1,
+    });
+    // console.log(orders,"my orders");
+    res.render("user/myOrder", { user: req.session.user, orders });
+  } catch (error) {
+    res.render("admin/error");
+  }
+};
+
+const getOrderDetails = async (req, res) => {
+  try {
+    console.log(req.query.id);
+    let orderDetails = await Order.findOne({ _id: req.query.id }).populate(
+      "products.product"
+    );
+    res.render("user/orderDetails", { user: req.session.user, orderDetails });
+  } catch (error) {
+    res.render("admin/error");
+  }
+};
+
+// order cancelle
+const cancelOrder= async (req, res) => {
+  let orderId = req.query.id;
+
+  let order = await Order.findByIdAndUpdate(orderId, {
+    orderStatus: 'Cancelled',
+    track: 'Cancelled',
+  });
+
 }
 
-const getOrderDetails = async(req,res)=>{
-try{
-  console.log(req.query.id);
-  let orderDetails = await Order.findOne({_id:req.query.id}).populate("products.product");
-  res.render('user/orderDetails',{user:req.session.user,orderDetails})
-} catch (error) {
-  res.render("admin/error");
-}
+
+// order returned
+const returnOrder= async (req, res) => {
+
+
+  orderId = mongoose.Types.ObjectId(req.body.oid.trim());
+  value = req.body.value;
+
+  console.log(orderId,value,"return order");
+
+  await Order.findByIdAndUpdate(orderId, {
+    track: 'Returnd',
+    orderStatus: 'Returnd',
+    returnreason: value,
+  }).then((response) => {
+    res.json({ status: true });
+  });
 }
 
 // user profile page
@@ -649,7 +747,6 @@ const postAdress = async (req, res) => {
       var userId = req.session.user._id;
       const existAddress = await Address.findOne({ user: userId });
       if (existAddress) {
-       
         await Address.findOneAndUpdate(
           { user: userId },
           {
@@ -668,7 +765,6 @@ const postAdress = async (req, res) => {
         addAddress.save().then(() => {
           res.redirect("/profile");
         });
-        
       }
     } else {
       req.flash("addressErr", "fill full coloms");
@@ -694,58 +790,54 @@ const deleteAddress = async (req, res) => {
 
 const getEditAddress = async (req, res) => {
   try {
+    let addressDB = await Address.findOne({ user: req.session.user });
 
-  let addressDB = await Address.findOne({ user: req.session.user });
+    const address = addressDB.address.find(
+      (el) => el._id.toString() === req.params.id
+    );
 
-  const address = addressDB.address.find(
-    (el) => el._id.toString() === req.params.id
-  );
- 
-  res.render("user/edit_address", {
-     user: req.session.user,
+    res.render("user/edit_address", {
+      user: req.session.user,
       address,
-      editAddressErr:req.flash("editAddressErr") });
+      editAddressErr: req.flash("editAddressErr"),
+    });
   } catch (error) {
     res.render("admin/error");
   }
 };
 
 const postEditAddress = async (req, res) => {
-try{
-  const { country, fName, state, addressLine, city, pincode } = req.body;
-  if (country && fName && state && addressLine && city && pincode) {
+  try {
+    const { country, fName, state, addressLine, city, pincode } = req.body;
+    if (country && fName && state && addressLine && city && pincode) {
+      const addressId = req.params.id;
+      const address = await Address.findOne({ user: req.session.user });
 
-  const addressId = req.params.id;
-  const address = await Address.findOne({ user: req.session.user });
-
-  const updateAddress=await Address.updateMany(
-    {
-      
-      "address._id": addressId,
-    },
-    {
-      $set: {
-        "address.$.fName":fName,
-        "address.$.pinCode":pincode,
-        "address.$.addressLine": addressLine,
-        "address.$.city": city,
-        "address.$.state": state,
-        "address.$.country":country,
-      },
-      new:true
-    },
-    {upsert:true}
-  ) 
-  res.redirect("/profile");
-  }else{
-
-    req.flash("editAddressErr", "fill full coloms");
-    res.redirect("/editAddress/" +  req.params.id);
-
+      const updateAddress = await Address.updateMany(
+        {
+          "address._id": addressId,
+        },
+        {
+          $set: {
+            "address.$.fName": fName,
+            "address.$.pinCode": pincode,
+            "address.$.addressLine": addressLine,
+            "address.$.city": city,
+            "address.$.state": state,
+            "address.$.country": country,
+          },
+          new: true,
+        },
+        { upsert: true }
+      );
+      res.redirect("/profile");
+    } else {
+      req.flash("editAddressErr", "fill full coloms");
+      res.redirect("/editAddress/" + req.params.id);
+    }
+  } catch (error) {
+    res.render("admin/error");
   }
-} catch (error) {
-  res.render("admin/error");
-}
 };
 
 module.exports = {
@@ -779,5 +871,7 @@ module.exports = {
   paymentFailed,
   getOrderComplete,
   getMyOrder,
-  getOrderDetails
+  getOrderDetails,
+  cancelOrder,
+  returnOrder
 };

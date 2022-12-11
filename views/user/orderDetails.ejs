@@ -19,14 +19,44 @@
 
 <!--================Order Details Area =================-->
 
+
+
 <!--================Profile Account =================-->
-<section class="login_part padding_top mt-5">
+<div class="container ">
+<button id="download-button" class="btn btn-primary float-left">
+    Download as PDF
+  </button>
+  </div>
+<div id="invoice">
+<section  class="login_part padding_top mt-5">
     <div class="container">
       <div class="jumbotron">
         <div class="container">
          
 
+          
+                <div class="container text-center">
+                    
+                    <% if (orderDetails.orderStatus=="Cancelled") { %>
+                        <h3 class="title_confirmation text-danger"> Your order has been Cancelled.</h3>
+            
+                        <% } else if(orderDetails.orderStatus == 'Returnd'){%>  
+                            <h3 class="title_confirmation text-danger"> Your order has been Returned.You can requist for refund</h3>
+                                            
+                    <% } else if(orderDetails.orderStatus == 'Delivered'){%>
+                        
+                        <h3 class="title_confirmation">Thank you. Your order has been Delivered.</h3>
+                        <% }else{ %>
+                            <h3 class="title_confirmation">Thank you. Your order has been recived.</h3>
+                            <% } %> 
+                            </div>
+                            
+
             <div class="row order_d_inner">
+                <div>
+                <!-- <button id="download-button">Download as PDF</button> -->
+              
+            </div>
                 <div class="col-lg-4">
                     <div class="details_item">
                         <h4>Order Info</h4>
@@ -35,19 +65,23 @@
                             <li><a href="#"><span class="font-weight-bold">Date</span> :</a><%= orderDetails.date %> </li>
                             <li><a href="#"><span class="font-weight-bold">Total</span> : Rs</a><%= orderDetails.total %></li>
                             <li><a href="#"><span class="font-weight-bold">Payment method</span> :<%= orderDetails.paymentMethod %> </a></li>
+                            <li><a href="#"><span class="font-weight-bold">Payment Status</span> :<%= orderDetails.paymentStatus %> </a></li>
+
                         </ul>
                     </div>
                 </div>
                 <div class="col-lg-4">
                     <div class="details_item">
                         <h4>Billing Address</h4>
-                        <ul class="list">
-                            <li><a href="#"><span class="font-weight-bold">Name</span> :<%=orderDetails.address.fName  %>  </a></li>
-                            <li><a href="#"><span class="font-weight-bold">Home</span> :<%=orderDetails.address.addressLine  %></a></li>
-                            <li><a href="#"><span class="font-weight-bold">City</span> :<%=orderDetails.address.city  %></a></li>
-                            <li><a href="#"><span class="font-weight-bold">State</span> :<%=orderDetails.address.state  %></a></li>
-                            <li><a href="#"><span class="font-weight-bold">Country</span> :<%=orderDetails.address.country  %></a></li>
-                            <li><a href="#"><span class="font-weight-bold">Postcode </span> :<%=orderDetails.address.pincode  %></a></li>
+                        <ul class="list ">
+                            <li><a href="#"><span class="font-weight-bold">Name :</span> <%=orderDetails.address.fName  %>  </a></li>
+                            <li><a class="text-wrap" href="#"><span class="font-weight-bold">Home :</span> <% orderDetails.address.addressLine.split(',').forEach(el => {  %>
+                              <%= el  %> <br> <% }); %></a></li>
+                            <li><a href="#"><span class="font-weight-bold">City :</span> <%=orderDetails.address.city  %></a></li>
+
+                            <li><a href="#"><span class="font-weight-bold">State :</span> <%=orderDetails.address.state  %></a></li>
+                            <li><a href="#"><span class="font-weight-bold">Country :</span> <%=orderDetails.address.country  %></a></li>
+                            <li><a href="#"><span class="font-weight-bold">Postcode :</span> <%=orderDetails.address.pincode  %></a></li>
                         </ul>
                     </div>
                 </div>
@@ -55,12 +89,13 @@
                     <div class="details_item">
                         <h4>Shipping Address</h4>
                         <ul class="list">
-                            <li><a href="#"><span class="font-weight-bold">Address Name</span> : <%=orderDetails.address.fName  %> </a></li>
-                            <li><a href="#"><span class="font-weight-bold">Home</span> : <%=orderDetails.address.addressLine  %> </a></li>
-                            <li><a href="#"><span class="font-weight-bold">City</span> : <%=orderDetails.address.city  %> </a></li>
-                            <li><a href="#"><span class="font-weight-bold">State</span> :<%=orderDetails.address.state  %></a></li>
-                            <li><a href="#"><span class="font-weight-bold">Country</span> :<%=orderDetails.address.country  %> </a></li>
-                            <li><a href="#"><span class="font-weight-bold">Postcode </span> :<%=orderDetails.address.pincode  %> </a></li>
+                            <li><a href="#"><span class="font-weight-bold">Address Name:</span> <%=orderDetails.address.fName  %> </a></li>
+                            <li ><a  href="#"><span class="font-weight-bold">Home:</span><div class="col-sm-4" > <% orderDetails.address.addressLine.split(',').forEach(el => {  %>
+                                <%= el  %> <br> <% }); %></a></li>
+                            <li><a href="#"><span class="font-weight-bold">City :</span>  <%=orderDetails.address.city  %> </a></li>
+                            <li><a href="#"><span class="font-weight-bold">State :</span> <%=orderDetails.address.state  %></a></li>
+                            <li><a href="#"><span class="font-weight-bold">Country :</span> <%=orderDetails.address.country  %> </a></li>
+                            <li><a href="#"><span class="font-weight-bold">Postcode :</span> <%=orderDetails.address.pincode  %> </a></li>
                         
                         </ul>
                     </div>
@@ -84,7 +119,7 @@
          
 
 
-            <div class="order_details_table">
+            <div  class="order_details_table">
                 <h2>Product Details</h2>
                 <div class="table-responsive">
                     <table class="table">
@@ -133,7 +168,7 @@
     </div>
    
   </section>
-  
+</div>
 
 
 <section class="order_details section_gap">
@@ -146,27 +181,50 @@
       
         <div class="container text-center mt-5">
             
-            <a class="btn btn-outline-primary" href="/">Go back to Shopping</a>
+            <% if(orderDetails.orderStatus != 'Cancelled' && orderDetails.orderStatus != 'Delivered'&& orderDetails.orderStatus != 'Returnd'){ %>
+                <button onclick="cancelOrder('<%=orderDetails._id%>')" class="btn btn-primary">
+                  Cancel Order
+                </button>
+              <% } %>
+          
 
 
-      
+      <% if ( orderDetails.orderStatus == 'Delivered') { %>
        
-        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
             Return Order
           </button>
-         <!-- Button trigger modal -->
+        <!-- <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            Return Order
+          </button> -->
+<% } else if (orderDetails.orderStatus == 'Returnd') { %>
+ 
+    <button onclick="refund('<%=orderDetails._id%>')" class="btn btn-primary">
+        requist Refund
+      </button>
+
+      <% } %>  
+
+      <a class="btn btn-primary" href="/">Go back to Shopping</a>
+      
+
+      <!-- Button trigger modal -->
+
   
   <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Return Order #</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h5 class="modal-title" id="exampleModalLabel">Return Order #<%= orderDetails._id %></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
         <p>Why are you retturning this order ?</p>
         <div class="modal-body">
-            <select style="background-color: yellow ; text-size-adjust: 12px; "data-oid=""  name="track" id="track">     
+            <select  data-oid="<%= orderDetails._id %>"   name="track" id="track">     
                 <option value="Delivery is later than expected">Delivery is later than expected</option>
             
                 <option value="Purchased by mistake ">Purchased by mistake </option>
@@ -176,19 +234,97 @@
             </select>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" >Return</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary"  onclick="orderStatus(this)">Return</button>
         </div>
       </div>
     </div>
   </div>
-
+       
+      
             
         </div>
     </div>
 </section>
 <!--================End Order Details Area =================-->
 
-
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <%- include('../includes/userFooter.ejs') %>
+
+
+<script>
+function cancelOrder(orderId){
+    console.log("cancel order");
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Cancel Order!",
+      cancelButtonText : 'No'
+}).then((result) => {
+   if(result.isConfirmed) {
+    console.log(orderId);
+    $.ajax({
+          url:'/cancelOrder/?id='+orderId,
+          method:'get',
+    })
+     Swal.fire("Cancelled!", "Your orderd has been Cancelled.", "success").then(()=>{
+        //   window.location = "/myOrder"
+          window.location.reload();
+        })
+   }
+})
+}
+ </script> 
+
+<script>
+    function orderStatus(e){
+      console.log("order status ethi");
+      const oid = $('#track').data('oid')
+      const value = $('#track').find(":selected").val();
+    //   alert(`oid = ${oid}`)
+    //   alert(`value = ${value}`)
+    // window.location = "/orderDetails"
+    
+    $.ajax({
+      url:"/returnOrder",
+      data:{
+        oid,
+        value
+      },
+      method:"post",
+      success:(response)=>{
+       if(response.status){
+        Swal.fire({
+      position: 'top-end',
+      icon: 'success',
+      title: 'Track statuse has been changed',
+      showConfirmButton: false,
+      timer: 1000
+      
+    }).then(()=>{
+           window.location = `/orderDetails/?id=${oid}`
+        // location.href = `/orderDetails/?id=${oid}`; 
+    })
+        
+       }
+      }
+    })
+        
+    }
+     </script>
+     	<script>
+			const button = document.getElementById('download-button');
+
+			function generatePDF() {
+				// Choose the element that your content will be rendered to.
+				const element = document.getElementById('invoice');
+				// Choose the element and save the PDF for your user.
+				html2pdf().from(element).save();
+			}
+
+			button.addEventListener('click', generatePDF);
+		</script>

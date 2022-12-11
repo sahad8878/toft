@@ -12,10 +12,12 @@
     <div class="min-w-0 p-4 text-white rounded-lg shadow-xs dark:bg-gray-800">
       <h4 class="mb-4 font-semibold text-gray-600 dark:text-gray-300">Order Details</h4>
       <p class="text-gray-600 dark:text-gray-400">
-        Tracking Id: <span class="font-semibold dark:text-gray-300" id="tracking_id"><%= order.id %></span><br />
-        Order Number: <span class="font-semibold dark:text-gray-300" id="order_number"></span><br />
+        <!-- Tracking Id: <span class="font-semibold dark:text-gray-300" id="tracking_id"><%= order.id %></span><br /> -->
+        Order Number: <span class="font-semibold dark:text-gray-300" id="order_number"><%= order.id %></span><br />
         Date: <span class="font-semibold dark:text-gray-300" id="order_date"><%= order.date %></span><br />
         Amount: <span class="font-semibold dark:text-gray-300" id="order_amount"><%= order.total %></span><br />
+        Payment Staus: <span class="font-semibold dark:text-gray-300" id="order_amount"><%= order.paymentStatus %></span><br />
+
       </p>
     </div>
     <div class="min-w-0 p-4 text-white rounded-lg shadow-xs dark:bg-gray-800">

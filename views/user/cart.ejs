@@ -142,30 +142,32 @@
                   <p><span><strong>Total:</strong></span> <span> ₹<%= allCart.cartTotal %></span></p>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-
-
-        <div class="col-sm-8">
+              <div class="col-sm-8">
           
-            <div class="row form-group">
-              <!-- <div class="col-sm-9">
-                <input
-                  type="text"
-                  name="quantity"
-                  class="form-control input-number"
-                  placeholder="Your Coupon Number..."
-                />
-              </div> -->
-              <div class="col-sm-3 mt-3">
-               <a href="/checkout" class="btn btn-primary" >
-                   Proceed to Checkout
-                    </a>
-    
+                <div class="row form-group">
+                  <!-- <div class="col-sm-9">
+                    <input
+                      type="text"
+                      name="quantity"
+                      class="form-control input-number"
+                      placeholder="Your Coupon Number..."
+                    />
+                  </div> -->
+                  <div class="col-sm-3 mt-3">
+                   <a href="/checkout" class="btn btn-primary" >
+                       Proceed to Checkout
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+        
+
+
+
+       
           
         </div>
       </div>
@@ -246,6 +248,7 @@
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
 
 
+
   <script>
     // function changeQuantity(cartId, productId, count) {
     //   $.ajax({
@@ -262,14 +265,36 @@
     //   });
     // }
 
-
     function changeQuantity(cartId,proId,count) {
            let qty = document.querySelector('#qty')
             axios.patch(`/cart?cartId=${cartId}&productId=${proId}&count=${count}`)
-            .then(() =>{
-            location.reload()
-            
-           
+            .then((e) =>{
+              if(e.data.stockReached){
+              // alert("stock reached")
+
+              const Toast = Swal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener('mouseenter', Swal.stopTimer)
+    toast.addEventListener('mouseleave', Swal.resumeTimer)
+  }
+})
+
+Toast.fire({
+  icon: 'error',
+  title: 'product is out of stock',
+})
+
+
+                        
+}  else{
+
+  location.reload()
+}            
         })
       }
 

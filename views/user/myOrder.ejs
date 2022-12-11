@@ -22,7 +22,7 @@
                                         <th scope="col">Order ID</th>
                                         <th scope="col">Date</th>
                                         <th scope="col">Amount</th>
-                                        <th scope="col">Status</th>
+                                        <th scope="col">Order Status</th>
                                         <th scope="col"></th>
                                         <th scope="col"></th>
                                     </tr>
@@ -41,9 +41,12 @@
                                             <p>Rs.<span><%=Order.total%></span></p>
                                         </td>
                                         <td>
-                                            <% if (Order.orderStatus=="Cancellede") { %>
+                                            <% if (Order.orderStatus=="Cancelled") { %>
                                                 <p><span style="color:red"><%=Order.orderStatus%></span></p>
                                                 
+                                                  <% } else if (Order.orderStatus=="Returnd") { %>
+                                                    <p><span style="color:red"><%=Order.orderStatus%></span></p>
+
                                                 <% }else {%>
                                                     <p><span style="color:green"><%=Order.orderStatus%></span></p>
                                                     
@@ -103,7 +106,7 @@
   
   <div class="container text-center mt-5">
             
-    <a class="btn btn-outline-primary" href="/">Go back to Shopping</a>
+    <a class="btn btn-primary" href="/">Go back to Shopping</a>
 
 </div>
 
