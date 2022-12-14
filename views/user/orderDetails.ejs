@@ -45,7 +45,10 @@
                                             
                     <% } else if(orderDetails.orderStatus == 'Delivered'){%>
                         
-                        <h3 class="title_confirmation">Thank you. Your order has been Delivered.</h3>
+                        <h3 class="title_confirmation " >Thank you. Your order has been Delivered.</h3>
+                        <% } else if(orderDetails.paymentMethod == 'Refunded'){%>
+                        
+                          <h3 class="title_confirmation text-danger">Thank you. refund add your wallet please check your wallet</h3>
                         <% }else{ %>
                             <h3 class="title_confirmation">Thank you. Your order has been recived.</h3>
                             <% } %> 
@@ -181,7 +184,7 @@
       
         <div class="container text-center mt-5">
             
-            <% if(orderDetails.orderStatus != 'Cancelled' && orderDetails.orderStatus != 'Delivered'&& orderDetails.orderStatus != 'Returnd'){ %>
+            <% if(orderDetails.orderStatus != 'Cancelled' && orderDetails.orderStatus != 'Delivered'&& orderDetails.orderStatus != 'Returnd' && orderDetails.orderStatus != 'Refunded'){ %>
                 <button onclick="cancelOrder('<%=orderDetails._id%>')" class="btn btn-primary">
                   Cancel Order
                 </button>
@@ -200,8 +203,8 @@
           </button> -->
 <% } else if (orderDetails.orderStatus == 'Returnd') { %>
  
-    <button onclick="refund('<%=orderDetails._id%>')" class="btn btn-primary">
-        requist Refund
+    <button onclick="requistRefund('<%=orderDetails._id%>')" class="btn btn-primary">
+        Requist Refund
       </button>
 
       <% } %>  
@@ -306,7 +309,8 @@ function cancelOrder(orderId){
       timer: 1000
       
     }).then(()=>{
-           window.location = `/orderDetails/?id=${oid}`
+      window.location.reload();
+          //  window.location = `/orderDetails/?id=${oid}`
         // location.href = `/orderDetails/?id=${oid}`; 
     })
         
@@ -316,6 +320,32 @@ function cancelOrder(orderId){
         
     }
      </script>
+
+
+<script>
+
+function requistRefund(orderId){
+        console.log("post vanuu-------------");
+            axios.post(`/refund?orderId=${orderId}`)
+            .then((e =>{
+               if(e.data.status){
+               
+                Swal.fire({
+  position: 'center',
+  icon: 'success',
+  title: 'your money has been returned,please check your wallet',
+  showConfirmButton: false,
+  timer: 2000
+}).then(()=>{
+
+  location.reload()   
+})       
+               }
+              
+              
+            }))
+        }
+</script>
      	<script>
 			const button = document.getElementById('download-button');
 

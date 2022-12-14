@@ -153,7 +153,13 @@
                       placeholder="Your Coupon Number..."
                     />
                   </div> -->
-                  <div class="col-sm-3 mt-3">
+                  <% if(notAvailable.length>0){ %> 
+                      <div class=" alert alert-danger mt-3 ml-5" role="alert">
+                        <p class="text-danger"><%=notAvailable %> </p>
+                      </div>
+                    <% } %>
+                     
+                  <div class="col-sm-3 mt-3 ml-4">
                    <a href="/checkout" class="btn btn-primary" >
                        Proceed to Checkout
                         </a>

@@ -16,8 +16,34 @@
          <div class="row row-cols-1 row-cols-md-3 mb-3  mt-4">
            <div class="row justify-content-center">
            <!--  -->
+           
             <div class="col-md-3 ">
                <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" width="150px" src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"><span class="font-weight-bold"><%= user.name %> </span><span class="text-black-50"><%= user.email %> </span><span> </span></div>
+<!-- wallet -->
+<div class="accordion" id="accordionExample">
+         
+  <div class="card">
+    <div class="card-header" id="headingOne">
+      <h2 class="mb-0">
+        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+         WALLET
+        </button>
+      </h2>
+    </div>
+
+    <div id="collapseOne" class="collapse " aria-labelledby="headingOne" data-parent="#accordionExample">
+      <div class="card-body">
+        RS.<%= addresses.user.wallet %> 
+      
+      </div>
+    </div>
+  </div>
+
+
+</div>
+<!-- wallet end -->
+
+
             </div>
        
        <!--  -->
@@ -42,21 +68,21 @@
                   <div class="col-sm-12">
                     <div class="form-group">
                       <label for="email">Name</label>
-                      <input value="<%= user.name %> " type="text" name="fname" id="fname" class="form-control" disabled>
+                      <input value="<%= addresses.user.name %>  " type="text" name="fname" id="fname" class="form-control" disabled>
                     </div>
                   </div>
                   <div class="w-100"></div>
                   <div class="col-sm-12">
                     <div class="form-group">
                       <label for="subject">Email</label>
-                      <input value="<%= user.email %>"   name="email" id="email" class="form-control" disabled >
+                      <input value="<%= addresses.user.email %> "   name="email" id="email" class="form-control" disabled >
                     </div>
                   </div>
                   <div class="w-100"></div>
                   <div class="col-sm-12">
                     <div class="form-group">
                       <label for="subject">Number</label>
-                      <input  value="<%=user.number %>" type="number" id="number" class="form-control" disabled>
+                      <input  value="<%= addresses.user.number %> " type="text" id="number" class="form-control" disabled>
                     </div>
                   </div>
                   <!-- <div class="w-100"></div>
@@ -224,8 +250,10 @@
                             "Deleted!",
                             "Your file has been deleted.",
                             "success"
-                          );
-                          location.reload()
+                          ).then(()=>{
+
+                            location.reload()
+                          })
                         } else {
                           alert("something went wrong");
                         }

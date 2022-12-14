@@ -1,8 +1,10 @@
 const mongoose = require("mongoose")
 
-const CouponSchema = mongoose.Schema({
+const Schema=mongoose.Schema
+
+CouponSchema = new Schema ({
     
-    CODE : {
+    code : {
         type : String,
         required : true
     },
@@ -16,7 +18,7 @@ const CouponSchema = mongoose.Schema({
     },
     status : {
         type : String,
-        default : 'BLOCKED'
+        default : 'BLOCK'
     },
     couponType:{
         type:String,
@@ -41,6 +43,6 @@ const CouponSchema = mongoose.Schema({
 
 })
 
-const Coupon = mongoose.model("Coupon",CouponSchema)
+const coupon = mongoose.model("Coupon",CouponSchema)
 
-module.exports= Coupon
+module.exports= coupon

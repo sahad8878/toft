@@ -224,8 +224,10 @@ function deleteBanner(id){
              'Deleted!',
               'Your file has been deleted.',
               'success'
-          )
-          location.reload()
+          ).then(()=>{
+
+            location.reload()
+          })
         }else{
           alert('wrong!')
         }

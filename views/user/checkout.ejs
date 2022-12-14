@@ -184,12 +184,14 @@
                             
  <div class="col-md-12">
 	<!-- <form action="#"> -->
+		
 	  <div class="row form-group">
 		<div class="col-sm-9">
-		  <input type="text" name="quantity" class="form-control input-number" placeholder="Your Coupon Number...">
+		  <input type="text" name="quantity" id="couponInput" class="form-control input-number" placeholder="Your Coupon Number...">
 		</div>
-		<div class="col-sm-3 mt-3">
-		  <input type="submit" value="Apply Coupon" class="btn btn-primary">
+		<p class="pl-5" id="CouponError"></p>
+		<div class="col-sm-3 mt-3 ">
+		  <input type="button" onclick="applyCoupon('<%= cartItems.cartTotal%>')" style="display: block;" id="applyBtn" value="Apply Coupon" class="btn btn-primary">
 		</div>
 	  </div>
 	<!-- </form> -->
@@ -212,13 +214,18 @@
 												<% } %>
 											</ul>
 										</li>
-										<li><span>Sub Total</span> <span><input type="text" name="total" id="total"  class="form-control" value="₹<%= cartItems.cartTotal%>" hidden >₹<%= cartItems.cartTotal%></span></li>
+										<li><span>Sub Total</span> <span><input type="text" name="subtotal" id="totalAmount"  class="form-control" value="₹<%= cartItems.cartTotal%>" hidden >₹<%= cartItems.cartTotal%></span></li>
 
 										<li><span>Shipping</span> <span>FREE</span></li>
-										<li><span>Order Total</span> <span><input type="text" name="total" id="total"  class="form-control" value="₹<%= cartItems.cartTotal%>" hidden >₹<%= cartItems.cartTotal%></span></li>
+										<li><span>Discount</span> <span id="discountAmount">Nil</span></li>
+
+										<li><span>Order Total</span> <span id="grandTotalAmount">₹<%= cartItems.cartTotal%></span></li>
+										<input type="text" name="total" id="grandTotal"  class="form-control" value="<%= cartItems.cartTotal%>" hidden >
 									</ul>
 								</div>
 						   </div>
+
+
 
 						   <div class="w-100"></div>
 
@@ -258,15 +265,7 @@
 								</div>
 							</div>
 						 </div>
-						 <% if(checkAddressErr.length>0){ %> 
-							<div class=" alert alert-danger col-md-12 text-center" role="alert">
-							  <p class="text-danger"><%=checkAddressErr %> </p>
-							</div>
-							<% } else if (paymentMethodErr.length) { %>
-								<div class=" alert alert-danger col-md-12 text-center" role="alert">
-									<p class="text-danger"><%=paymentMethodErr %> </p>
-								  </div>
-							  <% } %> 
+						
 						 <div class="row">
 							<div class="col-md-12 text-center">
 								<button type="submit" class="btn btn-primary">
@@ -292,6 +291,49 @@
 	  <!-- sweet alert -->
 	  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+
+
+	  <script>
+		function applyCoupon(subtotal) {
+		  let CouponCode = document.getElementById("couponInput").value;
+		  let total = subtotal;
+		  if (CouponCode == "") {
+			document.getElementById("CouponError").style.color = "red";
+			document.getElementById("CouponError").innerHTML = "Enter a Coupon Code";
+		  } else {
+			$.ajax({
+			  url: "/verifyCoupon",
+			  method: "post",
+			  data: {
+				CouponCode,
+				total,
+			  },
+			  success: (response) => {
+				if (response.status == true) {
+				console.log(response.grandtotal);
+				  document.getElementById("CouponError").style.color = "green";
+				  document.getElementById("CouponError").innerHTML = "Coupon Applied";
+				  document.getElementById("discountAmount").innerHTML =
+					"Rs." + response.CutOff;
+				  document.getElementById("grandTotalAmount").innerHTML =
+					response.grandtotal;
+					document.getElementById("grandTotal").value =
+					response.grandtotal;
+				  document.getElementById("applyBtn").style.display = "none";
+				} else {
+				  document.getElementById("CouponError").style.color = "red";
+				  document.getElementById("CouponError").innerHTML =
+					response.couponMsg;
+				}
+			  },
+			});
+		  }
+		}
+	  </script>
+	  
+
+
 
 <script>
 

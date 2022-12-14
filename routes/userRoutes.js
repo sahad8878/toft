@@ -34,7 +34,9 @@ getOrderComplete,
 getMyOrder,
 getOrderDetails,
 cancelOrder,
-returnOrder
+returnOrder,
+verifyCoupon,
+requistRefund
 
 } = require("../controllers/userController");
 const router = express.Router();
@@ -69,7 +71,8 @@ router.post('/editAddress/:id',postEditAddress)
 router.post('/verifyPayment',verifyPayment)
 router.post('/paymentFailed',paymentFailed)
 router.post('/returnOrder',returnOrder)
-
+router.post('/verifyCoupon',verifyCoupon)
+router.post('/refund',requistRefund)
 router.delete('/profile/',userSession,checkBlock,deleteAddress)
 
 router

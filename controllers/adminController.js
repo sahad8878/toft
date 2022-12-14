@@ -7,6 +7,11 @@ const Category = require("../models/category");
 const Order = require("../models/order");
 const moment = require("moment");
 const Banner = require("../models/banner");
+const Coupon = require("../models/coupon");
+const { AwsPage } = require("twilio/lib/rest/accounts/v1/credential/aws");
+
+
+
 
 //  login page
 const loginView = (req, res) => {
@@ -44,9 +49,45 @@ const loginAdmin = (req, res) => {
 };
 
 //  dashboard page
-const dashboardView = (req, res) => {
+const dashboardView = async(req, res) => {
   try {
-    res.render("admin/dashboard");
+
+    let order= await Order.find()
+    let orderCount=order.length
+      console.log(orderCount);
+    let user=await User.find()
+let  usersCount=user.length
+console.log(usersCount);
+
+
+ const total= await  Order.aggregate([ { 
+  $group: { 
+      _id: order._id, 
+      total: { 
+          $sum: "$total"
+      } 
+  } 
+} ] )
+const totalProfit=total[0].total
+console.log(totalProfit);
+
+
+await Order.aggregate([
+  {
+    $match: {
+      paymentStatus: 'Payment Pending',
+    },
+  },
+  {
+    $count: 'Count',
+  },
+]).then((result) => {
+  if (result.length != 0) {
+  pendingCount = result[0].Count;
+  }
+  console.log(pendingCount);
+});
+    res.render("admin/dashboard",{orderCount,usersCount,totalProfit,pendingCount,dashboard:true});
   } catch (error) {
     res.render("admin/error");
   }
@@ -59,7 +100,7 @@ const prodcutManagememnt = async (req, res) => {
     let product = await Product.find().sort({ updatedAt: -1 });
     // console.log(product);
     let category = await Category.find();
-    res.render("admin/product_management", { product, category });
+    res.render("admin/product_management", { product, category ,productView:true});
   } catch (error) {
     res.render("admin/error");
   }
@@ -71,6 +112,7 @@ const addProduct = async (req, res) => {
     res.render("admin/add_products", {
       category,
       proAddErr: req.flash("proAddErr"),
+      productView:true
     });
   } catch (error) {
     res.render("admin/error");
@@ -131,7 +173,7 @@ const ordersView = async (req, res) => {
     let order = await Order.find().sort({ updatedAt: -1 }).populate("userId");
     // console.log(order[0].userId);
     Object.values(order);
-    res.render("admin/orders", { order, user: req.session.user });
+    res.render("admin/orders", { order, user: req.session.user ,ordersView:true});
   } catch (error) {
     res.render("admin/error");
   }
@@ -145,7 +187,7 @@ const getOrderDetails= async(req,res)=>{
  let order = await Order.findOne({_id:req.params.id}).populate("products.product");
 console.log(order.products)
  
-   res.render('admin/orderDetails',{order})
+   res.render('admin/orderDetails',{order,ordersView:true})
   } catch (error) {
     res.render("admin/error");
   }
@@ -201,7 +243,7 @@ const clientView = (req, res) => {
     User.find()
       .sort({ updatedAt: -1 })
       .then((user) => {
-        res.render("admin/clients", { user });
+        res.render("admin/clients", { user ,clientView:true});
       })
       .catch((err) => {
         console.log(err);
@@ -221,6 +263,7 @@ const viewEditProduct = (req, res) => {
         product,
         proId,
         proEditErr: req.flash("proEditErr"),
+        productView:true
       });
     });
   } catch (error) {
@@ -335,7 +378,7 @@ const getCategory = async (req, res) => {
   try {
     let category = await Category.find().sort({ updatedAt: -1 });
 console.log(category);
-    res.render("admin/category", { category });
+    res.render("admin/category", { category,categoryView:true });
   } catch (error) {
     res.render("admin/error");
   }
@@ -347,6 +390,7 @@ const getAddCategory = (req, res) => {
     res.render("admin/add_category", {
       catAddErr: req.flash("catAddErr"),
       catExistErr: req.flash("catExistErr"),
+      categoryView:true
     });
   } catch (error) {
     res.render("admin/error");
@@ -412,7 +456,7 @@ const deleteCategory = (req, res) => {
 const getBanner =async (req, res) => {
 try{
   let banner = await Banner.find({ delete: { $ne: true } }).sort({ updatedAt: -1 });
-  res.render("admin/bannerManagment",{banner});
+  res.render("admin/bannerManagment",{banner,bannerView:true});
 } catch (error) {
   res.render("admin/error");
 }
@@ -420,7 +464,7 @@ try{
 // get add banner
 const getAddBanner = (req, res) => {
   try{
-  res.render("admin/add_banner",{bannerAddErr: req.flash("bannerAddErr")});
+  res.render("admin/add_banner",{bannerAddErr: req.flash("bannerAddErr"),bannerView:true});
 } catch (error) {
   res.render("admin/error");
 }
@@ -467,6 +511,136 @@ try{
 }
 
 
+// get coupon
+
+const getCoupon= async (req, res) => {
+
+const coupons=await Coupon.find().sort({ updatedAt: -1 });
+  res.render("admin/coupon",{coupons,couponView:true})
+
+}
+
+
+
+// get add coupon page
+
+const getAddCoupon= async (req, res) => {
+
+  res.render("admin/add-coupon",{addCouponErr:req.flash("addCouponErr"),couponView:true})
+
+}
+
+// post add coupoon 
+const postAddCoupon=(req,res) => {
+  
+ const {code,CouponType,cutOff,minAmount,maxAmount,genetateCount,expireDate}=req.body
+if (code&&CouponType&&cutOff&&minAmount&&maxAmount&&genetateCount&&expireDate) {
+  console.log(req.body);
+  Coupon.find({ code: code }).then((result) => {
+    if (result.length == 0) {
+      const  coupon = new Coupon({
+        code: code,
+        cutOff: cutOff,
+        couponType: CouponType,
+        minCartAmount: minAmount,
+        maxRedeemAmount:maxAmount,
+        generateCount: genetateCount,
+        expireDate: expireDate,
+      });
+      coupon.save().then((result) => {
+        res.redirect('/admin/coupon');
+      });
+    } else {
+      couponExistErr = 'Coupon Already Exist';
+      res.redirect('/admin/addcoupon');
+    }
+  });
+
+}else{
+console.log("fill ful coloms");
+req.flash("addCouponErr","fill full coloms")
+  res.redirect("/admin/addCoupon")
+}
+}
+
+// delete coupon
+
+const deleteCoupen=(req,res) => {
+
+  const coupenId = req.query.id;
+  console.log(coupenId);
+  Coupon.findByIdAndRemove(coupenId).then((coupon) => {
+    console.log("coupon deleted");
+    res.json('success')
+    // res.redirect("/admin/coupon");
+  });
+
+}
+
+// active coupon
+
+const  couponActive=async(req,res)=>{
+
+
+  coupenId = req.query.id;
+  console.log(coupenId,"active");
+
+  await Coupon.updateOne(
+    { _id: coupenId },
+    { $set: { status: 'ACTIVE' } }
+  ).then((result) => {
+    res.redirect('/admin/coupon');
+  });
+
+}
+
+
+// block coupon
+
+const couponBlock= async (req, res) => {
+
+  coupenId = req.query.id;
+  console.log(coupenId,"block");
+
+  await Coupon.updateOne(
+    { _id: coupenId },
+    { $set: { status: 'BLOCK' } }
+  ).then((result) => {
+    res.redirect('/admin/coupon');
+  });
+
+}
+
+// get chart details
+
+const GetChartDetails=(req,res)=>{
+
+}
+
+// get sales report
+
+const salesReport=async(req,res)=>{
+  const salesReport = await Order.aggregate(
+    [{
+      $match : { 'orderStatus' : { $ne: 'Cancelled'}}
+    },
+    {
+        $group : {
+            _id : { month: { $month: "$createdAt" }, day: { $dayOfMonth: "$createdAt" }, year: { $year: "$createdAt" } },
+            totalPrice: { $sum:  "$total"  },
+            products: { $sum :{$size: "$products"}},
+            count: { $sum: 1 },
+            
+                }
+
+            },{$sort:{updatedAt:-1}}
+    ])
+    console.log(salesReport)
+  // const filterOrder = await Order.find({})
+
+res.render('admin/sales_report',{salesReport,})
+}
+
 // error page
 const errorPage = (req, res) => {
   res.render("admin/error");
@@ -497,6 +671,14 @@ module.exports = {
    postAddBanner,
    deleteBanner,
    getOrderDetails,
-   changeTrack
+   changeTrack,
+   getCoupon,
+   getAddCoupon,
+   postAddCoupon,
+   deleteCoupen,
+   couponActive,
+   couponBlock,
+   GetChartDetails,
+   salesReport
 
 };

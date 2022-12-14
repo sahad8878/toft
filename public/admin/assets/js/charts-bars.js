@@ -1,6 +1,12 @@
 /**
  * For usage, visit Chart.js docs https://www.chartjs.org/docs/latest/
  */
+
+
+$(document).ready(async () => {
+  const response = await axios.get("/admin/ChartDetails");
+  if (response.data.status) {
+    const groupedOrderData = response.data.groupedOrderData;
 const barConfig = {
   type: 'bar',
   data: {
@@ -32,3 +38,5 @@ const barConfig = {
 
 const barsCtx = document.getElementById('bars')
 window.myBar = new Chart(barsCtx, barConfig)
+}
+});

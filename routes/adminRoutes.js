@@ -27,7 +27,15 @@ getAddBanner,
 postAddBanner,
 deleteBanner,
 getOrderDetails,
-changeTrack
+changeTrack,
+getCoupon,
+getAddCoupon,
+postAddCoupon,
+deleteCoupen,
+couponActive,
+couponBlock,
+GetChartDetails,
+salesReport
 }= require("../controllers/adminController")
 const router = express.Router();
 
@@ -37,7 +45,8 @@ router.post('/',loginAdmin)
 router.post('/product',session,upload.array("imageUrl",3),addProductButton);
 router.post('/editProduct/:id',session,upload.array("imageUrl",3),editProduct)
 router.post('/category',session,upload.array("imageUrl",3),postAddCategory)
-// router.post('/banner',session,bannerImages.array("imageUrl",3),postAddBanner)
+router.post('/orderStatus',changeTrack)
+// router.post('/coupon',postAddCoupon)
 
 //  get routers
 router.get('/',loginView)
@@ -55,15 +64,25 @@ router.get('/error',errorPage)
 router.get('/category',session,getCategory)
 router.get('/addCategory',session,getAddCategory)
 router.get('/deleteCategory/:id',session,deleteCategory)
-// router.get('/banner',session,bannerImages.array("imageUrl",3),getBanner)
 router.get('/addBanner',session,bannerImages.array("imageUrl",3),getAddBanner)
 router.get('/orderDetails/:id',getOrderDetails)
-router.post('/orderStatus',changeTrack)
+router.get('/addCoupon',getAddCoupon)
+router.get('/couponActive',couponActive)
+router.get('/couponBlock',couponBlock)
+router.get('/ChartDetails',GetChartDetails)
+router.get('/salesReport',salesReport)
+// chain router
 router.
 route('/banner/')
 .get(session,bannerImages.array("imageUrl",3),getBanner)
 .post(session,bannerImages.array("imageUrl",3),postAddBanner)
 .delete(deleteBanner)
+
+router.
+route('/coupon/')
+.get(session,getCoupon)
+.post(session,postAddCoupon)
+.delete(deleteCoupen)
 module.exports = router;
 
 
