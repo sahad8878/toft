@@ -1,5 +1,49 @@
 
 <%- include('../includes/userHeader.ejs') %>
+<style>
+  /* .modal-dialog-right-side {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: -ms-flexbox;
+    display: flex;
+
+
+    margin: 0 !important
+  } */
+
+  /* component */
+
+  .star-rating {
+
+    display: flex;
+    flex-direction: row-reverse;
+    font-size: 1.5em;
+    justify-content: space-around;
+    padding: 0 .2em;
+    text-align: center;
+    width: 5em;
+  }
+
+  .star-rating input {
+    display: none;
+  }
+
+  .star-rating label {
+    color: #ccc;
+    cursor: pointer;
+  }
+
+  .star-rating :checked~label {
+    color: #f90;
+  }
+
+  .star-rating label:hover,
+  .star-rating label:hover~label {
+    color: #fc0;
+  }
+</style>
+
 
 <!-- Start Banner Area -->
 <!-- <section class="banner-area organic-breadcrumb">
@@ -22,20 +66,22 @@
 
 
 <!--================Profile Account =================-->
-<div class="container ">
+<!-- <div class="container ">
 <button id="download-button" class="btn btn-primary float-left">
     Download as PDF
   </button>
-  </div>
+  
+  </div> -->
 <div id="invoice">
 <section  class="login_part padding_top mt-5">
     <div class="container">
+      <button class="mt=5 float-right" id="download-button">Download as PDF</button>
       <div class="jumbotron">
         <div class="container">
          
-
+            
           
-                <div class="container text-center">
+                <!-- <div class="container text-center">
                     
                     <% if (orderDetails.orderStatus=="Cancelled") { %>
                         <h3 class="title_confirmation text-danger"> Your order has been Cancelled.</h3>
@@ -52,7 +98,7 @@
                         <% }else{ %>
                             <h3 class="title_confirmation">Thank you. Your order has been recived.</h3>
                             <% } %> 
-                            </div>
+                            </div> -->
                             
 
             <div class="row order_d_inner">
@@ -65,10 +111,12 @@
                         <h4>Order Info</h4>
                         <ul class="list">
                             <li><a href="#"><span class="font-weight-bold">Order Id</span> :<%= orderDetails._id %>  </a></li>
-                            <li><a href="#"><span class="font-weight-bold">Date</span> :</a><%= orderDetails.date %> </li>
-                            <li><a href="#"><span class="font-weight-bold">Total</span> : Rs</a><%= orderDetails.total %></li>
+                            <li><a href="#"><span class="font-weight-bold">Date</span> :</a><%= orderDetails.updatedAt.toLocaleDateString() %> </li>
+                            <li><a href="#"><span class="font-weight-bold">Time</span> :</a><%= orderDetails.time %> </li>
+
                             <li><a href="#"><span class="font-weight-bold">Payment method</span> :<%= orderDetails.paymentMethod %> </a></li>
                             <li><a href="#"><span class="font-weight-bold">Payment Status</span> :<%= orderDetails.paymentStatus %> </a></li>
+                            <li><a href="#"><span class="font-weight-bold">Total</span> : Rs</a><%= orderDetails.total %></li>
 
                         </ul>
                     </div>
@@ -131,6 +179,8 @@
                                 <th scope="col">Product</th>
                                 <th scope="col">Quantity</th>
                                 <th scope="col">Total</th>
+                                <th scope="col"></th>
+
                             </tr>
                         </thead>
                         <tbody>
@@ -147,6 +197,13 @@
                                 <td>
                                     <p>Rs:<%= orderDetails.products[i].totalPrice%></p>
                                 </td>
+                                <% if ( orderDetails.orderStatus == 'Delivered') { %>
+                                <td>
+                               
+                                  <button class="btn btn-primary" data-toggle="modal" onclick="addReview('<%=orderDetails.products[i].product._id%>')"  data-target="#exampleModalreview">Review</button>
+                                </td>
+                                 
+                                <% } %>
                             </tr>
                          
                             <tr>
@@ -214,8 +271,54 @@
 
       <!-- Button trigger modal -->
 
+<!-- review modal start -->
+
+<div class="modal fade" id="exampleModalreview" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-right-side" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add your review</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-2" style="width:350px;">
+        <form action="#" onsubmit="reviewww()">
+
+          <label for="" class="text-primary mb-0 fw-bold">Rate the product</label>
+          <div class="star-rating mt-0 mb-0 d-flex justify-content-between" onclick="removewarning()" style="width:200px;">
+            <input type="radio" id="5-stars" name="rating" value="5" />
+            <label for="5-stars" class="star">&#9733;</label>
+            <input type="radio" id="4-stars" name="rating" value="4" />
+            <label for="4-stars" class="star">&#9733;</label>
+            <input type="radio" id="3-stars" name="rating" value="3" />
+            <label for="3-stars" class="star">&#9733;</label>
+            <input type="radio" id="2-stars" name="rating" value="2" />
+            <label for="2-stars" class="star">&#9733;</label>
+            <input type="radio" id="1-star" name="rating" value="1" />
+            <label for="1-star" class="star">&#9733;</label>
+          </div>
+          <p class="text-danger mb-2 mt-0" id="removewarning" style="display:none;">Please add your rating also</p>
+          <label class=""> Title (optional) </label><br>
+          <input type="text" name="title" class="form-control">
+          <label class="" for="reviewId">Write your review</label><br>
+          <textarea name="review" class="form-control" id="reviewId" cols="30" rows="4" required></textarea>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Add</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- review modal end  -->
   
-  <!-- Modal -->
+  <!-- return Modal -->
   <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -243,7 +346,8 @@
       </div>
     </div>
   </div>
-       
+      
+  <!-- return modal -->
       
             
         </div>
@@ -358,3 +462,53 @@ function requistRefund(orderId){
 
 			button.addEventListener('click', generatePDF);
 		</script>
+
+    <script>
+
+      
+  let iddd;
+  addReview = (id) => {
+    iddd = id
+    console.log(iddd);
+  }
+
+  reviewww = async () => {
+    event.preventDefault()
+    const formData = new FormData(event.target);
+    const formProps = await Object.fromEntries(formData);
+    formProps.product = iddd
+    if (formProps.rating) {
+      axios.post('/review', formProps).then(async e => {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 1000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+          }
+        })
+        if (e.data.response === "login") location.href = "/login"
+        else if (e.data.error) {
+          await Toast.fire({
+            icon: 'error',
+            title: e.data.error
+          })
+        } else {
+          await Toast.fire({
+            icon: 'success',
+            title: 'Your review added successfully'
+          })
+          location.reload()
+        }
+      })
+    } else {
+      document.getElementById('removewarning').style.display = "block"
+    }
+  }
+  removewarning = () => {
+    document.getElementById('removewarning').style.display = "none"
+  }
+    </script>

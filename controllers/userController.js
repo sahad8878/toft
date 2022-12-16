@@ -8,6 +8,8 @@ const Order = require("../models/order");
 const Banner = require("../models/banner");
 const Category = require("../models/category");
 const Coupon = require("../models/coupon");
+const Review = require("../models/reviews");
+
 const { sendSms, verifySms } = require("../verification/otp");
 const { findById, populate } = require("../models/product");
 const Razorpay = require("razorpay");
@@ -26,7 +28,12 @@ const homeView = async (req, res) => {
   try {
     let product = await Product.find();
     let banner = await Banner.find({ delete: { $ne: true } });
-    res.render("user/home", { product, user: req.session.user, banner });
+    res.render("user/home", {
+      product,
+      user: req.session.user,
+      banner,
+      homView: true,
+    });
   } catch (error) {
     res.render("admin/error");
   }
@@ -60,7 +67,7 @@ const aboutView = (req, res) => {
   try {
     let user = req.session.user;
     res.render("user/about", {
-      Product: Product,
+      aboutView: true,
       user: user,
     });
   } catch (error) {
@@ -72,7 +79,7 @@ const contactView = (req, res) => {
   try {
     let user = req.session.user;
 
-    res.render("user/contact", { user: user });
+    res.render("user/contact", { user: user, contactView: true });
   } catch (error) {
     res.render("admin/error");
   }
@@ -94,11 +101,13 @@ const cartView = async (req, res) => {
             res.render("user/cart", {
               allCart,
               user: req.session.user,
+              cartView: true,
               notAvailable: req.flash("notAvailable"),
             });
           } else {
             res.render("user/cartEmpty", {
               user: req.session.user,
+              cartView: true,
             });
           }
         }
@@ -135,7 +144,7 @@ const addToCart = async (req, res) => {
           "items.product": productId,
         });
         if (existProduct != null) {
-          const proQuantity = await Cart.aggregate([
+           const proQuantity = await Cart.aggregate([
             {
               $match: { owner: mongoose.Types.ObjectId(req.session.user._id) },
             },
@@ -148,15 +157,15 @@ const addToCart = async (req, res) => {
                       $eq: [
                         "$$this.product",
                         mongoose.Types.ObjectId(productId),
-                      ],
+                      ],    
                     },
                   },
                 },
               },
             },
-          ]);
-          const quantity = proQuantity[0].items[0].quantity;
-          if (product.stock <= quantity) {
+           ]);
+           const quantity = proQuantity[0].items[0].quantity;
+           if (product.stock <= quantity) {
             res.json({ stockReached: true });
           } else {
             await Cart.findOneAndUpdate(
@@ -201,7 +210,11 @@ const deleteCartProduct = async (req, res) => {
     const userId = req.session.user;
     const productId = req.query.productId;
     const product = await Product.findOne({ _id: productId });
-
+    const cart = await Cart.findOne({ owner: userId });
+    const index = await cart.items.findIndex((el) => {
+      return el.product == productId;
+    });
+    const price = cart.items[index].totalPrice;
     const cartTotal = product.price;
     const deleteProduct = await Cart.findOneAndUpdate(
       { owner: userId },
@@ -209,7 +222,7 @@ const deleteCartProduct = async (req, res) => {
         $pull: {
           items: { product: productId },
         },
-        $inc: { cartTotal: -cartTotal },
+        $inc: { cartTotal: -price },
       }
     );
     deleteProduct.save().then(() => {
@@ -247,7 +260,6 @@ const cartChangeQuantity = async (req, res) => {
     ]);
     const quantity = proQuantity[0].items[0].quantity;
     if (product.stock <= quantity && count == 1) {
-    
       res.json({ stockReached: true });
     } else {
       const cart = await Cart.findOneAndUpdate(
@@ -391,16 +403,17 @@ const logoutUser = (req, res) => {
 };
 
 // products details page
-const productDetails = (req, res) => {
+const productDetails = async (req, res) => {
   try {
     const proId = req.params.id;
+    let product = await Product.findById(proId);
 
-    Product.findById(proId).then((product) => {
-      res.render("user/product_details", {
-        product,
-        proId,
-        user: req.session.user,
-      });
+    let review = await Review.find({ product: proId }).populate("user");
+    res.render("user/product_details", {
+      product,
+      review,
+      proId,
+      user: req.session.user,
     });
   } catch (error) {
     res.render("admin/error");
@@ -483,6 +496,10 @@ const postCheckout = async (req, res) => {
     if (req.body.address) {
       let user = req.session.user;
       let userId = user._id;
+      let total = req.body.total;
+      let coupon=  await Coupon.findOne({ code:req.body.couponCod});
+      console.log(coupon);
+      const paymentMethod = req.body.paymentMethod;
       let address = await Address.findOne({ user: userId });
       const deliveryAddress = address.address.find(
         (el) => el._id.toString() === req.body.address
@@ -490,13 +507,13 @@ const postCheckout = async (req, res) => {
       let cart = await Cart.findById(req.body.cartId);
       let proId = cart.items.product;
       if (req.body.paymentMethod === "cash on delivery") {
-        const paymentMethod = req.body.paymentMethod;
+       
         const newOrder = new Order({
           date: new Date(),
           time: new Date().toLocaleTimeString(),
           userId: userId,
           products: cart.items,
-          total: req.body.total,
+          total: total,
           address: deliveryAddress,
           paymentMethod: paymentMethod,
           paymentStatus: "Payment Pending",
@@ -514,7 +531,13 @@ const postCheckout = async (req, res) => {
               { $inc: { stock: -el.quantity } }
             );
           });
-
+          if(coupon){
+          let cartCount = await Coupon.findOneAndUpdate(
+            { _id:coupon._id },
+            { $inc: { generateCount: -1 } }
+          );
+        }
+                
           await Cart.findOneAndRemove({ userId: result.userId }).then(
             (result) => {
               res.json({ cashOnDelivery: true });
@@ -529,7 +552,7 @@ const postCheckout = async (req, res) => {
           time: new Date().toLocaleTimeString(),
           userId: userId,
           products: cart.items,
-          total: req.body.total,
+          total: total,
           address: deliveryAddress,
           paymentMethod: paymentMethod,
           paymentStatus: "Payment Completed",
@@ -538,6 +561,7 @@ const postCheckout = async (req, res) => {
         });
         newOrder.save().then((result) => {
           let userOrderData = result;
+          req.session.orderId = result._id;
 
           id = result._id.toString();
           instance.orders.create(
@@ -548,6 +572,7 @@ const postCheckout = async (req, res) => {
             },
             (err, order) => {
               console.log(err, "errorrrrrrrrr");
+              console.log(order,"orderrrr");
               let response = {
                 Razorpay: true,
                 razorpayOrderData: order,
@@ -558,6 +583,100 @@ const postCheckout = async (req, res) => {
             }
           );
         });
+      } else if (req.body.paymentMethod === "Wallet") {
+        user = await User.findOne({ _id: req.session.user._id });
+        console.log(user.wallet);
+
+        const walletBalance = user.wallet;
+        console.log(total);
+        if (walletBalance < total) {
+          const balancePayment = total -walletBalance;
+          console.log(balancePayment);
+              
+          const newOrder = new Order({
+            date: new Date().toLocaleDateString(),
+            time: new Date().toLocaleTimeString(),
+            userId: userId,
+            products: cart.items,
+            total: total,
+            address: deliveryAddress,
+            paymentMethod: "Wallet",
+            paymentStatus: "Payment pending",
+            orderStatus: "orderconfirmed",
+            track: "orderconfirmed",
+          });
+          newOrder.save().then((result) => {
+            let userOrderData = result;
+            req.session.orderId = result._id;
+
+            id = result._id.toString();
+            instance.orders.create(
+              {
+                amount: balancePayment * 100,
+                currency: "INR",
+                receipt: id,
+              },
+              (err, order) => {
+                console.log(err, "errorrrrrrrrr");
+                let response = {
+                  Razorpay: true,
+                  ordertotal: walletBalance,
+                  razorpayOrderData: order,
+                  userOrderData: userOrderData,
+                };
+
+                res.json(response);
+              }
+            );
+        
+          })
+        } else {
+                
+          const newOrder = new Order({
+            date: new Date(),
+            time: new Date().toLocaleTimeString(),
+            userId: userId,
+            products: cart.items,
+            total: total,
+            address: deliveryAddress,
+            paymentMethod: "Wallet",
+            paymentStatus: "Payment completed",
+            orderStatus: "orderconfirmed",
+            track: "orderconfirmed",
+          });
+          newOrder.save().then(async (result) => {
+            req.session.orderId = result._id;
+
+            let order = await Order.findOne({ _id: result._id });
+            const findProductId = order.products;
+            findProductId.forEach(async (el) => {
+              let removeQuantity = await Product.findOneAndUpdate(
+                { _id: el.product },
+                { $inc: { stock: -el.quantity } }
+              );
+            });
+
+            let walletAmount = await User.findOneAndUpdate(
+              { _id:userId },
+              { $inc: { wallet: -total} }
+            );
+            if(coupon){
+              let cartCount = await Coupon.findOneAndUpdate(
+                { _id:coupon._id },
+                { $inc: { generateCount: -1 } }
+              );
+            }
+  
+            await Cart.findOneAndRemove({ userId: result.userId }).then(
+              (result) => {
+                res.json({wallet:true})
+              }
+            );
+              
+          })
+        }
+
+
       } else {
         res.json({ choosePay: true });
       }
@@ -572,6 +691,7 @@ const postCheckout = async (req, res) => {
 // verify payment
 const verifyPayment = async (req, res) => {
   try {
+    console.log(req.bod);
     let razorpayOrderDataId = req.body["payment[razorpay_order_id]"];
 
     let paymentId = req.body["payment[razorpay_payment_id]"];
@@ -585,25 +705,40 @@ const verifyPayment = async (req, res) => {
       paymentSignature,
       "DvG40o8cF8F6bHGUkMHyeMPE"
     );
-
+console.log(validate);
     if (validate) {
       let order = await Order.findById(userOrderDataId);
+      const findProductId = order.products;
       orderStatus = "Order Placed";
       paymentStatus = "Payment Completed";
-      order.save().then((result) => {
-        res.json({ status: true });
-      });
+      await order.save().then(async(result) => {
+     
+    
+
+          console.log(order.paymentMethod);
+     if(order.paymentMethod== "Wallet"){
+         console.log("sa");
+      let walletAmount = await User.findOneAndUpdate(
+        { _id: req.session.user._id },
+        { $inc: { wallet: -500} }
+      );
+
+      console.log(walletAmount);
+     }
       findProductId.forEach(async (el) => {
         let removeQuantity = await Product.findOneAndUpdate(
           { _id: el.product },
           { $inc: { stock: -el.quantity } }
         );
       });
-      await Cart.findOneAndRemove({ userId: req.session.user._id }).then(
-        (result) => {
-        }
-      );
+      await Cart.findOneAndRemove({ userId: req.session.user._id }).then(()=>{
+        res.json({ status: true });
+      })
+
+    });
+
     }
+
   } catch (error) {
     res.render("admin/error");
   }
@@ -814,112 +949,133 @@ const postEditAddress = async (req, res) => {
 };
 
 const verifyCoupon = async (req, res) => {
-  try{
-  let couponcode = req.body.CouponCode;
-  let total = req.body.total;
-  let grandtotal;
-  let couponMsg;
-
-  let coupon = await Coupon.find({
-    code: couponcode,
-    status: "ACTIVE",
-  });
-  console.log(coupon);
-  if (coupon.length == 0) {
-    couponMsg = "Coupon Invalid";
-    res.json({ status: false, couponMsg });
-  } else {
-    let couponType = coupon[0].couponType;
-    let cutOff = parseInt(coupon[0].cutOff);
-    let maxRedeemAmount = parseInt(coupon[0].maxRedeemAmount);
-    let minCartAmount = parseInt(coupon[0].minCartAmount);
-    let generateCount = parseInt(coupon[0].generateCount);
-    if (generateCount != 0) {
-      if (couponType == "Amount") {
-        if (total < minCartAmount) {
-          couponMsg =
-            "Minimum Rs." + minCartAmount + " need to Apply this Coupon";
-          res.json({ status: false, couponMsg });
-        } else {
-          grandtotal = Math.round(total - cutOff);
-          let response = {
-            status: true,
-            grandtotal: grandtotal,
-            couponMsg,
-            CutOff: cutOff,
-          };
-          res.json(response);
-        }
-      } else if ((couponType = "Percentage")) {
-        if (total < minCartAmount) {
-          couponMsg =
-            "Minimum Rs." + minCartAmount + " need to Apply this Coupon";
-          res.json({ status: false, couponMsg });
-        } else {
-          let reduceAmount = Math.round((total * cutOff) / 100);
-          if (reduceAmount > maxRedeemAmount) {
-            grandtotal = Math.round(total - maxRedeemAmount);
-            let response = {
-              status: true,
-              grandtotal: grandtotal,
-              couponMsg,
-              CutOff: maxRedeemAmount,
-            };
-            res.json(response);
+  try {
+    let couponcode = req.body.CouponCode;
+    let total = req.body.total;
+    let grandtotal;
+    let couponMsg;
+    req.session.couponCode=couponcode
+    let coupon = await Coupon.find({
+      code: couponcode,
+      status: "ACTIVE",
+    });
+    if (coupon.length == 0) {
+      couponMsg = "Coupon Invalid";
+      res.json({ status: false, couponMsg });
+    } else {
+      let couponType = coupon[0].couponType;
+      let cutOff = parseInt(coupon[0].cutOff);
+      let maxRedeemAmount = parseInt(coupon[0].maxRedeemAmount);
+      let minCartAmount = parseInt(coupon[0].minCartAmount);
+      let generateCount = parseInt(coupon[0].generateCount);
+      if (generateCount != 0) {
+        if (couponType == "Amount") {
+          if (total < minCartAmount) {
+            couponMsg =
+              "Minimum Rs." + minCartAmount + " need to Apply this Coupon";
+            res.json({ status: false, couponMsg });
           } else {
-            grandtotal = Math.round(total - reduceAmount);
+            grandtotal = Math.round(total - cutOff);
             let response = {
               status: true,
               grandtotal: grandtotal,
               couponMsg,
-              CutOff: reduceAmount,
+              CutOff: cutOff,
             };
             res.json(response);
           }
+        } else if ((couponType = "Percentage")) {
+          if (total < minCartAmount) {
+            couponMsg =
+              "Minimum Rs." + minCartAmount + " need to Apply this Coupon";
+            res.json({ status: false, couponMsg });
+          } else {
+            let reduceAmount = Math.round((total * cutOff) / 100);
+            if (reduceAmount > maxRedeemAmount) {
+              grandtotal = Math.round(total - maxRedeemAmount);
+              let response = {
+                status: true,
+                grandtotal: grandtotal,
+                couponMsg,
+                CutOff: maxRedeemAmount,
+              };
+              res.json(response);
+            } else {
+              grandtotal = Math.round(total - reduceAmount);
+              let response = {
+                status: true,
+                grandtotal: grandtotal,
+                couponMsg,
+                CutOff: reduceAmount,
+              };
+              res.json(response);
+            }
+          }
         }
+      } else {
+        couponMsg = "Coupon limit Exceeded";
+        res.json({ status: false, couponMsg });
       }
-    } else {
-      couponMsg = "Coupon limit Exceeded";
-      res.json({ status: false, couponMsg });
     }
+  } catch (error) {
+    res.render("admin/error");
   }
-} catch (error) {
-  res.render("admin/error");
-}
 };
 
 // requist to refund
 
 const requistRefund = async (req, res) => {
-  try{
-  orderId = req.query.orderId;
-  const order = await Order.findOne({ _id: orderId }).populate("userId");
-  if (order.userId.wallet === 0) {
-    await User.updateOne(
-      { _id: order.userId },
-      { $set: { wallet: order.total }, new: true },
-      { upsert: true }
-    );
-  } else {
-    await User.findOneAndUpdate(
-      { _id: order.userId },
-      {
-        $inc: {
-          wallet: order.total,
-        },
-      }
-    );
+  try {
+    orderId = req.query.orderId;
+    const order = await Order.findOne({ _id: orderId }).populate("userId");
+    if (order.userId.wallet === 0) {
+      await User.updateOne(
+        { _id: order.userId },
+        { $set: { wallet: order.total }, new: true },
+        { upsert: true }
+      );
+    } else {
+      await User.findOneAndUpdate(
+        { _id: order.userId },
+        {
+          $inc: {
+            wallet: order.total,
+          },
+        }
+      );
+    }
+    await Order.findByIdAndUpdate(orderId, {
+      paymentStatus: "Refunded",
+    }).then((response) => {
+      res.json({ status: true });
+    });
+  } catch (error) {
+    res.render("admin/error");
   }
-
-  await Order.findByIdAndUpdate(orderId, {
-    paymentStatus: "Refunded",
-  }).then((response) => {
-    res.json({ status: true });
-  });
-} catch (error) {
-  res.render("admin/error");
-}
 };
+
+// post review
+
+const postReview = async (req, res) => {
+  try {
+    let { rating, review, product, title } = req.body;
+    rating = rating * 20;
+    Object.assign(req.body, { user: req.session.user._id });
+    const newReview = await new Review(req.body);
+    await newReview.save().then(async () => {
+      let rat = ({} = await Product.findById(product, { _id: 0, rating: 1 }));
+      if (rat.rating) rating = (rating + rat.rating) / 2;
+      await Product.findByIdAndUpdate(product, {
+        $inc: { review: 1 },
+        $set: { rating: rating },
+      });
+      res.json();
+    });
+  } catch (error) {
+    res.render("admin/error");
+  }
+};
+
 module.exports = {
   homeView,
   menView,
@@ -956,4 +1112,5 @@ module.exports = {
   returnOrder,
   verifyCoupon,
   requistRefund,
+  postReview,
 };

@@ -180,22 +180,22 @@
                     
 					      <div class="col-lg-4">
 						  <div class="row">
- <!--  -->
+                              <!--  -->
                             
- <div class="col-md-12">
-	<!-- <form action="#"> -->
-		
-	  <div class="row form-group">
-		<div class="col-sm-9">
-		  <input type="text" name="quantity" id="couponInput" class="form-control input-number" placeholder="Your Coupon Number...">
-		</div>
-		<p class="pl-5" id="CouponError"></p>
-		<div class="col-sm-3 mt-3 ">
-		  <input type="button" onclick="applyCoupon('<%= cartItems.cartTotal%>')" style="display: block;" id="applyBtn" value="Apply Coupon" class="btn btn-primary">
-		</div>
-	  </div>
-	<!-- </form> -->
-  </div>
+                               <div class="col-md-12">
+	                    <!-- <form action="#"> -->
+	  	
+	                           <div class="row form-group">
+	                         	<div class="col-sm-9">
+	                         	  <input type="text" name="couponCod" id="couponInput" class="form-control input-number" placeholder="Your Coupon Number...">
+	                         	</div>
+	                         	<p class="pl-5" id="CouponError"></p>
+		                   <div class="col-sm-3 mt-3 ">
+		                         <input type="button" onclick="applyCoupon('<%= cartItems.cartTotal%>')" style="display: block;" id="applyBtn" value="Apply Coupon" class="btn btn-primary">
+		                          </div>
+	                    </div>
+	                  <!-- </form> -->
+                 </div>
  
 
    <!--  -->
@@ -247,14 +247,14 @@
 										</div>
 									</div>
 
-									<input type="text" name="cartId"  value="<%= cartItems._id %>" hidden>
-									<!-- <div class="form-group">
+									<div class="form-group">
 										<div class="col-md-12">
 											<div class="radio">
-											   <label><input type="radio" name="optradio"> Paypal</label>
+											   <label><input type="radio" id="wallet"  value="Wallet" name="paymentMethod">wallet</label>
 											</div>
 										</div>
-									</div> -->
+									</div>
+									<input type="text" name="cartId"  value="<%= cartItems._id %>" hidden>
 									<div class="form-group">
 										<div class="col-md-12">
 											<div class="checkbox">
@@ -337,7 +337,7 @@
 
 <script>
 
-
+//  let couponCode=document.getElementById("couponInput").value
   let userOrderData
   $("#checkout-form").submit((e) => {
     e.preventDefault();
@@ -391,7 +391,7 @@ Toast.fire({
 			// alert(response.message1);
             // return;
 		}
-        if (response.cashOnDelivery) {
+        if (response.cashOnDelivery||response.wallet) {
           Swal.fire({
             title: "Order Placed Successfully",
             icon: "success",
@@ -412,6 +412,7 @@ Toast.fire({
           console.log("test ok");
           let razorpayoderData = response.razorpayoderData;
           userOrderData = response.userOrderData;
+		  ordertotal=response.ordertotal
           console.log(userOrderData,"<<<<<<<<<<<<<<<<<<<<<<<");
           console.log(razorpayoderData);
           var options = {
@@ -460,6 +461,7 @@ Toast.fire({
         payment,
         razorpayOrderData,
         userOrderData,
+
       },
       method: "post",
      

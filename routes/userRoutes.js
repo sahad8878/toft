@@ -36,7 +36,8 @@ getOrderDetails,
 cancelOrder,
 returnOrder,
 verifyCoupon,
-requistRefund
+requistRefund,
+postReview
 
 } = require("../controllers/userController");
 const router = express.Router();
@@ -59,7 +60,7 @@ router.get('/order-complete',userSession,checkBlock,getOrderComplete)
 router.get('/editAddress/:id',userSession,checkBlock,getEditAddress)
 router.get('/myOrder',userSession,checkBlock,getMyOrder)
 router.get('/orderDetails',userSession,checkBlock,getOrderDetails)
-router .get("/cancelOrder",cancelOrder)
+router.get("/cancelOrder",userSession,checkBlock,cancelOrder)
 // post routes
 router.post("/loginUser", loginUser);
 router.post("/registerUser",registerUser);
@@ -67,12 +68,15 @@ router.post("/Otp",postOtp);
 router.post('/cart/:id',userSession,checkBlock,addToCart)
 router.post('/addAdress',userSession,checkBlock,postAdress)
 router.post('/checkout/:CartId',userSession,checkBlock,postCheckout)
-router.post('/editAddress/:id',postEditAddress)
+router.post('/editAddress/:id',userSession,checkBlock,postEditAddress)
 router.post('/verifyPayment',verifyPayment)
 router.post('/paymentFailed',paymentFailed)
-router.post('/returnOrder',returnOrder)
+router.post('/returnOrder',userSession,checkBlock,returnOrder)
 router.post('/verifyCoupon',verifyCoupon)
-router.post('/refund',requistRefund)
+router.post('/refund',userSession,checkBlock,requistRefund)
+router.post('/review',userSession,checkBlock,postReview)
+
+
 router.delete('/profile/',userSession,checkBlock,deleteAddress)
 
 router

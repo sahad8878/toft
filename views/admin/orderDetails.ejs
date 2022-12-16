@@ -14,7 +14,7 @@
       <p class="text-gray-600 dark:text-gray-400">
         <!-- Tracking Id: <span class="font-semibold dark:text-gray-300" id="tracking_id"><%= order.id %></span><br /> -->
         Order Number: <span class="font-semibold dark:text-gray-300" id="order_number"><%= order.id %></span><br />
-        Date: <span class="font-semibold dark:text-gray-300" id="order_date"><%= order.date %></span><br />
+        Date: <span class="font-semibold dark:text-gray-300" id="order_date"><%= order.updatedAt.toLocaleDateString() %></span><br />
         Amount: <span class="font-semibold dark:text-gray-300" id="order_amount"><%= order.total %></span><br />
         Payment Staus: <span class="font-semibold dark:text-gray-300" id="order_amount"><%= order.paymentStatus %></span><br />
 

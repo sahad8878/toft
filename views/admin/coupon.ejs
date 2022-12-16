@@ -29,11 +29,14 @@
               >
                 <th class="px-4 py-3">coupon Cod</th>
                 <th class="px-4 py-3">cut-Off</th>
+                <th class="px-4 py-3">Min Amount</th>
+                <th class="px-4 py-3"> Max Amount</th>
                 <th class="px-4 py-3">Coupen left</th>
                 <th class="px-4 py-3">Expire Date</th>
                 <th class="px-4 py-3"></th>
                 <th class="px-4 py-3"></th>
                 <th class="px-4 py-3"></th>
+                 
 
               </tr>
             </thead>
@@ -72,6 +75,8 @@
                     
 
                 <% } %>
+                <td class="px-4 py-3 text-sm"><%= coupons[i]. minCartAmount %></td>
+                <td class="px-4 py-3 text-sm"><%= coupons[i].maxRedeemAmount %></td>
                 
                 <td class="px-4 py-3 text-sm"><%= coupons[i].generateCount %></td>
                 <td class="px-4 py-3 text-sm"><%= coupons[i].expireDate.toLocaleDateString() %></td>

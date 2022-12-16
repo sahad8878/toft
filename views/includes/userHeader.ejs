@@ -81,7 +81,14 @@ href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css"
         <div class="row">
           <div class="col-sm-12 text-left menu-1">
             <ul>
-              <li class="active"><a href="/">Home</a></li>
+              <% if (locals.homView) { %>
+                
+                <li class="active"><a href="/">Home</a></li>
+                 <% } else { %>
+                  
+                  <li><a href="/">Home</a></li>
+
+                <% } %>
               <!-- <li class="has-dropdown">
                 <a href="/men">Men</a>
                 <ul class="dropdown">
@@ -94,9 +101,26 @@ href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css"
               </li> -->
               <!-- <li><a href="/men">Men</a></li>
               <li><a href="/women">Women</a></li> -->
-              <li><a href="/about">About</a></li>
-              <li><a href="/contact">Contact</a></li>
-              <li ><a href="/cart"><i class="icon-shopping-cart"></i> Cart [0]</a></li>
+              <% if (locals.aboutView) { %>
+                <li class="active"><a href="/about">About</a></li>
+                <% } else { %>
+
+                  <li><a href="/about">About</a></li>
+                <% } %>
+
+                <% if (locals.contactView) { %>
+                  <li class="active"><a href="/contact">Contact</a></li>
+                  <% } else { %>
+  
+                    <li><a href="/contact">Contact</a></li>
+                  <% } %>
+                  <% if (locals.cartView) { %>
+                    <li class="active"><a href="/cart"><i class="icon-shopping-cart"></i> Cart</a></li>
+
+                    <% } else { %>
+                    <li ><a href="/cart"><i class="icon-shopping-cart"></i> Cart</a></li>
+                    <% } %>
+
               <!-- <li class="cart ml-6  font-weight-bold text-right"><a href="/login"><i ></i> login</a></li> -->
              <% if (!user) { %>
               <li class=" cart ml-6 font-weight-bold ">
