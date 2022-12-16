@@ -26,17 +26,12 @@ const homeView = async (req, res) => {
   try {
     let product = await Product.find();
     let banner = await Banner.find({ delete: { $ne: true } });
-
-    // let cart =await Cart.find({owner:req.session.user._id})
-    // console.log(cart);
-
-    // let count=cart.items.length
-    // console.log(count);
     res.render("user/home", { product, user: req.session.user, banner });
   } catch (error) {
     res.render("admin/error");
   }
 };
+
 // Ṃen page
 const menView = async (req, res) => {
   try {
@@ -121,13 +116,9 @@ const addToCart = async (req, res) => {
     let ownerId = req.session.user._id;
     const user = await Cart.findOne({ owner: req.session.user._id });
     const product = await Product.findOne({ _id: productId });
-    console.log(product.stock);
     if (product.stock < 1) {
-      console.log("no stockkkkkkkkkkkkk");
       res.json({ noAvailability: true });
     } else {
-      console.log("stockkkkkkkkkkkkk he");
-
       const cartTotal = product.price;
       if (!user) {
         const addToCart = await Cart({
@@ -139,7 +130,6 @@ const addToCart = async (req, res) => {
           res.redirect("/productDetails/" + productId);
         });
       } else {
-        console.log("add cheytho");
         const existProduct = await Cart.findOne({
           owner: req.session.user._id,
           "items.product": productId,
@@ -165,14 +155,8 @@ const addToCart = async (req, res) => {
               },
             },
           ]);
-          console.log(proQuantity);
           const quantity = proQuantity[0].items[0].quantity;
-          console.log(quantity);
-
-          console.log(product.stock);
-
           if (product.stock <= quantity) {
-            console.log(" all ready stock kayin ");
             res.json({ stockReached: true });
           } else {
             await Cart.findOneAndUpdate(
@@ -214,7 +198,6 @@ const addToCart = async (req, res) => {
 
 const deleteCartProduct = async (req, res) => {
   try {
-    console.log("delete starting");
     const userId = req.session.user;
     const productId = req.query.productId;
     const product = await Product.findOne({ _id: productId });
@@ -247,7 +230,6 @@ const cartChangeQuantity = async (req, res) => {
     } else {
       var productPrice = -product.price;
     }
-    console.log("heeeeeeee");
     const proQuantity = await Cart.aggregate([
       { $match: { owner: mongoose.Types.ObjectId(req.session.user._id) } },
       {
@@ -263,16 +245,11 @@ const cartChangeQuantity = async (req, res) => {
         },
       },
     ]);
-    console.log(proQuantity);
     const quantity = proQuantity[0].items[0].quantity;
-    console.log(quantity);
-
-    console.log(product.stock);
     if (product.stock <= quantity && count == 1) {
-      console.log("stock reached");
+    
       res.json({ stockReached: true });
     } else {
-      console.log("not reached");
       const cart = await Cart.findOneAndUpdate(
         { _id: cartId, "items.product": productId },
         {
@@ -290,6 +267,7 @@ const cartChangeQuantity = async (req, res) => {
     res.render("admin/error");
   }
 };
+
 // get login
 const loginView = (req, res) => {
   try {
@@ -303,6 +281,7 @@ const loginView = (req, res) => {
     res.render("admin/error");
   }
 };
+
 //post login user
 const loginUser = async (req, res) => {
   try {
@@ -317,7 +296,6 @@ const loginUser = async (req, res) => {
             req.session.loggedIn = true;
             req.session.user = user;
             res.redirect("/");
-            console.log("login succeded");
           } else {
             req.flash("blocked", "you are blocked");
             res.redirect("/login");
@@ -374,6 +352,8 @@ const registerUser = async (req, res) => {
     res.render("admin/error");
   }
 };
+
+// post otp
 const postOtp = async (req, res) => {
   try {
     const { name, number, email, password } = req.session.user;
@@ -441,7 +421,6 @@ const resendOtp = (req, res) => {
   try {
     const { number } = req.session.user;
     const phone = number;
-    console.log(phone);
     sendSms(phone);
     res.redirect("/otp");
   } catch (error) {
@@ -478,8 +457,6 @@ const getCheckout = async (req, res) => {
     }
 
     if (check == true) {
-      console.log("prodcut not stock");
-
       req.flash("notAvailable", products + " Not available in stock");
       res.redirect("/cart");
     } else {
@@ -503,12 +480,10 @@ const getCheckout = async (req, res) => {
 
 const postCheckout = async (req, res) => {
   try {
-    console.log(req.body.paymentMethod);
     if (req.body.address) {
       let user = req.session.user;
       let userId = user._id;
       let address = await Address.findOne({ user: userId });
-      console.log(req.body.total, "total body");
       const deliveryAddress = address.address.find(
         (el) => el._id.toString() === req.body.address
       );
@@ -572,8 +547,7 @@ const postCheckout = async (req, res) => {
               receipt: id,
             },
             (err, order) => {
-              console.log(err, "errrrrrrrrrrrrrrr");
-              console.log(order, "orderrrrrrrrrrrrrrrrrrr");
+              console.log(err, "errorrrrrrrrr");
               let response = {
                 Razorpay: true,
                 razorpayOrderData: order,
@@ -627,7 +601,6 @@ const verifyPayment = async (req, res) => {
       });
       await Cart.findOneAndRemove({ userId: req.session.user._id }).then(
         (result) => {
-          console.log("cart removed");
         }
       );
     }
@@ -662,16 +635,15 @@ const getMyOrder = async (req, res) => {
     let orders = await Order.find({ userId: req.session.user }).sort({
       updatedAt: -1,
     });
-    // console.log(orders,"my orders");
     res.render("user/myOrder", { user: req.session.user, orders });
   } catch (error) {
     res.render("admin/error");
   }
 };
 
+// get order details
 const getOrderDetails = async (req, res) => {
   try {
-    console.log(req.query.id);
     let orderDetails = await Order.findOne({ _id: req.query.id }).populate(
       "products.product"
     );
@@ -689,7 +661,6 @@ const cancelOrder = async (req, res) => {
     orderStatus: "Cancelled",
     track: "Cancelled",
   }).then((result) => {
-    console.log(result);
     const findProductId = result.products;
     findProductId.forEach(async (el) => {
       let removeQuantity = await Product.findOneAndUpdate(
@@ -704,8 +675,6 @@ const cancelOrder = async (req, res) => {
 const returnOrder = async (req, res) => {
   orderId = mongoose.Types.ObjectId(req.body.oid.trim());
   value = req.body.value;
-
-  console.log(orderId, value, "return order");
 
   await Order.findByIdAndUpdate(orderId, {
     track: "Returnd",
@@ -796,7 +765,6 @@ const deleteAddress = async (req, res) => {
 const getEditAddress = async (req, res) => {
   try {
     let addressDB = await Address.findOne({ user: req.session.user });
-
     const address = addressDB.address.find(
       (el) => el._id.toString() === req.params.id
     );
@@ -846,8 +814,7 @@ const postEditAddress = async (req, res) => {
 };
 
 const verifyCoupon = async (req, res) => {
-  console.log(req.body.CouponCode, "coupen cod");
-  console.log(req.body.total);
+  try{
   let couponcode = req.body.CouponCode;
   let total = req.body.total;
   let grandtotal;
@@ -916,16 +883,17 @@ const verifyCoupon = async (req, res) => {
       res.json({ status: false, couponMsg });
     }
   }
+} catch (error) {
+  res.render("admin/error");
+}
 };
 
 // requist to refund
 
 const requistRefund = async (req, res) => {
+  try{
   orderId = req.query.orderId;
-  console.log(orderId, "refund");
-
   const order = await Order.findOne({ _id: orderId }).populate("userId");
-  console.log(order.userId.wallet);
   if (order.userId.wallet === 0) {
     await User.updateOne(
       { _id: order.userId },
@@ -948,6 +916,9 @@ const requistRefund = async (req, res) => {
   }).then((response) => {
     res.json({ status: true });
   });
+} catch (error) {
+  res.render("admin/error");
+}
 };
 module.exports = {
   homeView,
