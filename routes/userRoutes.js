@@ -1,5 +1,7 @@
 const express = require("express");
 const upload =require('../middlewares/multer')
+const Product = require("../models/product");
+const {menPagination,womenPagination}=require('../middlewares/pagination')
 const {userSession ,noSession, checkBlock}= require('../middlewares/userSession')
 const {
   homeView,
@@ -42,9 +44,9 @@ postReview
 } = require("../controllers/userController");
 const router = express.Router();
   // get routes
-router.get("/", homeView);
-router.get('/men',menView)
-router.get('/women',womenView)
+router.get("/",homeView) ;
+router.get('/men',menPagination(Product),menView)
+router.get('/women',womenPagination(Product), womenView)
 router.get('/about',aboutView)
 router.get('/contact',contactView)
 router.get("/register", registerView);

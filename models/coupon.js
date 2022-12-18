@@ -18,7 +18,7 @@ CouponSchema = new Schema ({
     },
     status : {
         type : String,
-        default : 'BLOCK'
+        default : 'ACTIVE'
     },
     couponType:{
         type:String,

@@ -59,8 +59,14 @@ const oderSchema = new mongoose.Schema({
     type: String,
   },
   returnreason:{
-    trpe:String,
-  }
+    type:String,
+  },
+  useWallet:{
+    type:Number,
+  },
+  couponDiscount:{
+    type:Number,
+  },
 
 },{
   timestamps:true  

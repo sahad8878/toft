@@ -481,7 +481,7 @@ try{
 
 const getCoupon= async (req, res) => {
 try{
-const coupons=await Coupon.find().sort({ updatedAt: -1 });
+const coupons=await Coupon.find().sort({ timeStamp: -1 });
   res.render("admin/coupon",{coupons,couponView:true})
 } catch (error) {
   res.render("admin/error");
@@ -494,19 +494,25 @@ const coupons=await Coupon.find().sort({ updatedAt: -1 });
 
 const getAddCoupon= async (req, res) => {
 try{
-  res.render("admin/add-coupon",{addCouponErr:req.flash("addCouponErr"),couponView:true})
+  res.render("admin/add-coupon",{
+    addCouponErr:req.flash("addCouponErr"),
+    couponView:true,
+    couponExistErr: req.flash("couponExistErr")
+  })
 } catch (error) {
   res.render("admin/error");
 }
 }
 
 // post add coupoon 
-const postAddCoupon=(req,res) => {
+const postAddCoupon=async(req,res) => {
   try{
  const {code,CouponType,cutOff,minAmount,maxAmount,genetateCount,expireDate}=req.body
 if (code&&CouponType&&cutOff&&minAmount&&maxAmount&&genetateCount&&expireDate) {
-  Coupon.find({ code: code }).then((result) => {
-    if (result.length == 0) {
+  let regExp=new RegExp(code,'i')
+
+     const coupon=await  Coupon.find({ code: {$regex:regExp}})
+    if (coupon.length == 0) {
       const  coupon = new Coupon({
         code: code,
         cutOff: cutOff,
@@ -521,9 +527,10 @@ if (code&&CouponType&&cutOff&&minAmount&&maxAmount&&genetateCount&&expireDate) {
       });
     } else {
       couponExistErr = 'Coupon Already Exist';
+      req.flash("couponExistErr","Coupon Already Exist")
       res.redirect('/admin/addcoupon');
     }
-  });
+
 
 }else{
 console.log("fill ful coloms");
@@ -594,7 +601,7 @@ const salesReport=async(req,res)=>{
   try{
   const salesReport = await Order.aggregate(
     [{
-      $match : { 'orderStatus' : { $ne: 'Cancelled'}}
+      $match : { 'orderStatus' : { $eq: 'Delivered'}}
     },
     {
         $group : {
@@ -605,14 +612,72 @@ const salesReport=async(req,res)=>{
             
                 }
 
-            },{$sort:{updatedAt:-1}}
+            },{$sort:{date:-1}}
     ])
+
   // const filterOrder = await Order.find({})
 res.render('admin/sales_report',{salesReport,})
 } catch (error) {
   res.render("admin/error");
 }
 }
+
+// month report
+const MonthReport= async (req, res) => {
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const salesReport = await Order.aggregate(
+    [{
+      $match : { 'orderStatus' : { $eq: 'Delivered'}}
+    },
+    {
+        $group : {
+            _id : { month: { $month: "$createdAt" }, },
+            totalPrice: { $sum:  "$total"  },
+            products: { $sum :{$size: "$products"}},
+            count: { $sum: 1 },
+            
+                }
+
+            },{$sort:{date:-1}}
+    ])
+ const newSalesReport = salesReport.map((el)=>{
+  let newEl= {...el}
+  newEl._id.month = months[newEl._id.month-1]
+return newEl;
+ })
+ console.log(newSalesReport);
+  // const filterOrder = await Order.find({})
+res.render('admin/monthReport',{salesReport:newSalesReport,})
+
+}
+
+
+const yearReport=async(req,res)=>{
+  try{
+  const salesReport = await Order.aggregate(
+    [{
+      $match : { 'orderStatus' : { $eq: 'Delivered'}}
+    },
+    {
+        $group : {
+            _id : { year: { $year: "$createdAt" } },
+            totalPrice: { $sum:  "$total"  },
+            products: { $sum :{$size: "$products"}},
+            count: { $sum: 1 },
+            
+                }
+
+            },{$sort:{
+              createdAt:-1}}
+    ])
+
+  // const filterOrder = await Order.find({})
+res.render('admin/yearReport',{salesReport,})
+} catch (error) {
+  res.render("admin/error");
+}
+}
+
 
 // error page
 const errorPage = (req, res) => {
@@ -652,6 +717,8 @@ module.exports = {
    couponActive,
    couponBlock,
    GetChartDetails,
-   salesReport
+   salesReport,
+   MonthReport,
+   yearReport
 
 };

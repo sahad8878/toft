@@ -13,6 +13,10 @@
             <div class=" alert alert-danger col-md-12 text-center "style="color: white;background-color: rgb(221, 118, 118);" role="alert">
               <p class="text-danger"><%=   addCouponErr %> </p>
             </div>
+            <% } else if (couponExistErr.length>0) { %>
+              <div class=" alert alert-danger col-md-12 text-center "style="color: white;background-color: rgb(221, 118, 118);" role="alert">
+                <p class="text-danger"><%=   couponExistErr %> </p>
+              </div>
               <% } %> 
          <label class="block text-sm">
             <span class="text-gray-700 dark:text-gray-400">Coupon Code</span>

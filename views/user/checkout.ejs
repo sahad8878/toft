@@ -181,20 +181,16 @@
 					      <div class="col-lg-4">
 						  <div class="row">
                               <!--  -->
-                            
                                <div class="col-md-12">
-	                    <!-- <form action="#"> -->
-	  	
 	                           <div class="row form-group">
 	                         	<div class="col-sm-9">
-	                         	  <input type="text" name="couponCod" id="couponInput" class="form-control input-number" placeholder="Your Coupon Number...">
+	                         	  <input type="text" name="couponCod" id="couponInput"  class="form-control input-number" placeholder="Your Coupon Number...">
 	                         	</div>
 	                         	<p class="pl-5" id="CouponError"></p>
 		                   <div class="col-sm-3 mt-3 ">
 		                         <input type="button" onclick="applyCoupon('<%= cartItems.cartTotal%>')" style="display: block;" id="applyBtn" value="Apply Coupon" class="btn btn-primary">
 		                          </div>
 	                    </div>
-	                  <!-- </form> -->
                  </div>
  
 
@@ -214,7 +210,7 @@
 												<% } %>
 											</ul>
 										</li>
-										<li><span>Sub Total</span> <span><input type="text" name="subtotal" id="totalAmount"  class="form-control" value="₹<%= cartItems.cartTotal%>" hidden >₹<%= cartItems.cartTotal%></span></li>
+										<li><span>Sub Total</span> <span><input type="text" name="subtotal" id="totalAmount"  class="form-control" value="<%= cartItems.cartTotal%>" hidden >₹<%= cartItems.cartTotal%></span></li>
 
 										<li><span>Shipping</span> <span>FREE</span></li>
 										<li><span>Discount</span> <span id="discountAmount">Nil</span></li>
@@ -293,10 +289,12 @@
 	  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 
-
 	  <script>
+		  var CouponCode;
 		function applyCoupon(subtotal) {
-		  let CouponCode = document.getElementById("couponInput").value;
+			
+		  CouponCode = document.getElementById("couponInput").value;
+		  console.log(CouponCode,'apply coupon');
 		  let total = subtotal;
 		  if (CouponCode == "") {
 			document.getElementById("CouponError").style.color = "red";
@@ -330,69 +328,84 @@
 			});
 		  }
 		}
-	  </script>
-	  
 
 
-
-<script>
-
-//  let couponCode=document.getElementById("couponInput").value
+ //  let couponCode=document.getElementById("couponInput").value
   let userOrderData
   $("#checkout-form").submit((e) => {
     e.preventDefault();
     console.log("vannu >>>>>>>>>>>>>>>");
-	
+	let couponAmount=document.getElementById("discountAmount").innerText 
+			console.log(couponAmount);
     $.ajax({
       url: "/checkout/<%= cartItems._id %>",
       method: "post",
-      data: $("#checkout-form").serialize(),
+      data: $("#checkout-form").serialize(),couponAmount,
       success: (response) => {
 		if(response.choosePay){
-			// alert(response.message);
 			const Toast = Swal.mixin({
-  toast: true,
-  position: 'top-end',
-  showConfirmButton: false,
-  timer: 3000,
-  timerProgressBar: true,
-  didOpen: (toast) => {
-    toast.addEventListener('mouseenter', Swal.stopTimer)
-    toast.addEventListener('mouseleave', Swal.resumeTimer)
-  }
-})
-
-Toast.fire({
-  icon: 'error',
-  title: 'please choose your your payment'
-})
+               toast: true,
+               position: 'top-end',
+               showConfirmButton: false,
+               timer: 3000,
+               timerProgressBar: true,
+               didOpen: (toast) => {
+                 toast.addEventListener('mouseenter', Swal.stopTimer)
+                 toast.addEventListener('mouseleave', Swal.resumeTimer)
+               }
+              } )
+            
+              Toast.fire({
+              icon: 'error',
+              title: 'please choose your your payment'
+              })
 
            
 		}else if (response.chooseAddress){
 
 			const Toast = Swal.mixin({
-  toast: true,
-  position: 'top-end',
-  showConfirmButton: false,
-  timer: 3000,
-  timerProgressBar: true,
-  didOpen: (toast) => {
-    toast.addEventListener('mouseenter', Swal.stopTimer)
-    toast.addEventListener('mouseleave', Swal.resumeTimer)
-  }
-})
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer)
+              toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+             })
 
-Toast.fire({
-  icon: 'error',
-  title: 'must add your delivery address'
-})
+             Toast.fire({
+              icon: 'error',
+              title: 'must add your delivery address'
+             })
 
 
 			// alert(response.message1);
             // return;
+		}else if(response.noBalance){
+			const Toast = Swal.mixin({
+             toast: true,
+             position: 'top-end',
+             showConfirmButton: false,
+             timer: 3000,
+             timerProgressBar: true,
+             didOpen: (toast) => {
+               toast.addEventListener('mouseenter', Swal.stopTimer)
+               toast.addEventListener('mouseleave', Swal.resumeTimer)
+             }
+              })
+              
+              Toast.fire({
+                icon: 'error',
+                title: 'There is no balance in wallet',
+              })
+
 		}
+
         if (response.cashOnDelivery||response.wallet) {
-          Swal.fire({
+
+				Swal.fire({
             title: "Order Placed Successfully",
             icon: "success",
             showDenyButton: false,
@@ -408,11 +421,14 @@ Toast.fire({
             //   location.href = "/";
             // }
           });
+		
+        
         } else if (response.Razorpay) {
           console.log("test ok");
           let razorpayoderData = response.razorpayoderData;
           userOrderData = response.userOrderData;
-		  ordertotal=response.ordertotal
+		  walletBalance=response.walletBalance
+		  console.log(walletBalance,"wallle balance");
           console.log(userOrderData,"<<<<<<<<<<<<<<<<<<<<<<<");
           console.log(razorpayoderData);
           var options = {
@@ -451,7 +467,9 @@ Toast.fire({
       },
     });
   });
+//   let Couponcode = document.getElementById("couponInput").value;
 
+    console.log(CouponCode,"veryfy payment");
     function verifyPayment(payment,razorpayOrderData) {
     console.log(razorpayOrderData,'orderrrrrrrrrrrrrrrrrrr dataaaaaaaaa');
    
@@ -461,7 +479,8 @@ Toast.fire({
         payment,
         razorpayOrderData,
         userOrderData,
-
+		CouponCode,
+		walletBalance
       },
       method: "post",
      

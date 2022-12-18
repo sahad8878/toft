@@ -35,7 +35,9 @@ deleteCoupen,
 couponActive,
 couponBlock,
 GetChartDetails,
-salesReport
+salesReport,
+MonthReport,
+yearReport
 }= require("../controllers/adminController")
 const router = express.Router();
 
@@ -71,6 +73,10 @@ router.get('/couponActive',session,couponActive)
 router.get('/couponBlock',session,couponBlock)
 router.get('/ChartDetails',GetChartDetails)
 router.get('/salesReport',session,salesReport)
+router.get('/monthReport',MonthReport)
+router.get('/yearReport',yearReport)
+
+
 // chain router
 router.
 route('/banner/')

@@ -116,6 +116,13 @@
 
                             <li><a href="#"><span class="font-weight-bold">Payment method</span> :<%= orderDetails.paymentMethod %> </a></li>
                             <li><a href="#"><span class="font-weight-bold">Payment Status</span> :<%= orderDetails.paymentStatus %> </a></li>
+                            <% if (orderDetails.couponDiscount >0) { %>
+                            <li><a href="#"><span class="font-weight-bold">Coupon Discount</span> :₹<%= orderDetails.couponDiscount %> </a></li>
+                            <% } %>
+                            <% if (orderDetails.useWallet>0) { %>
+                              <li><a href="#"><span class="font-weight-bold">Via Wallet</span> :₹<%= orderDetails.useWallet %> </a></li>
+                              <% } %>
+                            
                             <li><a href="#"><span class="font-weight-bold">Total</span> : Rs</a><%= orderDetails.total %></li>
 
                         </ul>
@@ -241,7 +248,7 @@
       
         <div class="container text-center mt-5">
             
-            <% if(orderDetails.orderStatus != 'Cancelled' && orderDetails.orderStatus != 'Delivered'&& orderDetails.orderStatus != 'Returnd' && orderDetails.orderStatus != 'Refunded'){ %>
+            <% if(orderDetails.orderStatus != 'Cancelled' && orderDetails.orderStatus != 'Delivered'&& orderDetails.orderStatus != 'Returnd'){ %>
                 <button onclick="cancelOrder('<%=orderDetails._id%>')" class="btn btn-primary">
                   Cancel Order
                 </button>
@@ -258,7 +265,7 @@
         <!-- <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
             Return Order
           </button> -->
-<% } else if (orderDetails.orderStatus == 'Returnd') { %>
+<% } else if (orderDetails.orderStatus == 'Returnd' && orderDetails.paymentStatus != 'Refunded') { %>
  
     <button onclick="requistRefund('<%=orderDetails._id%>')" class="btn btn-primary">
         Requist Refund

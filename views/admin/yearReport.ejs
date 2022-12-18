@@ -1,11 +1,10 @@
-
 <%- include('partials/header.ejs') %>
 
 
 <main class="h-full pb-16 overflow-y-auto">
     <div class="container px-6 mx-auto grid">
       <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
-        Sales Report
+        Year Report
       </h2>
      
       <!-- TABLE -->
@@ -21,44 +20,7 @@
           PDF
            </a>
         </button>
-        <button  id="download-button" type="button" class="btn btn-primary btn-ls btn-block login-button  " >
-          <a
-          href="/admin/monthReport"
-            class="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple" >
-            Month Report
-             </a>
-          </button>
-          <button  id="download-button" type="button" class="btn btn-primary btn-ls btn-block login-button  " >
-            <a
-            href="/admin/yearReport"
-              class="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple" >
-              Year Report
-               </a>
-            </button>
-        <!-- <button  id="download-button" type="button" class="btn btn-primary btn-ls btn-block login-button  " > -->
-          <!-- <div class="dropdown">
-            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              other
-            </a>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-              <a class="dropdown-item" href="/admin/monthReport">Action</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-          </div> -->
-             <!-- <select
-           >
-             <option > <a
-              href="/admin/monthReport"
-              class="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple" >
-              Month Report
-               </a></option>
-             <option value="orderconfirmed">orderconfirmed</option>
-             <option value="Shipped">Shipped</option>
-             <option value="Delivered">Delivered</option>
-             <option value="Out For Delivery">Out For Delivery</option>
-           </select> -->
-          <!-- </button> -->
+        
     </div>
       <div class="w-full overflow-hidden rounded-lg shadow-xs mt-2">
         <div class="w-full overflow-x-auto" id="invoice">
@@ -67,7 +29,7 @@
               <tr
                 class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
               >
-                <th class="px-4 py-3">Date</th>
+                <th class="px-4 py-3">Year</th>
                 <th class="px-4 py-3">Total Order</th>
                 <th class="px-4 py-3">Total Sold Product</th>
                 <th class="px-4 py-3">Amount</th>
@@ -94,8 +56,10 @@
                         aria-hidden="true"
                       ></div>
                     </div> -->
-                    <div>
-                      <p class="font-semibold"><%=sales._id.day%>/<%=sales._id.month%>/<%=sales._id.year%></p>
+                   
+                    <div>   
+
+                      <p class="font-semibold" ><%= sales._id.year %></p>
                     </div>
                   </div>
                 </td>
@@ -126,6 +90,19 @@
   
   </div> -->
   </main>
+  <script>
+
+    function toMonthName(monthNumber) {
+      const date = new Date();
+      date.setMonth(monthNumber - 1);
+    
+      return date.toLocaleString('en-US', {
+        month: 'long',
+      });
+    }
+    
+    
+      </script>
 <%- include('partials/footer.ejs') %>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </script>
@@ -146,3 +123,4 @@
       $('#table').DataTable();
   });
   </script>
+ 

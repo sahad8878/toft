@@ -33,7 +33,13 @@
 
     <div id="collapseOne" class="collapse " aria-labelledby="headingOne" data-parent="#accordionExample">
       <div class="card-body">
-        RS.<%= addresses.user.wallet %> 
+        <h5>Wallet Balance</h5>
+        <% if (addresses.user.wallet==0) { %>
+             <p class="text-danger">0 balance</p>
+          <% } else { %>
+           
+            RS.<%= addresses.user.wallet %> 
+        <% } %>
       
       </div>
     </div>
