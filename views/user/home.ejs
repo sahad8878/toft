@@ -8,25 +8,45 @@
 					<% for( let i = 0; i < banner.length; i++ ) { %>
 					
 					
-			   	<li style="background-image: url('/banner_images/<%= banner[i].imageUrl[0].filename  %>');">
-			   		<div class="overlay"></div>
-			   		<div class="container-fluid">
-			   			<div class="row">
-				   			<div class="col-sm-6 offset-sm-3 text-center slider-text">
-				   				<div class="slider-text-inner">
-				   					<div class="desc">
-					   					<h1 class="head-1"><%= banner[i].head1 %> </h1>
-					   					<h2 class="head-2"><%= banner[i].head2 %></h2>
-					   					<h2 class="head-3"><%= banner[i].head3 %></h2>
-					   					<p class="category"><span><%= banner[i].description %></span></p>
-					   					<p><a href="<%= banner[i].route %>" class="btn btn-primary">Shop Collection</a></p>
-				   					</div>
-				   				</div>
-				   			</div>
-				   		</div>
-			   		</div>
-			   	</li>
-				   <% } %>
+				  <% if (banner[i].offer) { %>
+					<li style="background-image: url('/banner_images/<%= banner[i].imageUrl[0].filename  %>');">
+						<div class="overlay"></div>
+						<div class="container-fluid">
+							<div class="row">
+								<div class="col-sm-6 offset-sm-3 text-center slider-text">
+									<div class="slider-text-inner">
+										<div class="desc">
+											<h1 class="head-1"><%= banner[i].head1 %></h1>
+											<h2 class="head-2"><%= banner[i].head2 %></h2>
+											<h2 class="head-3">up to <strong class="font-weight-bold"><%= banner[i].offer %>%</strong> off</h2>
+											<p class="category"><span><%= banner[i].description %></span></p>
+											<p><a href="<%= banner[i].route %>" class="btn btn-primary">Shop Collection</a></p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</li>
+					<% } else if (!banner[i].offer) { %>
+						<li style="background-image: url('/banner_images/<%= banner[i].imageUrl[0].filename  %>');">
+							<div class="overlay"></div>
+							<div class="container-fluid">
+								<div class="row">
+									<div class="col-sm-6 offset-sm-3 text-center slider-text">
+										<div class="slider-text-inner">
+											<div class="desc">
+												<h1 class="head-1"><%= banner[i].head1 %> </h1>
+												<h2 class="head-2"><%= banner[i].head2 %></h2>
+												<h2 class="head-3"><%= banner[i].head3 %></h2>
+												<p class="category"><span><%= banner[i].description %></span></p>
+												<p><a href="<%= banner[i].route %>" class="btn btn-primary">Shop Collection</a></p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</li>
+				  <% } %>
 			   	<!-- <li style="background-image: url(images/img_bg_2.jpg);">
 			   		<div class="overlay"></div>
 			   		<div class="container-fluid">
@@ -45,24 +65,9 @@
 				   		</div>
 			   		</div>
 			   	</li>
-			   	<li style="background-image: url(images/img_bg_3.jpg);">
-			   		<div class="overlay"></div>
-			   		<div class="container-fluid">
-			   			<div class="row">
-				   			<div class="col-sm-6 offset-sm-3 text-center slider-text">
-				   				<div class="slider-text-inner">
-				   					<div class="desc">
-					   					<h1 class="head-1">New</h1>
-					   					<h2 class="head-2">Arrival</h2>
-					   					<h2 class="head-3">up to <strong class="font-weight-bold">30%</strong> off</h2>
-					   					<p class="category"><span>New stylish shoes for men</span></p>
-					   					<p><a href="#" class="btn btn-primary">Shop Collection</a></p>
-				   					</div>
-				   				</div>
-				   			</div>
-				   		</div>
-			   		</div>
-			   	</li> -->
+			   
+			 -->
+				   <% } %>
 			  	</ul>
 		  	</div>
 		</aside>
@@ -75,7 +80,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="colorlib-product">
+		<div class="colorlib-product" id="categaries">
 			<div class="container-fluid">
 				<div class="row">
 					<div class="col-sm-6 text-center">
@@ -115,7 +120,13 @@
 							</a>
 							<div class="desc">
 								<h2><a href="#"><%= product[i].name%> </a></h2>
+								<% if ( product[i].discountPrice==0) { %>
 								<span class="price">₹<%= product[i].price%> </span>
+								 <% } else { %>
+									<span class="price"><del>₹<%= product[i].price%></del> </span>
+									<span class="price">₹<%= product[i].discountPrice%> </span>
+									<% } %>
+
 							</div>
 						</div>
 					</div>
@@ -124,7 +135,7 @@
 				</div>
 				<div class="row">
 					<div class="col-md-12 text-center">
-						<p><a href="#" class="btn btn-primary btn-lg">Shop All Products</a></p>
+						<p><a href="#categaries" class="btn btn-primary btn-lg">Shop All Products</a></p>
 					</div>
 				</div>
 				

@@ -21,6 +21,8 @@ getCategory,
 getAddCategory,
 postAddCategory,
 deleteCategory,
+getEditCategory,
+postEditCategory,
 errorPage,
 getBanner,
 getAddBanner,
@@ -35,9 +37,11 @@ deleteCoupen,
 couponActive,
 couponBlock,
 GetChartDetails,
+pieChart,
 salesReport,
 MonthReport,
-yearReport
+yearReport,
+
 }= require("../controllers/adminController")
 const router = express.Router();
 
@@ -48,7 +52,8 @@ router.post('/product',session,upload.array("imageUrl",3),addProductButton);
 router.post('/editProduct/:id',session,upload.array("imageUrl",3),editProduct)
 router.post('/category',session,upload.array("imageUrl",3),postAddCategory)
 router.post('/orderStatus',session,changeTrack)
-// router.post('/coupon',postAddCoupon)
+router.post('/postEditCategory/:id',session,upload.array("imageUrl",3),postEditCategory)
+
 
 //  get routers
 router.get('/',loginView)
@@ -66,16 +71,17 @@ router.get('/error',errorPage)
 router.get('/category',session,getCategory)
 router.get('/addCategory',session,getAddCategory)
 router.get('/deleteCategory/:id',session,deleteCategory)
+router.get('/getEditCategory/:id',session,getEditCategory)
 router.get('/addBanner',session,bannerImages.array("imageUrl",3),getAddBanner)
 router.get('/orderDetails/:id',session,getOrderDetails)
 router.get('/addCoupon',session,getAddCoupon)
 router.get('/couponActive',session,couponActive)
 router.get('/couponBlock',session,couponBlock)
-router.get('/ChartDetails',GetChartDetails)
+router.get('/ChartDetails',session,GetChartDetails)
 router.get('/salesReport',session,salesReport)
-router.get('/monthReport',MonthReport)
-router.get('/yearReport',yearReport)
-
+router.get('/monthReport',session,MonthReport)
+router.get('/yearReport',session,yearReport)
+router.get('/pieChart',session,pieChart)
 
 // chain router
 router.

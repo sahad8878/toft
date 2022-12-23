@@ -83,10 +83,13 @@ figure.zoom img {
                 <div class="product-desc">
                     <h3><%= product.name  %></h3>
                     <p class="font-weight-bold"><%= product.brand %> </p>
-                    <p class="price">
-                        
-                        <span>₹<%= product.price  %></span> 
-
+                    <p class="price"> 
+                        <% if ( product.discountPrice==0) { %>
+                            <span class="price">₹<%= product.price%> </span>
+                             <% } else { %>
+                                <span class="price"><del>₹<%= product.price%></del> </span>
+                                <span class="price">₹<%= product.discountPrice%> </span>
+                                <% } %>
                         <% if (product.stock==0) { %>
                          
                             <p class="font-weight-b" >Availability : <span  style="color: red;">Product not available </span> </p>

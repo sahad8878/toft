@@ -18,31 +18,33 @@ const {
   getOtp,
   resendOtp,
   postOtp,
-logoutUser,
-addToCart,
-deleteCartProduct,
-cartChangeQuantity,
-getCheckout,
-postCheckout,
-getProfile,
-getAddress,
-postAdress,
-deleteAddress,
-getEditAddress,
-postEditAddress,
-verifyPayment,
-paymentFailed,
-getOrderComplete,
-getMyOrder,
-getOrderDetails,
-cancelOrder,
-returnOrder,
-verifyCoupon,
-requistRefund,
-postReview
+  logoutUser,
+  addToCart,
+  deleteCartProduct,
+  cartChangeQuantity,
+  getCheckout,
+  postCheckout,
+  getProfile,
+  getAddress,
+  postAdress,
+  deleteAddress,
+  getEditAddress,
+  postEditAddress,
+  verifyPayment,
+  paymentFailed,
+  getOrderComplete,
+  getMyOrder,
+  getOrderDetails,
+  cancelOrder,
+  returnOrder,
+  verifyCoupon,
+  requistRefund,
+  postReview
 
 } = require("../controllers/userController");
 const router = express.Router();
+
+
   // get routes
 router.get("/",homeView) ;
 router.get('/men',menPagination(Product),menView)
@@ -63,7 +65,10 @@ router.get('/editAddress/:id',userSession,checkBlock,getEditAddress)
 router.get('/myOrder',userSession,checkBlock,getMyOrder)
 router.get('/orderDetails',userSession,checkBlock,getOrderDetails)
 router.get("/cancelOrder",userSession,checkBlock,cancelOrder)
+
+
 // post routes
+
 router.post("/loginUser", loginUser);
 router.post("/registerUser",registerUser);
 router.post("/Otp",postOtp);
@@ -71,21 +76,20 @@ router.post('/cart/:id',userSession,checkBlock,addToCart)
 router.post('/addAdress',userSession,checkBlock,postAdress)
 router.post('/checkout/:CartId',userSession,checkBlock,postCheckout)
 router.post('/editAddress/:id',userSession,checkBlock,postEditAddress)
-router.post('/verifyPayment',verifyPayment)
-router.post('/paymentFailed',paymentFailed)
+router.post('/verifyPayment',userSession,checkBlock,verifyPayment)
+router.post('/paymentFailed',userSession,checkBlock,paymentFailed)
 router.post('/returnOrder',userSession,checkBlock,returnOrder)
-router.post('/verifyCoupon',verifyCoupon)
+router.post('/verifyCoupon',userSession,checkBlock,verifyCoupon)
 router.post('/refund',userSession,checkBlock,requistRefund)
 router.post('/review',userSession,checkBlock,postReview)
 
 
 router.delete('/profile/',userSession,checkBlock,deleteAddress)
-
 router
     .route('/cart/')
     .get(userSession,checkBlock,cartView )
-    .patch( cartChangeQuantity )
-    .delete( deleteCartProduct)
+    .patch(userSession,checkBlock,cartChangeQuantity )
+    .delete(userSession,checkBlock,deleteCartProduct)
 
 
 

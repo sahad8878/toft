@@ -28,10 +28,14 @@
             >
               <th class="px-4 py-3">Item Name</th>
               <th class="px-4 py-3">Price</th>
+              <th class="px-4 py-3">Offer</th>
+              <th class="px-4 py-3">Discount Price</th>
+
               <th class="px-4 py-3">Categary</th>
               <th class="px-4 py-3">Stock</th>
               <th class="px-4 py-3">date</th>
               <th class="px-4 py-3"></th>
+
             </tr>
           </thead>
           <tbody
@@ -61,6 +65,25 @@
                 </div>
               </td>
               <td class="px-4 py-3 text-sm">₹<%= product[i].price %></td>
+    
+              <% if (product[i].offer) { %>
+               
+                <td class="px-4 py-3 text-sm"><%= product[i].offer%>%</td>
+
+                <% } else { %>
+                <td class="px-4 py-3 text-sm">No offers</td>
+                 
+              <% } %>
+
+              <!-- <td class="px-4 py-3 text-sm"><%= product[i].discountPrice %></td> -->
+                   <% if (product[i].discountPrice) { %>
+               
+                <td class="px-4 py-3 text-sm"><%= product[i].discountPrice%></td>
+
+                <% } else { %>
+                <td class="px-4 py-3 text-sm">No Discount</td>
+                 
+              <% } %>
               <td class="px-4 py-3 text-sm"><%= product[i].category %></td>
               <td class="px-4 py-3 text-sm"><%= product[i].stock %></td>
               <td class="px-4 py-3 text-sm"><%= product[i].updatedAt.toLocaleDateString() %></td>
@@ -130,6 +153,8 @@
 
 <script>
   function deleteItem(id){
+
+
     const swalWithBootstrapButtons = Swal.mixin({
   customClass: {
     confirmButton: 'btn btn-success',
@@ -138,7 +163,7 @@
   buttonsStyling: true
 })
 
-swalWithBootstrapButtons.fire({
+swalWithBootstrapButtons.fire({ 
   title: 'Are you sure?',
   text: "You won't be able to revert this!",
   icon: 'warning',
@@ -148,13 +173,14 @@ swalWithBootstrapButtons.fire({
   reverseButtons: true
 }).then((result) => {
   if (result.isConfirmed) {
-    location.href= `/admin/deleteProduct/${id}`
     
     swalWithBootstrapButtons.fire(
       'Deleted!',
       'Your product has been deleted.',
       'success'
-    )
+      ).then(()=>{
+        location.href= `/admin/deleteProduct/${id}`
+      })
   } else if (
     /* Read more about handling dismissals below */
     result.dismiss === Swal.DismissReason.cancel

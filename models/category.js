@@ -13,7 +13,10 @@ const categorySchema = new Schema({
     type: Array,
     required: true,
   },
-
+  offer:{
+    type:Number,
+    default: 0
+  }
 },{
   timestamps:true  
  });

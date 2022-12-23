@@ -46,6 +46,15 @@ const productSchema = new Schema({
 rating:{
     type:Number,
     default:0
+},
+offer:{
+  type:Number,
+  default: 0
+},
+discountPrice:{
+  type:Number,
+  default: 0
+
 }
 
 },{

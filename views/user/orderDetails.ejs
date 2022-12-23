@@ -253,27 +253,22 @@
                   Cancel Order
                 </button>
               <% } %>
-          
-
-
-      <% if ( orderDetails.orderStatus == 'Delivered') { %>
-       
-
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+          <% if ( orderDetails.orderStatus == 'Delivered') { %>
+         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
             Return Order
           </button>
         <!-- <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
             Return Order
           </button> -->
-<% } else if (orderDetails.orderStatus == 'Returnd' && orderDetails.paymentStatus != 'Refunded') { %>
+       <% } else if (orderDetails.orderStatus == 'Returnd' && orderDetails.paymentStatus != 'Refunded') { %>
  
-    <button onclick="requistRefund('<%=orderDetails._id%>')" class="btn btn-primary">
+       <button onclick="requistRefund('<%=orderDetails._id%>')" class="btn btn-primary">
         Requist Refund
-      </button>
+       </button>
 
-      <% } %>  
-
-      <a class="btn btn-primary" href="/">Go back to Shopping</a>
+       <% } %>  
+ 
+       <a class="btn btn-primary" href="/">Go back to Shopping</a>
       
 
       <!-- Button trigger modal -->
@@ -293,7 +288,7 @@
         <form action="#" onsubmit="reviewww()">
 
           <label for="" class="text-primary mb-0 fw-bold">Rate the product</label>
-          <div class="star-rating mt-0 mb-0 d-flex justify-content-between" onclick="removewarning()" style="width:200px;">
+          <div class="star-rating ml-5 mt-0 mb-0 d-flex justify-content-between" onclick="removewarning()" style="width:200px;">
             <input type="radio" id="5-stars" name="rating" value="5" />
             <label for="5-stars" class="star">&#9733;</label>
             <input type="radio" id="4-stars" name="rating" value="4" />

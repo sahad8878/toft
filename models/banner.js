@@ -28,7 +28,11 @@ const BannerSchema = new mongoose.Schema({
     delete: {
         type:Boolean,
           default: false
-    }
+    },
+    offer:{
+        type:Number,
+        default: 0
+      }
 
     
 },{
