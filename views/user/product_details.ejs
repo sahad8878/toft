@@ -329,7 +329,7 @@ figure.zoom img {
   
     const addToCart = document.querySelector('#btn')
     addToCart.onclick = ()=>{
-   
+          console.log("cart");
         axios.post('http://localhost:3000/cart/<%= product._id %>').then((e)=>{
             if(e.data.noAvailability){
 

@@ -9,6 +9,8 @@
       </h2>
       <!-- CTA -->
       
+      <% if (orderCount >0) { %>
+           
       <!-- Cards -->
       <div class="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
         <!-- Card -->
@@ -24,6 +26,7 @@
               ></path>
             </svg>
           </div>
+       
           <div>
             <p
               class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
@@ -227,6 +230,11 @@
       </div>
         <!-- bars end -->
       </div>
+
+      <% } else { %>
+       <h1 class="text-danger">no orders</h1>
+      <% } %>
+
     </div>
   </main>
 

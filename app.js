@@ -61,8 +61,8 @@ app.use("/admin", adminRouter);
 const PORT = process.env.PORT || 3000;
 
 mongoose
-  // .connect(process.env.DATABASE, {
-     .connect(process.env.LOCAL_DATABASE,{
+  .connect(process.env.DATABASE, {
+    //  .connect(process.env.LOCAL_DATABASE,{
     useUnifiedTopology: true,
     useNewUrlParser: true,
   })

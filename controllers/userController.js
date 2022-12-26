@@ -286,6 +286,7 @@ const cartView = async (req, res) => {
 
 const addToCart = async (req, res) => {
   try {
+    console.log("cart post");
     const productId = req.params.id;
     let ownerId = req.session.user._id;
     const user = await Cart.findOne({ owner: req.session.user._id });

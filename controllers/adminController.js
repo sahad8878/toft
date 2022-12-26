@@ -283,8 +283,7 @@ const viewEditProduct = (req, res) => {
 const editProduct = async (req, res) => {
   try {
     var proId = req.params.id;
-    const { name, price, offer, description, category, brand, stock } =
-      req.body;
+    const { name, price, offer, description, category, brand, stock } =req.body;
     if (name && price && description && category && brand && stock) {
       const catOffer = await Category.findOne(
         { category: category },
