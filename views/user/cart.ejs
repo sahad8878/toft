@@ -262,21 +262,7 @@
 
 
   <script>
-    // function changeQuantity(cartId, productId, count) {
-    //   $.ajax({
-    //     url: "/cart-change-quantity",
-    //     data: {
-    //       cartId: cartId,
-    //       porductId: productId,
-    //       count: count,
-    //     },
-    //     method: "POST",
-    //     success: (response) => {
-    //       alert(response);
-    //     },
-    //   });
-    // }
-
+  
     function changeQuantity(cartId,proId,count) {
            let qty = document.querySelector('#qty')
             axios.patch(`/cart?cartId=${cartId}&productId=${proId}&count=${count}`)
@@ -311,10 +297,32 @@
                }
 
       function deleteProduct(proId){
-        console.log("delete vanuu-------------");
-            axios.delete(`/cart?productId=${proId}`)
-            .then((e =>{
-                location.reload()
-            }))
+            Swal.fire({
+                  title: "Are you sure?",
+                  text: "You won't be able to revert this!",
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: "#3085d6",
+                  cancelButtonColor: "#d33",
+                  confirmButtonText: "Yes, delete it!",
+                }).then(async(result) => {
+                  if (result.isConfirmed) {
+                   await axios.delete(`/cart?productId=${proId}`)
+                      .then((result) => {
+                        if (result.data) {
+                          Swal.fire(
+                            "Deleted!",
+                            "Your file has been deleted.",
+                            "success"
+                          ).then(()=>{
+
+                            location.reload()
+                          })
+                        } else {
+                          alert("something went wrong");
+                        }
+                      });
+                  }
+                });
         }
   </script>

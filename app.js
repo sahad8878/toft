@@ -17,11 +17,6 @@ const userRouter = require("./routes/userRoutes");
 const adminRouter = require("./routes/adminRoutes");
 
 
-// var store = new mongoDbStore({
-//   uri: process.env.DATABASE,
-//   collection:'sessions'
-// })
-
 const User = require('./models/user')
 const { Template } = require("ejs");
 const { application } = require("express");
@@ -54,7 +49,7 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: false}))
 // app.use(express.urlencoded({extended: false}));
 app.use(logger('dev'));
-app.use(session({secret:"key",resave:false,saveUninitialized:false,cookie:{maxAge:1200000}}));
+app.use(session({secret:"key",resave:true,saveUninitialized:true,cookie:{maxAge:1200000}}));
 app.use(cookieParser())
 app.use(express.json())
 app.use(flash());
@@ -66,13 +61,12 @@ app.use("/admin", adminRouter);
 const PORT = process.env.PORT || 3000;
 
 mongoose
-  // .connect(DB, {
-    .connect(process.env.LOCAL_DATABASE,{
+  // .connect(process.env.DATABASE, {
+     .connect(process.env.LOCAL_DATABASE,{
     useUnifiedTopology: true,
     useNewUrlParser: true,
   })
 .then(result =>{
-   
     app.listen(PORT,()=>{
       console.log('server connected')
     })

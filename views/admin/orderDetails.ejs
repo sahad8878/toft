@@ -15,8 +15,14 @@
         <!-- Tracking Id: <span class="font-semibold dark:text-gray-300" id="tracking_id"><%= order.id %></span><br /> -->
         Order Number: <span class="font-semibold dark:text-gray-300" id="order_number"><%= order.id %></span><br />
         Date: <span class="font-semibold dark:text-gray-300" id="order_date"><%= order.updatedAt.toLocaleDateString() %></span><br />
-        Amount: <span class="font-semibold dark:text-gray-300" id="order_amount"><%= order.total %></span><br />
         Payment Staus: <span class="font-semibold dark:text-gray-300" id="order_amount"><%= order.paymentStatus %></span><br />
+        <% if (order.couponDiscount >0) { %>
+        Coupon Discount: <span class="font-semibold dark:text-gray-300" id="order_amount"><%= order.couponDiscount %></span><br />
+        <% } %>
+        <% if (order.useWallet>0) { %>
+          Via Wallet: <span class="font-semibold dark:text-gray-300" id="order_amount"><%= order.useWallet %></span><br />
+        <% } %>
+        Amount: <span class="font-semibold dark:text-gray-300" id="order_amount"><%= order.total %></span><br />
 
       </p>
     </div>

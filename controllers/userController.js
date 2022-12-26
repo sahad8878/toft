@@ -47,13 +47,16 @@ const loginView = (req, res) => {
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log(req.body);
     if (email && password) {
       let user = await User.findOne({ email: email });
-
+    console.log(user);
       if (user) {
         let matched = await bcrypt.compare(password, user.password);
         if (matched) {
+          console.log(matched);
           if (user.access === true) {
+            console.log(user.access);
             req.session.loggedIn = true;
             req.session.user = user;
             res.redirect("/");

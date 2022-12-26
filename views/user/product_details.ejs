@@ -97,9 +97,8 @@ figure.zoom img {
                                 
                                 <p >Availability : <span class="font-weight-bold"><%= product.stock %> </span>More </p>
                                 <% } %>
-                        <span class="rate">
-                            <% for( let s = 0; s < product.rating/20 ; s++ ) { %>
-                            
+                             <span class="rate">
+                            <% for( let s = 0; s <(product.rating/product.review)/20 ; s++ ) { %>
                                 <i class="icon-star-full"></i>
                             <% } %>
                             <!-- <i class="icon-star-full"></i>
