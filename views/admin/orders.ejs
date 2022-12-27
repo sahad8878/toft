@@ -41,8 +41,7 @@
               <td class="px-4 py-3 text-sm"><%= order[i].paymentMethod %></td>
               <td class="px-4 py-3 text-sm">₹ <%= order[i].total %></td>
               <td class="px-4 py-3 text-xs">
-                  <%= order[i].orderStatus %>
-                  </span> -->
+              
                   <% if (order[i].orderStatus  !=
                   "Cancelled"&&order[i].orderStatus != "Returnd"&&order[i].orderStatus != "Delivered" ) { %>
                     <select
@@ -132,6 +131,7 @@
     const orderId = e;
     const value = $(`#track${i}`).find(":selected").val();
     console.log(orderId, value);
+  
     $.ajax({
       url: "/admin/orderStatus",
       data: {

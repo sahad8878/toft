@@ -44,7 +44,7 @@ function womenPagination(model) {
 
     const results = {}
    results.currunt={page,limit}
-    if (endIndex < await model.countDocuments().exec()) {
+    if (endIndex < await model.find({ category: "Women" }).count()) {
       results.next = {
         page: page +1 ,
         limit: limit
