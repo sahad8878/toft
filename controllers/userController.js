@@ -39,8 +39,8 @@ const loginView = (req, res) => {
       blocked: req.flash("blocked"),
     });
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 
 //post login user
@@ -77,8 +77,8 @@ const loginUser = async (req, res) => {
       res.redirect("/login");
     }
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 
 // register page
@@ -89,8 +89,8 @@ const registerView = (req, res) => {
       existErr: req.flash("existErr"),
     });
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 
 // register post
@@ -113,8 +113,8 @@ const registerUser = async (req, res) => {
       res.redirect("/register");
     }
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 
 // post otp
@@ -140,8 +140,8 @@ const postOtp = async (req, res) => {
       }
     });
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 
 
@@ -151,8 +151,8 @@ const getOtp = (req, res) => {
   try {
     res.render("user/otp", { otpErr: req.flash("otpErr") });
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 
 // resend otp
@@ -163,8 +163,8 @@ const resendOtp = (req, res) => {
     sendSms(phone);
     res.redirect("/otp");
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 
 // home
@@ -181,8 +181,8 @@ const homeView = async (req, res) => {
       homView: true,
     });
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 
 // Ṃen page
@@ -193,8 +193,8 @@ const menView = async (req, res) => {
 
     res.render("user/men", { product, category, user: req.session.user });
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 
 // women page
@@ -204,8 +204,8 @@ const womenView = async (req, res) => {
     const category = await Category.find({ category: "Women" });
     res.render("user/women", { product, category, user: req.session.user });
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 
 
@@ -223,8 +223,8 @@ const productDetails = async (req, res) => {
       user: req.session.user,
     });
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 
 // aboute page
@@ -236,8 +236,8 @@ const aboutView = (req, res) => {
       user: user,
     });
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 
 // contact page
@@ -246,8 +246,8 @@ const contactView = (req, res) => {
     let user = req.session.user;
     res.render("user/contact", { user: user, contactView: true });
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 
 //get cart page
@@ -278,8 +278,8 @@ const cartView = async (req, res) => {
         }
       });
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 
 // post cart
@@ -371,8 +371,8 @@ const addToCart = async (req, res) => {
       }
     }
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 
 // delete cart product
@@ -400,8 +400,8 @@ const deleteCartProduct = async (req, res) => {
       res.json("success");
     });
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 
 // cart product  quantity change
@@ -457,8 +457,8 @@ const cartChangeQuantity = async (req, res) => {
       });
     }
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 
 
@@ -506,8 +506,8 @@ const getCheckout = async (req, res) => {
       }
     }
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 
 // post checkout
@@ -713,8 +713,8 @@ const postCheckout = async (req, res) => {
       res.json({ chooseAddress: true });
     }
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 
 // verify payment
@@ -780,8 +780,8 @@ const verifyPayment = async (req, res) => {
       });
     }
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 
 // payment   failed
@@ -789,8 +789,8 @@ const paymentFailed = (req, res) => {
   try {
     res.json({ status: true });
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 
 // order complete
@@ -799,8 +799,8 @@ const getOrderComplete = async (req, res) => {
   try {
     res.render("user/order_confirm", { user: req.session.user });
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 
 // my order page
@@ -812,8 +812,8 @@ const getMyOrder = async (req, res) => {
     });
     res.render("user/myOrder", { user: req.session.user, orders });
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 
 // get order details
@@ -824,8 +824,8 @@ const getOrderDetails = async (req, res) => {
     );
     res.render("user/orderDetails", { user: req.session.user, orderDetails });
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 
 // order cancelle
@@ -881,8 +881,8 @@ const getProfile = async (req, res) => {
     }
     res.render("user/profile", { address, addresses, user: req.session.user });
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 
 // add address button
@@ -893,8 +893,8 @@ const getAddress = (req, res) => {
       addressErr: req.flash("addressErr"),
     });
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 
 const postAdress = async (req, res) => {
@@ -928,8 +928,8 @@ const postAdress = async (req, res) => {
       res.redirect("/address");
     }
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 const deleteAddress = async (req, res) => {
   try {
@@ -941,8 +941,8 @@ const deleteAddress = async (req, res) => {
     );
     res.json("success");
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 
 const getEditAddress = async (req, res) => {
@@ -958,8 +958,8 @@ const getEditAddress = async (req, res) => {
       editAddressErr: req.flash("editAddressErr"),
     });
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 
 const postEditAddress = async (req, res) => {
@@ -990,8 +990,8 @@ const postEditAddress = async (req, res) => {
       res.redirect("/editAddress/" + req.params.id);
     }
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 
 const verifyCoupon = async (req, res) => {
@@ -1072,8 +1072,8 @@ const verifyCoupon = async (req, res) => {
       }
     }
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 
 // requist to refund
@@ -1104,8 +1104,8 @@ const requistRefund = async (req, res) => {
       res.json({ status: true });
     });
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 
 // post review
@@ -1138,8 +1138,8 @@ const postReview = async (req, res) => {
 
   
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 
 // logout user
@@ -1148,8 +1148,8 @@ const logoutUser = (req, res) => {
     req.session.destroy();
     res.redirect("/");
   } catch (error) {
-    res.render("admin/error");
-  }
+  res.render("user/error");
+}
 };
 
 module.exports = {

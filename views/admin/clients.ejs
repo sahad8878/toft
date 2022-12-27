@@ -1,116 +1,95 @@
 <%- include('partials/header.ejs') %>
 
 <main class="h-full pb-16 overflow-y-auto">
-    <div class="container px-6 mx-auto grid">
-      <h2
-        class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
-      >
-        Clients
-      </h2>
-      <!-- TABLE -->
+  <div class="container px-6 mx-auto grid">
+    <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
+      Clients
+    </h2>
+    <!-- TABLE -->
 
-      <!-- men table start -->
-      <div class="w-full overflow-hidden rounded-lg shadow-xs mt-2">
-        <div class="w-full overflow-x-auto">
-          <table id="table" class="w-full whitespace-no-wrap">
-            <thead>
-              <tr
-                class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
-              >
-                <th class="px-4 py-3">Name</th>
-                <th class="px-4 py-3">Number</th>
-                <th class="px-4 py-3">Email </th>
-                <th class="px-4 py-3">date</th>
-                <th class="px-4 py-3"></th>
-              </tr>
-            </thead>
-            <tbody
-              class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-
+    <!-- men table start -->
+    <div class="w-full overflow-hidden rounded-lg shadow-xs mt-2">
+      <div class="w-full overflow-x-auto">
+        <table id="table" class="w-full whitespace-no-wrap">
+          <thead>
+            <tr
+              class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
+            >
+              <th class="px-4 py-3">Name</th>
+              <th class="px-4 py-3">Number</th>
+              <th class="px-4 py-3">Email</th>
+              <th class="px-4 py-3">date</th>
+              <th class="px-4 py-3"></th>
+            </tr>
+          </thead>
+          <tbody
+            class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800"
+          >
             <% for(var i = 0; i < user.length; i++) { %>
-              <tr class="text-gray-700 dark:text-gray-400">
-                <td class="px-4 py-3">
-                  <div class="flex items-center text-sm">
-                    <!-- Avatar with inset shadow -->
-                    <div
-                      class="relative hidden w-8 h-8 mr-3 rounded-full md:block"
-                    >
-                      <!-- <img
-                        class="object-cover w-full h-full rounded-full"
-                        src="https://images.unsplash.com/flagged/photo-1570612861542-284f4c12e75f?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
-                        alt=""
-                        loading="lazy"
-                      /> -->
-                      <div
-                        class="absolute inset-0 rounded-full shadow-inner"
-                        aria-hidden="true"
-                      ></div>
-                    </div>
-                    <div>
-                      <p class="font-semibold ml-1">
-                        <%= user[i].name %>
-                      </p>
-                    
-                    </div>
-                  </div>
-                </td>
-                <td class="px-4 py-3 text-sm"><%= user[i].number %></td>
-
-                <td class="px-4 py-3 text-sm"><%= user[i].email %></td>
-
-                <td class="px-4 py-3 text-sm"><%= user[i].updatedAt.toLocaleDateString() %></td>
-                <% if ( user[i].access===true) { %>
-                <td class="px-4 py-3 text-xs">
-                  
-                  <a href="/admin/block/<%= user[i]._id %> ">
-                  <button >
-                  <span
-                    class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
+            <tr class="text-gray-700 dark:text-gray-400">
+              <td class="px-4 py-3">
+                <div class="flex items-center text-sm">
+                  <!-- Avatar with inset shadow -->
+                  <div
+                    class="relative hidden w-8 h-8 mr-3 rounded-full md:block"
                   >
-                  Block
-                  </span>
-                </button>
-                </a>
-                </td>
-                <% } else{%>
-  
-                  <td class="px-4 py-3 text-xs">
-                  
-                    <a href="/admin/unBlock/<%= user[i]._id %> ">
-                    <button >
+                    <div
+                      class="absolute inset-0 rounded-full shadow-inner"
+                      aria-hidden="true"
+                    ></div>
+                  </div>
+                  <div>
+                    <p class="font-semibold ml-1"><%= user[i].name %></p>
+                  </div>
+                </div>
+              </td>
+              <td class="px-4 py-3 text-sm"><%= user[i].number %></td>
+
+              <td class="px-4 py-3 text-sm"><%= user[i].email %></td>
+
+              <td class="px-4 py-3 text-sm">
+                <%= user[i].updatedAt.toLocaleDateString() %>
+              </td>
+              <% if ( user[i].access===true) { %>
+              <td class="px-4 py-3 text-xs">
+                <a href="/admin/block/<%= user[i]._id %> ">
+                  <button>
                     <span
                       class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
                     >
-                    Unblock
+                      Block
                     </span>
                   </button>
-                  </a>
-                  </td>
+                </a>
+              </td>
+              <% } else{%>
 
-                <% } %> 
-              </tr>
+              <td class="px-4 py-3 text-xs">
+                <a href="/admin/unBlock/<%= user[i]._id %> ">
+                  <button>
+                    <span
+                      class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
+                    >
+                      Unblock
+                    </span>
+                  </button>
+                </a>
+              </td>
+
               <% } %>
- 
-
-            </tbody>
-          </table>
-        </div>
-       
+            </tr>
+            <% } %>
+          </tbody>
+        </table>
       </div>
-      <!-- men table end -->
-
-  
     </div>
-    <!-- 
-</div>
+    <!-- men table end -->
+  </div>
+</main>
 
-
-</div> -->
-  </main>
-
-  <script>
-    $(document).ready(function () {
-        $('#table').DataTable();
-    });
-    </script>
+<script>
+  $(document).ready(function () {
+    $("#table").DataTable();
+  });
+</script>
 <%- include('partials/footer.ejs') %>

@@ -1,6 +1,5 @@
 <%- include('partials/header.ejs') %>
 
-
 <main class="h-full pb-16 overflow-y-auto">
   <div class="container px-6 mx-auto grid">
     <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
@@ -16,8 +15,7 @@
     </button>
     <!-- TABLE -->
     <!-- men table start -->
-    
-   
+
     <div class="w-full overflow-hidden rounded-lg shadow-xs mt-2">
       <div class="w-full overflow-x-auto">
         <table id="table" class="w-full whitespace-no-wrap">
@@ -43,8 +41,6 @@
                   <div
                     class="relative hidden w-8 h-8 mr-3 rounded-full md:block"
                   >
-                    <!-- <img class="object-cover w-full h-full rounded-full"
-                    src="/images alt="" loading="lazy" /> -->
                     <div
                       class="absolute inset-0 rounded-full shadow-inner"
                       aria-hidden="true"
@@ -52,31 +48,33 @@
                   </div>
                   <div>
                     <p class="font-semibold"><%= category[i].category%></p>
-                    <!-- <p class="text-xs text-gray-600 dark:text-gray-400">
-                     
-                    </p> -->
                   </div>
                 </div>
               </td>
-              <!-- <td class="px-4 py-3 text-sm">₹</td> -->
               <% if (category[i].offer) { %>
-               
-                <td class="px-4 py-3 text-sm"><%= category[i].offer%>%</td>
 
-                <% } else { %>
-                <td class="px-4 py-3 text-sm">No offers</td>
-                 
+              <td class="px-4 py-3 text-sm"><%= category[i].offer%>%</td>
+
+              <% } else { %>
+              <td class="px-4 py-3 text-sm">No offers</td>
+
               <% } %>
               <td class="px-4 py-3 text-sm">
                 <div>
-                  <img src="/images/<%= category[i].imageUrl[0] %>" alt="" loading="lazy"  style="width: 100px;height: auto;">
+                  <img
+                    src="/images/<%= category[i].imageUrl[0] %>"
+                    alt=""
+                    loading="lazy"
+                    style="width: 100px; height: auto"
+                  />
                 </div>
               </td>
-              
-              <td class="px-4 py-3 text-sm"><%= category[i].updatedAt.toLocaleDateString() %></td>
+
+              <td class="px-4 py-3 text-sm">
+                <%= category[i].updatedAt.toLocaleDateString() %>
+              </td>
               <td class="px-4 py-3">
                 <div class="flex items-center space-x-4 text-sm">
-               
                   <a href="/admin/getEditCategory/<%= category[i]._id %>">
                     <button
                       class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray"
@@ -94,28 +92,26 @@
                       </svg>
                     </button>
                   </a>
-                      
-                     <a  onclick="deleteItem( '<%= category[i]._id %>')" >
-                   <button
-                    class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray"
-                    aria-label="Delete" 
 
-                  >
-                    <svg
-                      class="w-5 h-5"
-                      aria-hidden="true"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
+                  <a onclick="deleteItem( '<%= category[i]._id %>')">
+                    <button
+                      class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray"
+                      aria-label="Delete"
                     >
-                      <path
-                        fill-rule="evenodd"
-                        d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                        clip-rule="evenodd"
-                      ></path>
-                    </svg>
-                  </button> 
-                </a>
-                
+                      <svg
+                        class="w-5 h-5"
+                        aria-hidden="true"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                          clip-rule="evenodd"
+                        ></path>
+                      </svg>
+                    </button>
+                  </a>
                 </div>
               </td>
             </tr>
@@ -123,68 +119,58 @@
           </tbody>
         </table>
       </div>
-     
     </div>
     <!-- men table end -->
   </div>
-  <!-- 
-</div>
-
-
-</div> -->
 </main>
-
 
 <%- include('partials/footer.ejs') %>
 
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-  function deleteItem(id){
-   
+  function deleteItem(id) {
     const swalWithBootstrapButtons = Swal.mixin({
-  customClass: {
-    confirmButton: 'btn btn-success',
-    cancelButton: 'btn btn-danger'
-  },
-  buttonsStyling: true
-})
+      customClass: {
+        confirmButton: "btn btn-success",
+        cancelButton: "btn btn-danger",
+      },
+      buttonsStyling: true,
+    });
 
-swalWithBootstrapButtons.fire({
-  title: 'Are you sure?',
-  text: "You won't be able to revert this!",
-  icon: 'warning',
-  showCancelButton: true,
-  confirmButtonText: 'Yes, delete it!',
-  cancelButtonText: 'No, cancel!',
-  reverseButtons: true
-}).then((result) => {
-  if (result.isConfirmed) {
-    
-    swalWithBootstrapButtons.fire(
-      'Deleted!',
-      'Your product has been deleted.',
-      'success'
-    ).then(()=>{
-      location.href= `/admin/deleteCategory/${id}`
-    })
-  } else if (
-    /* Read more about handling dismissals below */
-    result.dismiss === Swal.DismissReason.cancel
-  ) {
-    swalWithBootstrapButtons.fire(
-      'Cancelled',
-      'Your file is safe',
-      'error'
-    )
+    swalWithBootstrapButtons
+      .fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "No, cancel!",
+        reverseButtons: true,
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          swalWithBootstrapButtons
+            .fire("Deleted!", "Your product has been deleted.", "success")
+            .then(() => {
+              location.href = `/admin/deleteCategory/${id}`;
+            });
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons.fire(
+            "Cancelled",
+            "Your file is safe",
+            "error"
+          );
+        }
+      });
   }
-})
-  }
-
 </script>
 
 <script>
   $(document).ready(function () {
-      $('#table').DataTable();
+    $("#table").DataTable();
   });
-  </script>
+</script>

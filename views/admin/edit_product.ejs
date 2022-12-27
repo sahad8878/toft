@@ -3,34 +3,42 @@
   <div class="container px-6 mt-8 mx-auto grid">
     <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
       <!-- General elements -->
-      <h4 class="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300">Elements</h4>
-      <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
-       
-       <form action="/admin/editProduct/<%= product._id %>" method="post"  enctype="multipart/form-data" >
-        <% if(proEditErr.length>0){ %> 
-          <div class=" alert alert-danger col-md-12 text-center "style="color: white;background-color: rgb(221, 118, 118);" role="alert">
-            <p class="text-danger"><%=proEditErr %> </p>
+      <h4 class="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300">
+        Elements
+      </h4>
+      <div
+        class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800"
+      >
+        <form
+          action="/admin/editProduct/<%= product._id %>"
+          method="post"
+          enctype="multipart/form-data"
+        >
+          <% if(proEditErr.length>0){ %>
+          <div
+            class="alert alert-danger col-md-12 text-center"
+            style="color: white; background-color: rgb(221, 118, 118)"
+            role="alert"
+          >
+            <p class="text-danger"><%=proEditErr %></p>
           </div>
-            <% } %> 
-       <label class="block text-sm">
-          <span class="text-gray-700 dark:text-gray-400">Item Name</span>
-          <input
-            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-            name="name"
-            type="text"
-            value="<%= product.name  %> "
-          />
-        </label>
-        <label class="block mt-4 text-sm">
-            <span class="text-gray-700 dark:text-gray-400">
-            Categary
-            </span>
+          <% } %>
+          <label class="block text-sm">
+            <span class="text-gray-700 dark:text-gray-400">Item Name</span>
+            <input
+              class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+              name="name"
+              type="text"
+              value="<%= product.name  %> "
+            />
+          </label>
+          <label class="block mt-4 text-sm">
+            <span class="text-gray-700 dark:text-gray-400"> Categary </span>
             <select
               class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
               name="category"
-             
             >
-              <option><%= product.category %> </option>
+              <option><%= product.category %></option>
               <option>Men</option>
               <option>Women</option>
             </select>
@@ -44,135 +52,116 @@
               value="<%= product.brand %>"
             />
           </label>
-        <label class="block mt-4 text-sm">
-          <span class="text-gray-700 dark:text-gray-400">Price</span>
-          <input
-            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-            name="price"
-            
+          <label class="block mt-4 text-sm">
+            <span class="text-gray-700 dark:text-gray-400">Price</span>
+            <input
+              class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+              name="price"
               value="<%= product.price %> "
-          />
-        </label>
-        <label class="block mt-4 text-sm">
-          <span class="text-gray-700 dark:text-gray-400">Stock</span>
-          <input
-            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-            name="stock"
-            
+            />
+          </label>
+          <label class="block mt-4 text-sm">
+            <span class="text-gray-700 dark:text-gray-400">Stock</span>
+            <input
+              class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+              name="stock"
               value="<%= product.stock %> "
-          />
-        </label>
-        <label class="block mt-4 text-sm">
-          <span class="text-gray-700 dark:text-gray-400">Offer</span>
-          <input
-            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-            name="offer"
-           
-             value="<%= product.offer %> "
-          />
+            />
           </label>
-        
-        <!-- image 1 -->
           <label class="block mt-4 text-sm">
-            <span class="text-gray-700 dark:text-gray-400">
-              Image 1
-            </span>
-            <img src="/images/<%= product.imageUrl[0] %> " alt="" style="width: 100px;height: auto;" id="imageView">
-          
-            <div
-              class="relative text-gray-500 focus-within:text-purple-600"
-            >
-           
+            <span class="text-gray-700 dark:text-gray-400">Offer</span>
+            <input
+              class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+              name="offer"
+              value="<%= product.offer %> "
+            />
+          </label>
+
+          <!-- image 1 -->
+          <label class="block mt-4 text-sm">
+            <span class="text-gray-700 dark:text-gray-400"> Image 1 </span>
+            <img
+              src="/images/<%= product.imageUrl[0] %> "
+              alt=""
+              style="width: 100px; height: auto"
+              id="imageView"
+            />
+
+            <div class="relative text-gray-500 focus-within:text-purple-600">
               <input
                 class="block w-full pr-20 mt-1 text-sm text-black dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray form-input"
                 name="imageUrl"
                 type="file"
-               multiple
-               onchange="viewImage(event)"
+                multiple
+                onchange="viewImage(event)"
               />
-             
-              <!-- <button
-                class="absolute inset-y-0 right-0 px-4 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-r-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
-              >
-                Click
-              </button> -->
             </div>
-            
           </label>
-         
-           <!-- image 2 -->
+
+          <!-- image 2 -->
           <label class="block mt-4 text-sm">
-            <span class="text-gray-700 dark:text-gray-400">
-              Image 2
-            </span>
-            <img src="/images/<%= product.imageUrl[1]%> " alt="" style="width: 100px;height: auto;" id="imageView1">
-          
-            <div
-              class="relative text-gray-500 focus-within:text-purple-600"
-            >
-           
+            <span class="text-gray-700 dark:text-gray-400"> Image 2 </span>
+            <img
+              src="/images/<%= product.imageUrl[1]%> "
+              alt=""
+              style="width: 100px; height: auto"
+              id="imageView1"
+            />
+
+            <div class="relative text-gray-500 focus-within:text-purple-600">
               <input
                 class="block w-full pr-20 mt-1 text-sm text-black dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray form-input"
                 name="imageUrl"
                 type="file"
-               multiple
-               onchange="viewImage1(event)"
+                multiple
+                onchange="viewImage1(event)"
               />
-             
-              <!-- <button
-                class="absolute inset-y-0 right-0 px-4 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-r-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
-              >
-                Click
-              </button> -->
             </div>
-            
           </label>
           <!-- image 3 -->
           <label class="block mt-4 text-sm">
-            <span class="text-gray-700 dark:text-gray-400">
-              Image 3
-            </span>
-            <img src="/images/<%= product.imageUrl[2] %> " alt="" style="width: 100px;height: auto;" id="imageView2">
-          
-            <div
-              class="relative text-gray-500 focus-within:text-purple-600"
-            >
-           
+            <span class="text-gray-700 dark:text-gray-400"> Image 3 </span>
+            <img
+              src="/images/<%= product.imageUrl[2] %> "
+              alt=""
+              style="width: 100px; height: auto"
+              id="imageView2"
+            />
+
+            <div class="relative text-gray-500 focus-within:text-purple-600">
               <input
                 class="block w-full pr-20 mt-1 text-sm text-black dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray form-input"
                 name="imageUrl"
                 type="file"
-               multiple
-               onchange="viewImage2(event)"
+                multiple
+                onchange="viewImage2(event)"
               />
-             
-              <!-- <button
-                class="absolute inset-y-0 right-0 px-4 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-r-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
-              >
-                Click
-              </button> -->
             </div>
-            
           </label>
-<!-- image end -->
-          
+          <!-- image end -->
+
           <label class="block mt-4 text-sm">
             <span class="text-gray-700 dark:text-gray-400">Discription</span>
             <textarea
-             name="description"
+              name="description"
               class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-textarea focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
               rows="3"
               placeholder="Enter some long form content."
-              
-            ><%= product.description %> </textarea>
+            >
+<%= product.description %> </textarea
+            >
           </label>
-          <button type="submit" class="btn btn-primary btn-ls btn-block login-button" >
+          <button
+            type="submit"
+            class="btn btn-primary btn-ls btn-block login-button"
+          >
             <a
-              class="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple" >
-                Edit Product
-              </a>
-            </button>
-        </form> 
+              class="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+            >
+              Edit Product
+            </a>
+          </button>
+        </form>
       </div>
     </div>
   </div>
@@ -180,14 +169,19 @@
 
 <%- include('partials/footer.ejs') %>
 <script>
-
   function viewImage(event) {
-    document.getElementById('imageView').src=URL.createObjectURL(event.target.files[0])
+    document.getElementById("imageView").src = URL.createObjectURL(
+      event.target.files[0]
+    );
   }
   function viewImage1(event) {
-    document.getElementById('imageView1').src=URL.createObjectURL(event.target.files[0])
+    document.getElementById("imageView1").src = URL.createObjectURL(
+      event.target.files[0]
+    );
   }
   function viewImage2(event) {
-    document.getElementById('imageView2').src=URL.createObjectURL(event.target.files[0])
+    document.getElementById("imageView2").src = URL.createObjectURL(
+      event.target.files[0]
+    );
   }
 </script>

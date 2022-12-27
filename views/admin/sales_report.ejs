@@ -5,14 +5,11 @@
 <main class="h-full pb-16 overflow-y-auto">
     <div class="container px-6 mx-auto grid">
       <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
-        Sales Report
+        Day Report
       </h2>
      
       <!-- TABLE -->
       <!-- men table start -->
-      <!-- <h4 class="mt-4 text-lg font-semibold text-gray-600 dark:text-gray-300">
-        Men
-      </h4> -->
         <div class="mt-4 text-lg font-semibold text-gray-600 dark:text-gray-300">
       <button  id="download-button" type="button" class="btn btn-primary btn-ls btn-block login-button  " >
         <a
@@ -35,30 +32,6 @@
               Year Report
                </a>
             </button>
-        <!-- <button  id="download-button" type="button" class="btn btn-primary btn-ls btn-block login-button  " > -->
-          <!-- <div class="dropdown">
-            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              other
-            </a>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-              <a class="dropdown-item" href="/admin/monthReport">Action</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-          </div> -->
-             <!-- <select
-           >
-             <option > <a
-              href="/admin/monthReport"
-              class="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple" >
-              Month Report
-               </a></option>
-             <option value="orderconfirmed">orderconfirmed</option>
-             <option value="Shipped">Shipped</option>
-             <option value="Delivered">Delivered</option>
-             <option value="Out For Delivery">Out For Delivery</option>
-           </select> -->
-          <!-- </button> -->
     </div>
       <div class="w-full overflow-hidden rounded-lg shadow-xs mt-2">
         <div class="w-full overflow-x-auto" id="invoice">
@@ -84,27 +57,12 @@
                 <td class="px-4 py-3">
                   <div class="flex items-center text-sm">
                     <!-- Avatar with inset shadow -->
-                    <!-- <div
-                      class="relative hidden w-8 h-8 mr-3 rounded-full md:block"
-                    >
-                      <img class="object-cover w-full h-full rounded-full"
-                      src="/images/ <%# product[i].imageUrl[0]%>  " alt="" loading="lazy" />
-                      <div
-                        class="absolute inset-0 rounded-full shadow-inner"
-                        aria-hidden="true"
-                      ></div>
-                    </div> -->
                     <div>
                       <p class="font-semibold"><%=sales._id.day%>/<%=sales._id.month%>/<%=sales._id.year%></p>
                     </div>
                   </div>
                 </td>
-               
-                 
                     <td class="px-4 py-3 text-sm"> <%= sales.count %></td>
-
-             
-                
                 <td class="px-4 py-3 text-sm"><%= sales.products %></td>
                 <td class="px-4 py-3 text-sm"> <%= sales.totalPrice %></td>
                 <% let profit=Math.round((sales.totalPrice * 10)/100 )%>

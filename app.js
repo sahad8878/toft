@@ -1,5 +1,4 @@
 const express = require("express");
-// const expressLayouts=require('express-ejs-layouts')
 const path=require('path')
 const logger=require('morgan')
 const mongoose = require("mongoose");
@@ -10,8 +9,6 @@ const cookieParser= require('cookie-parser')
 var flash = require('connect-flash');
 dotenv.config();
 const app = express();
-
-// const mongoDbStore = require('connect-mongodb-session')(session)
 
 const userRouter = require("./routes/userRoutes");
 const adminRouter = require("./routes/adminRoutes");
@@ -40,14 +37,9 @@ app.use('/.sass-cache',express.static(__dirname+"/public/user/.sass-cache"))
 app.use('/css',express.static(__dirname+"/public/admin/css"))
 app.use('/js',express.static(__dirname+"/public/admin/js"))
 app.use('/img',express.static(__dirname+"/public/admin/img"))
-
-// app.set('layout','./layouts/layout')
-// set Template engin
-// app.use(expressLayouts)
 app.set("view engine", "ejs");
 
 app.use(bodyParser.urlencoded({ extended: false}))
-// app.use(express.urlencoded({extended: false}));
 app.use(logger('dev'));
 app.use(session({secret:"key",resave:true,saveUninitialized:true,cookie:{maxAge:1200000}}));
 app.use(cookieParser())
@@ -82,8 +74,3 @@ if(req.accepts('html')){
 }
   })
 
-
-
-// port connections
-
-// app.listen(PORT, console.log(`"server done start for ${PORT}"`));

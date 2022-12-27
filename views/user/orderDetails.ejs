@@ -1,16 +1,6 @@
 
 <%- include('../includes/userHeader.ejs') %>
 <style>
-  /* .modal-dialog-right-side {
-    position: absolute;
-    top: 0;
-    right: 0;
-    display: -ms-flexbox;
-    display: flex;
-
-
-    margin: 0 !important
-  } */
 
   /* component */
 
@@ -44,50 +34,14 @@
   }
 </style>
 
-
-<!-- Start Banner Area -->
-<!-- <section class="banner-area organic-breadcrumb">
-    <div class="container">
-        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
-            <div class="col-first">
-                <h1>Order summary</h1>
-                <nav class="d-flex align-items-center">
-                    <a href="/">Home<span class="lnr lnr-arrow-right"></span></a>
-                    <a href="#">Order summary</a>
-                </nav>
-            </div>
-        </div>
-    </div>
-</section> -->
-<!-- End Banner Area -->
-
-<!--================Order Details Area =================-->
-
-
-
-<!--================Profile Account =================-->
-<!-- <div class="container ">
-<button id="download-button" class="btn btn-primary float-left">
-    Download as PDF
-  </button>
-  
-  </div> -->
 <div id="invoice">
 <section  class="login_part padding_top mt-5">
     <div class="container">
       <button class="mt=5 float-right" id="download-button">Download as PDF</button>
       <div class="jumbotron">
         <div class="container">
-         
-            
-          
-              
-                  
-                            
-
             <div class="row order_d_inner">
                 <div>
-                <!-- <button id="download-button">Download as PDF</button> -->
               
             </div>
                 <div class="col-lg-4">
@@ -241,9 +195,7 @@
          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
             Return Order
           </button>
-        <!-- <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-            Return Order
-          </button> -->
+  
        <% } else if (orderDetails.orderStatus == 'Returnd' && orderDetails.paymentStatus != 'Refunded') { %>
  
        <button onclick="requistRefund('<%=orderDetails._id%>')" class="btn btn-primary">
@@ -378,9 +330,6 @@ function cancelOrder(orderId){
       console.log("order status ethi");
       const oid = $('#track').data('oid')
       const value = $('#track').find(":selected").val();
-    //   alert(`oid = ${oid}`)
-    //   alert(`value = ${value}`)
-    // window.location = "/orderDetails"
     
     $.ajax({
       url:"/returnOrder",
@@ -400,8 +349,6 @@ function cancelOrder(orderId){
       
     }).then(()=>{
       window.location.reload();
-          //  window.location = `/orderDetails/?id=${oid}`
-        // location.href = `/orderDetails/?id=${oid}`; 
     })
         
        }

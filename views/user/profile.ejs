@@ -7,8 +7,7 @@
       <div class="container">
         <h1 class="display-3">Hello,<%=user.name %>  !</h1>
         <p>
-          This is a template for a simple marketing or informational website. It includes a large callout called a
-          jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.
+          This website belongs to world's best footwear brand Toft. Toft the leading eCommerce Store around the Globe.Our biggest feature is quality and beauty
         </p>
         <p><a class="btn btn-primary btn-lg" href="/" role="button">Continue Shopping &raquo;</a></p>
       </div>
@@ -56,20 +55,8 @@
           <div class="col-md-6">
             <div class="contact-wrap">
               <h3>Your Details</h3>
-              <!-- <form action="#" class="contact-form"> -->
                 <div class="row">
-                  <!-- <div class="col-md-6">
-                    <div class="form-group">
-                      <label for="fname">First Name</label>
-                      <input type="text" id="fname" class="form-control" placeholder="Your firstname">
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label for="lname">Last Name</label>
-                      <input type="text" id="lname" class="form-control" placeholder="Your lastname">
-                    </div>
-                  </div> -->
+            
                   <div class="w-100"></div>
                   <div class="col-sm-12">
                     <div class="form-group">
@@ -91,18 +78,7 @@
                       <input  value="<%= addresses.user.number %> " type="text" id="number" class="form-control" disabled>
                     </div>
                   </div>
-                  <!-- <div class="w-100"></div>
-                  <div class="col-sm-6">
-                    <div class="form-group">
-                      <input type="submit" value="Send Message" class="btn btn-primary"> 
-                      <a href="">
-                      <button class="addtocart  btn btn-primary btn-addtocart" >
-                        change Password
-                       </button>
-                      </a>
-                    </div>
-                  </div> -->
-
+               
                  <% if (address.length) { %> 
                   <div class="col-sm-12 ">
 
@@ -131,7 +107,6 @@
                           <div class="w-100 d-flex">
                             <div class="col-sm-6">
                               <div class="form-group">
-                                <!-- <input type="submit" value="Send Message" class="btn btn-primary"> -->
                                 <a href="/editAddress/<%= address[i]._id %>">
                                 <button class="addtocart  btn btn-primary btn-addtocart" >
                                   Edit Address
@@ -142,7 +117,6 @@
                             </div>
                             <div class="col-sm-6">
                               <div class="form-group">
-                                <!-- <input type="submit" value="Send Message" class="btn btn-primary"> -->
                                 <a onclick="deleteAddress( '<%= address[i]._id %>')">
                                 <button class="addtocart  btn btn-primary btn-addtocart" >
                                   Delete Address

@@ -14,11 +14,15 @@
           method="post"
           enctype="multipart/form-data"
         >
-        <% if(bannerAddErr.length>0){ %> 
-            <div class=" alert alert-danger col-md-12 text-center "style="color: white;background-color: rgb(221, 118, 118);" role="alert">
-              <p class="text-danger"><%=bannerAddErr %> </p>
-            </div>
-            <% } %>
+          <% if(bannerAddErr.length>0){ %>
+          <div
+            class="alert alert-danger col-md-12 text-center"
+            style="color: white; background-color: rgb(221, 118, 118)"
+            role="alert"
+          >
+            <p class="text-danger"><%=bannerAddErr %></p>
+          </div>
+          <% } %>
           <label class="block text-sm">
             <span class="text-gray-700 dark:text-gray-400">Head 1</span>
             <input
@@ -43,29 +47,6 @@
               type="text"
             />
           </label>
-          <!-- <label class="block mt-4 text-sm">
-            <span class="text-gray-700 dark:text-gray-400">
-           Banner Managment
-            </span>
-            <select
-              class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
-              name="category"
-            >
-       
-
-              <option></option>
-               
-           
-            </select>
-          </label> -->
-          <!-- <label class="block text-sm">
-            <span class="text-gray-700 dark:text-gray-400">Brand</span>
-            <input
-              class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-              name="brand"
-              type="text"
-            />
-          </label> -->
           <label class="block mt-4 text-sm">
             <span class="text-gray-700 dark:text-gray-400">Url</span>
             <input
@@ -82,16 +63,6 @@
               type="number"
             />
           </label>
-<!-- 
-          <label class="block mt-4 text-sm">
-            <span class="text-gray-700 dark:text-gray-400">Stock</span>
-            <input
-              class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-              name="stock"
-              type="number"
-            />
-          </label> -->
-
           <label class="block mt-4 text-sm">
             <span class="text-gray-700 dark:text-gray-400"> Image </span>
             <div class="relative text-gray-500 focus-within:text-purple-600">
@@ -101,7 +72,6 @@
                 type="file"
                 multiple
               />
-              
             </div>
           </label>
 
