@@ -62,7 +62,8 @@ const dashboardView = async (req, res) => {
       },
     ]);
     const totalProfit = total[0].total;
-    await Order.aggregate([
+  
+       let pending=await Order.aggregate([
       {
         $match: {
           paymentStatus: "Payment Pending",
@@ -71,12 +72,13 @@ const dashboardView = async (req, res) => {
       {
         $count: "Count",
       },
-    ]).then((result) => {
-      if (result.length != 0) {
-        pendingCount = result[0].Count;
-      }
-    });
+    ])
+    let pendingCount
+    if (pending.length != 0) {
+     pendingCount = pending[0].Count;
+    }
     res.render("admin/dashboard", {
+      order,
       orderCount,
       usersCount,
       totalProfit,

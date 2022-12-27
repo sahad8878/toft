@@ -20,10 +20,6 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
- location: {     
-   type: String,    
-   default: "New York",
-   },
   date: {
     type: String,
     default: Date.now
@@ -34,7 +30,7 @@ const UserSchema = new mongoose.Schema({
   },
   wallet: {
     type: Number,
-   
+    default: 0
   },
 },{
   timestamps:true  
