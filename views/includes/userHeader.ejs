@@ -45,6 +45,9 @@
   <!-- sweet alert-->
   <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+
+  <!-- font icon  -->
+  <script src="https://kit.fontawesome.com/b02fd68529.js" crossorigin="anonymous"></script>
 <!-- user link end -->
 
 
@@ -87,12 +90,12 @@
                   <li><a href="/about">About</a></li>
                 <% } %>
 
-                <% if (locals.contactView) { %>
+                <!-- <%# if (locals.contactView) { %>
                   <li class="active"><a href="/contact">Contact</a></li>
-                  <% } else { %>
-  
+                  <%# } else { %>
                     <li><a href="/contact">Contact</a></li>
-                  <% } %>
+                  <%# } %> -->
+
                   <% if (locals.cartView) { %>
                     <li class="active"><a href="/cart"><i class="icon-shopping-cart"></i> Cart</a></li>
 
