@@ -8469,12 +8469,13 @@ input[type="text"] {
   position: absolute;
   z-index: 1901;
   width: 270px;
-  background: black;
+  font-weight: bold;
+  background: #f8f9fa;
   top: 0;
   right: 0;
   top: 0;
   bottom: 0;
-  padding: 75px 40px 40px 40px;
+  padding: 75px 40px 40px 20px;
   overflow-y: auto;
   display: none;
   -moz-transform: translateX(270px);
@@ -8497,18 +8498,18 @@ input[type="text"] {
     -o-transform: translateX(0px);
     transform: translateX(0px); }
   #colorlib-offcanvas a {
-    color: rgba(255, 255, 255, 0.5); }
+    color: #343a40; }
     #colorlib-offcanvas a:hover {
-      color: rgba(255, 255, 255, 0.8); }
+      color: #007bff; }
   #colorlib-offcanvas ul {
-    padding: 0;
+    padding: 10px;
     margin: 0; }
     #colorlib-offcanvas ul li {
       padding: 0;
       margin: 0;
       list-style: none; }
       #colorlib-offcanvas ul li > ul {
-        padding-left: 20px;
+        padding-left: 15px;
         display: none; }
       #colorlib-offcanvas ul li.offcanvas-has-dropdown > a {
         display: block;
@@ -8539,8 +8540,9 @@ input[type="text"] {
         -moz-transform: rotate(-180deg);
         -ms-transform: rotate(-180deg);
         -o-transform: rotate(-180deg);
-        transform: rotate(-180deg); }
-
+        transform: rotate(-180deg);
+       }
+        
 .gototop {
   position: fixed;
   bottom: 20px;

@@ -288,7 +288,7 @@
             
               Toast.fire({
               icon: 'error',
-              title: 'please choose your your payment'
+              title: 'please choose  your payment'
               })
 
            
@@ -355,9 +355,6 @@
           let razorpayoderData = response.razorpayoderData;
           userOrderData = response.userOrderData;
 		  walletBalance=response.walletBalance
-		  console.log(walletBalance,"wallle balance");
-          console.log(userOrderData,"<<<<<<<<<<<<<<<<<<<<<<<");
-          console.log(razorpayoderData);
           var options = {
             key: "rzp_test_VZx01l8lO0abIf", // Enter the Key ID generated from the Dashboard
             amount: response.razorpayOrderData.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
