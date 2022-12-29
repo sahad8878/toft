@@ -876,7 +876,7 @@ const getProfile = async (req, res) => {
     } else {
       address = [];
     }
-    res.render("user/profile", { address, addresses, user: req.session.user ,userDb});
+    res.render("user/profile", { address, addresses,userDb, user: req.session.user });
   } catch (error) {
   res.render("user/error");
 }
