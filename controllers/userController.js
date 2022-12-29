@@ -607,7 +607,7 @@ const postCheckout = async (req, res) => {
       } else if (req.body.paymentMethod === "Wallet") {
         user = await User.findOne({ _id: req.session.user._id });
         const walletBalance = user.wallet;
-        if (walletBalance == 0) {
+        if (walletBalance <= 0) {
           res.json({ noBalance: true });
         } else {
           if (walletBalance < total) {
@@ -868,16 +868,15 @@ const returnOrder = async (req, res) => {
 const getProfile = async (req, res) => {
   try {
     const userId = req.session.user._id;
-    console.log(req.session.user);
-    const addresses = await Address.findOne({ user:userId }).populate("user");
-    console.log(addresses);
+    const userDb=await User.findOne({_id:userId })
+    const addresses = await Address.findOne({ user:userId })
     let address;
     if (addresses) {
       address = addresses.address;
     } else {
       address = [];
     }
-    res.render("user/profile", { address, addresses, user: req.session.user });
+    res.render("user/profile", { address, addresses, user: req.session.user ,userDb});
   } catch (error) {
   res.render("user/error");
 }
