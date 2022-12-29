@@ -30,7 +30,7 @@ const UserSchema = new mongoose.Schema({
   },
   wallet: {
     type: Number,
-    default: 0
+    default:0,
   },
 },{
   timestamps:true  
